@@ -79,21 +79,21 @@
 
 
 
-<meta name="description" content="最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了这条链接。 #遇到的问题 ##无法安装php5  sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装ph">
+<meta name="description" content="最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了这条链接。 遇到的问题无法安装php5 sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装php时默认的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="sqli-labs环境搭建">
 <meta property="og:url" content="http://yoursite.com/2018/01/23/sqli-labs搭建/index.html">
 <meta property="og:site_name" content="e3pem&#39;s Blog">
-<meta property="og:description" content="最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了这条链接。 #遇到的问题 ##无法安装php5  sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装ph">
+<meta property="og:description" content="最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了这条链接。 遇到的问题无法安装php5 sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装php时默认的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/01/23/sqli-labs搭建/%27/photo/sqli-labs/1.png%27">
-<meta property="og:image" content="http://yoursite.com/2018/01/23/sqli-labs搭建/%27/photo/sqli-labs/2.png%27">
-<meta property="og:image" content="http://yoursite.com/2018/01/23/sqli-labs搭建/%27/photo/sqli-labs/3.png%27">
-<meta property="og:updated_time" content="2018-01-23T15:15:40.178Z">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-1-24/73056999.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-1-24/84521235.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-1-24/779589.jpg">
+<meta property="og:updated_time" content="2018-01-23T16:08:47.321Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sqli-labs环境搭建">
-<meta name="twitter:description" content="最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了这条链接。 #遇到的问题 ##无法安装php5  sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装ph">
-<meta name="twitter:image" content="http://yoursite.com/2018/01/23/sqli-labs搭建/%27/photo/sqli-labs/1.png%27">
+<meta name="twitter:description" content="最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了这条链接。 遇到的问题无法安装php5 sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装php时默认的">
+<meta name="twitter:image" content="http://oslgqkd4w.bkt.clouddn.com/18-1-24/73056999.jpg">
 
 
 
@@ -346,19 +346,19 @@
 
       
         <p>最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了<a href="https://www.jianshu.com/p/091f5dfa408d" target="_blank" rel="noopener">这条链接</a>。</p>
-<p>#遇到的问题</p>
-<p>##无法安装php5</p>
-<ol>
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="无法安装php5"><a href="#无法安装php5" class="headerlink" title="无法安装php5"></a>无法安装php5</h2><ol>
 <li><p>sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装php时默认的都是php7，安装php5时会提示找不到源的错误。这里解决的方式为：</p>
 <pre><code>sudo add-apt-repository ppa:ondrej/php    
 sudo apt-get update
 sudo apt-get install php5.6
 </code></pre></li>
 </ol>
-<p>##连接数据库失败</p>
-<ol>
-<li><p>进行上述安装之后在配置数据库时仍然有问题，仍旧卡死在这个界面：<br><img src="&#39;/photo/sqli-labs/1.png&#39;" alt=""></p>
+<h2 id="连接数据库失败"><a href="#连接数据库失败" class="headerlink" title="连接数据库失败"></a>连接数据库失败</h2><ol>
+<li><p>进行上述安装之后在配置数据库时仍然有问题，仍旧卡死在这个界面：</p>
+<p> <img src="http://oslgqkd4w.bkt.clouddn.com/18-1-24/73056999.jpg" alt=""></p>
 </li>
+</ol>
+<ol>
 <li><p>看到参考链接里面说了需要先测试数据库是否能正常连接，于是使用提供的脚本：</p>
 <pre><code>&lt;?php
 $con = mysql_connect(&quot;127.0.0.1&quot;,&quot;root&quot;,&quot;123456&quot;) or die(mysql_error())
@@ -371,14 +371,15 @@ if ($con) {
 ?&gt;
 </code></pre><p>测试后发现hello根本就没有输出，而且也没有显示出来<code>mysql_error()</code>的值。也就是<code>mysql_connect()</code>函数根本就没有被执行。</p>
 </li>
-<li><p>后来查看Apache的日志文件发现如下错误：<br><img src="&#39;/photo/sqli-labs/2.png&#39;" alt=""><br>函数根本就没有定义，发现问题后搜索一下就知道是因为mysql安装的不完整。</p>
+<li><p>后来查看Apache的日志文件发现如下错误：</p>
+<p> <img src="http://oslgqkd4w.bkt.clouddn.com/18-1-24/84521235.jpg" alt=""><br>函数根本就没有定义，发现问题后搜索一下就知道是因为mysql安装的不完整。</p>
 </li>
 <li><p>安装mysql</p>
 <pre><code>sudo apt-get install mysql-client
 sudo apt-get install php5.6-mysql
 </code></pre></li>
 </ol>
-<h1 id="成功搭建sqli-labs"><a href="#成功搭建sqli-labs" class="headerlink" title="成功搭建sqli-labs"></a>成功搭建sqli-labs</h1><p>访问配置界面，成功创建数据库：<br><img src="&#39;/photo/sqli-labs/3.png&#39;" alt=""></p>
+<h1 id="成功搭建sqli-labs"><a href="#成功搭建sqli-labs" class="headerlink" title="成功搭建sqli-labs"></a>成功搭建sqli-labs</h1><p>访问配置界面，成功创建数据库：<br>    <img src="http://oslgqkd4w.bkt.clouddn.com/18-1-24/779589.jpg" alt=""></p>
 
       
     </div>
@@ -534,7 +535,7 @@ sudo apt-get install php5.6-mysql
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#成功搭建sqli-labs"><span class="nav-number">1.</span> <span class="nav-text">成功搭建sqli-labs</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#遇到的问题"><span class="nav-number">1.</span> <span class="nav-text">遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#无法安装php5"><span class="nav-number">1.1.</span> <span class="nav-text">无法安装php5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接数据库失败"><span class="nav-number">1.2.</span> <span class="nav-text">连接数据库失败</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#成功搭建sqli-labs"><span class="nav-number">2.</span> <span class="nav-text">成功搭建sqli-labs</span></a></li></ol></div>
             
 
           </div>
