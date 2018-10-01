@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在docker中搭建pwn环境听到舍友说他一直都是在docker中做pwn的，一想到docker和虚拟机相比确实没啥差别（除了没有图形化界面），而且搭建好之后在各个地方都可以使用。网上也有别人搭建好的环境：https://github.com/skysider/pwndocker 这里自己搭建了一遍，把整个过程记录了下来。 下载并启动ubuntu镜像这里基于ubuntu16.04的镜像来搭建环境，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在docker中搭建pwn环境">
+<meta property="og:url" content="http://yoursite.com/2018/10/01/杂项/在docker中搭建pwn环境/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="在docker中搭建pwn环境听到舍友说他一直都是在docker中做pwn的，一想到docker和虚拟机相比确实没啥差别（除了没有图形化界面），而且搭建好之后在各个地方都可以使用。网上也有别人搭建好的环境：https://github.com/skysider/pwndocker 这里自己搭建了一遍，把整个过程记录了下来。 下载并启动ubuntu镜像这里基于ubuntu16.04的镜像来搭建环境，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/85298670.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/82380505.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/1944161.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/28212388.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/38504450.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/57138105.jpg">
+<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/81980842.jpg">
+<meta property="og:updated_time" content="2018-10-01T05:05:34.164Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在docker中搭建pwn环境">
+<meta name="twitter:description" content="在docker中搭建pwn环境听到舍友说他一直都是在docker中做pwn的，一想到docker和虚拟机相比确实没啥差别（除了没有图形化界面），而且搭建好之后在各个地方都可以使用。网上也有别人搭建好的环境：https://github.com/skysider/pwndocker 这里自己搭建了一遍，把整个过程记录了下来。 下载并启动ubuntu镜像这里基于ubuntu16.04的镜像来搭建环境，">
+<meta name="twitter:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/85298670.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/01/杂项/在docker中搭建pwn环境/"/>
+
+
+
+
+
+  <title>在docker中搭建pwn环境 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/01/杂项/在docker中搭建pwn环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">在docker中搭建pwn环境</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-01T13:04:09+08:00">
+                2018-10-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/others/" itemprop="url" rel="index">
+                    <span itemprop="name">others</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="在docker中搭建pwn环境"><a href="#在docker中搭建pwn环境" class="headerlink" title="在docker中搭建pwn环境"></a>在docker中搭建pwn环境</h1><p>听到舍友说他一直都是在docker中做pwn的，一想到docker和虚拟机相比确实没啥差别（除了没有图形化界面），而且搭建好之后在各个地方都可以使用。网上也有别人搭建好的环境：<a href="https://github.com/skysider/pwndocker" target="_blank" rel="noopener">https://github.com/skysider/pwndocker</a></p>
+<p>这里自己搭建了一遍，把整个过程记录了下来。</p>
+<h2 id="下载并启动ubuntu镜像"><a href="#下载并启动ubuntu镜像" class="headerlink" title="下载并启动ubuntu镜像"></a>下载并启动ubuntu镜像</h2><p>这里基于ubuntu16.04的镜像来搭建环境，首先下载该镜像：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull ubuntu:16.04</span><br><span class="line">16.04: Pulling from library/ubuntu</span><br><span class="line">Digest: sha256:45ddfa61744947b0b8f7f20b8de70cbcdd441a6a0532f791fd4c09f5e491a8eb</span><br><span class="line">Status: Image is up to date for ubuntu:16.04</span><br></pre></td></tr></table></figure></p>
+<p>因为我这里已经下载过了，所以显示的是上面这样。如果下载的慢的话可以使用加速器，我是用的是doucloud（当然可以选择其他的）：</p>
+<p><code>curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://f1361db2.m.daocloud.io</code></p>
+<p>接下来启动ubuntu镜像；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -i -t --name create_env ubuntu:16.04 bash</span><br><span class="line">root@5cfd7de2e9f7:/#</span><br></pre></td></tr></table></figure>
+<p>现在相当于在ubuntu镜像的基础上启动了一个容器，也就是一台新的ubuntu虚拟机，现在可以在里面安装各种工具了。</p>
+<h2 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h2><h3 id="修改源"><a href="#修改源" class="headerlink" title="修改源"></a>修改源</h3><p>和正常的ubuntu一样，首先修改系统的源，这里使用的是清华的源：<br><a href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/" target="_blank" rel="noopener">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
+<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/85298670.jpg" alt=""></p>
+<p>依次执行下面的命令：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/apt</span><br><span class="line"><span class="comment"># 保存原始的sources.list文件</span></span><br><span class="line">cp sources.list sources.list.bak</span><br><span class="line">apt-get update</span><br><span class="line"><span class="comment"># 安装编辑文本的工具，可以用自己顺手的vim</span></span><br><span class="line">apt-get install nano</span><br><span class="line"><span class="comment"># 更换源之后采用https协议，需要安装该软件才行</span></span><br><span class="line">apt-get install apt-transport-https</span><br><span class="line"><span class="comment"># 覆盖原始的内容</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">''</span> &gt; sources.list</span><br><span class="line"><span class="comment"># 将清华的源拷贝进去(Ctrl+Shift+v)保存</span></span><br><span class="line">nano sources.list</span><br><span class="line"></span><br><span class="line">apt-get update</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/82380505.jpg" alt=""></p>
+<h3 id="安装pwntools"><a href="#安装pwntools" class="headerlink" title="安装pwntools"></a>安装pwntools</h3><p>依次执行：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt-get install python2.7 python-pip python-dev git libssl-dev libffi-dev build-essential</span><br><span class="line"></span><br><span class="line">pip install pwntools</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/1944161.jpg" alt=""></p>
+<p>更新pip（这个与安装pwntools无关）：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@5cfd7de2e9f7:/etc/apt<span class="comment"># pip install --upgrade pip</span></span><br><span class="line">Collecting pip</span><br><span class="line">  Downloading https://files.pythonhosted.org/packages/5f/25/e52d3f31441505a5f3af41213346e5b6c221c9e086a166f3703d2ddaf940/pip-18.0-py2.py3-none-any.whl (1.3MB)</span><br><span class="line">    100% |<span class="comment">################################| 1.3MB 886kB/s </span></span><br><span class="line">Installing collected packages: pip</span><br><span class="line">  Found existing installation: pip 8.1.1</span><br><span class="line">    Not uninstalling pip at /usr/lib/python2.7/dist-packages, outside environment /usr</span><br><span class="line">Successfully installed pip-18.0</span><br></pre></td></tr></table></figure></p>
+<p>更新完了之后需要将<code>/usr/bin</code>目录下的pip编辑成如下所示：</p>
+<p><code>nano /usr/bin/apt</code><br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/28212388.jpg" alt=""><br>保存即可。</p>
+<h3 id="安装pwndbg"><a href="#安装pwndbg" class="headerlink" title="安装pwndbg"></a>安装pwndbg</h3><p>参考链接：<a href="https://github.com/pwndbg/pwndbg" target="_blank" rel="noopener">https://github.com/pwndbg/pwndbg</a></p>
+<p>依次执行下列语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 创建相应目录</span><br><span class="line">root@5cfd7de2e9f7:/# cd /home</span><br><span class="line">root@5cfd7de2e9f7:/home# mkdir em</span><br><span class="line">root@5cfd7de2e9f7:/home# cd em</span><br><span class="line">root@5cfd7de2e9f7:/home/em# mkdir software</span><br><span class="line">root@5cfd7de2e9f7:/home/em# cd software/</span><br><span class="line">root@5cfd7de2e9f7:/home/em/software# </span><br><span class="line"></span><br><span class="line"># 安装</span><br><span class="line">git clone https://github.com/pwndbg/pwndbg</span><br><span class="line">cd pwndbg</span><br><span class="line">apt-get install sudo</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装ROPgadget、libc-database、one-gadget"><a href="#安装ROPgadget、libc-database、one-gadget" class="headerlink" title="安装ROPgadget、libc-database、one_gadget"></a>安装ROPgadget、libc-database、one_gadget</h3><ol>
+<li>ROPgadget和libc-database按照官方的步骤即可：</li>
+</ol>
+<p>ROPgadget：<br><a href="https://github.com/JonathanSalwan/ROPgadget" target="_blank" rel="noopener">https://github.com/JonathanSalwan/ROPgadget</a></p>
+<p>libc-database:<br><a href="https://github.com/niklasb/libc-database" target="_blank" rel="noopener">https://github.com/niklasb/libc-database</a></p>
+<ol>
+<li>one_gadget:</li>
+</ol>
+<p>依次执行下列语句即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt-get install ruby</span><br><span class="line">apt-get install gem</span><br><span class="line">gem install one_gadget</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装tmux"><a href="#安装tmux" class="headerlink" title="安装tmux"></a>安装tmux</h3><p>使用bash进入到docker中后只有一个命令行终端，这样很不方便，可以在该容器中安装tmux，来同时开启多个终端。<br>使用<br><code>apt-get install tmux</code>来安装</p>
+<p>启动鼠标切换界面：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@5cfd7de2e9f7:~<span class="comment"># touch .tmux.conf</span></span><br><span class="line">root@5cfd7de2e9f7:~<span class="comment"># nano .tmux.conf </span></span><br><span class="line">root@5cfd7de2e9f7:~<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/38504450.jpg" alt=""></p>
+<p><em>注意：在启用鼠标切换之后如果需要选中终端中的部分内容，需要在按住Shift的情况下才可以</em></p>
+<p><strong>除了上面提到的工具外，可以自行安装需要的工具</strong></p>
+<h2 id="将容器打包成自己的镜像"><a href="#将容器打包成自己的镜像" class="headerlink" title="将容器打包成自己的镜像"></a>将容器打包成自己的镜像</h2><p>经过上面的步骤，我们已经搭建好了需要的环境，下面就将这个容器打包成镜像：</p>
+<ol>
+<li>首先退出该容器，然后查看已经停止运行的容器：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">5cfd7de2e9f7        ubuntu:16.04         &quot;bash&quot;              About an hour ago   Exited (0) 13 seconds ago                       create_env</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>得到容器的id为：5cfd7de2e9f7 </p>
+<ol>
+<li><p>使用commit命令提交该容器为镜像：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可能需要一点时间</span></span><br><span class="line">$ docker commit -m <span class="string">"pwn 16.04 v2"</span> 5cfd7de2e9f7 e3pem/dockerpwn:v2 </span><br><span class="line">sha256:68136e03da7b3d544fd8ece63b6fbdcbd962948e9bcdc1a390d529cb89193ea9</span><br><span class="line"><span class="comment"># 其中`-m`为提交镜像时的描述</span></span><br><span class="line"><span class="comment"># 5cfd7de2e9f7 为容器的id</span></span><br><span class="line"><span class="comment"># e3pem/dockerpwn:v2 为镜像的标签，将e3pem换成自己在dockerhub上的用户名</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看构造出来的镜像</span></span><br><span class="line">$ docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">e3pem/dockerpwn     v2                  68136e03da7b        2 minutes ago       956MB</span><br><span class="line">e3pem/dockerpwn     v1                  fa2334fe2cd8        20 hours ago        1.24GB</span><br><span class="line">dockerpwn           v1                  fa2334fe2cd8        20 hours ago        1.24GB</span><br><span class="line">ubuntu              16.04               b9e15a5d1e1a        3 weeks ago         115MB</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以选择将镜像push到dockerhub：<br><code>docker push e3pem/dockerpwn:v2</code></p>
+</li>
+</ol>
+<h2 id="使用构建的镜像"><a href="#使用构建的镜像" class="headerlink" title="使用构建的镜像"></a>使用构建的镜像</h2><p>在分析题目的时候经常需要进行调试，在docker中调试是需要权限的，因此在第一次启动镜像的时候需要添加<code>--privileged</code>选项</p>
+<p>同时可以将容器中的某一个目录和主机的目录建立映射，这样就能很方便的在宿主机和容器间共享文件了，使用<code>-v</code>选项来设置共享目录</p>
+<p>例如这样的命令：</p>
+<p><code>docker run -i -t --privileged -v /home/yourhost/path/ctf:/home/docker/path/ctf e3pem/dockerpwn:v2 bash</code></p>
+<p>在容器停止运行后，下次要继续在该容器中运行，可以按如下方法：</p>
+<p>先获取到容器的id：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">6121daf720c0        e3pem/dockerpwn:v2   <span class="string">"bash"</span>              15 seconds ago      Exited (0) 6 seconds ago                        modest_nobel</span><br></pre></td></tr></table></figure></p>
+<p>获取到容器的id为：6121daf720c0</p>
+<p>建立一个脚本，内容如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker container start 6121daf720c0</span><br><span class="line">docker <span class="built_in">exec</span> -i -t 6121daf720c0 bash</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/57138105.jpg" alt=""></p>
+<p>以后就可以通过运行脚本来启动docker-pwn的环境了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chmod +x dockerpwn2.sh</span><br><span class="line"></span><br><span class="line">$ ./dockerpwn2.sh </span><br><span class="line">6121daf720c0</span><br><span class="line">root@6121daf720c0:/#</span><br></pre></td></tr></table></figure></p>
+<p>可以愉快的调试了:<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/81980842.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/30/wangdingbei/网鼎杯pwn-babyheap/" rel="next" title="网鼎杯-babyheap">
+                <i class="fa fa-chevron-left"></i> 网鼎杯-babyheap
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description">记录学习过程的小Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在docker中搭建pwn环境"><span class="nav-number">1.</span> <span class="nav-text">在docker中搭建pwn环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载并启动ubuntu镜像"><span class="nav-number">1.1.</span> <span class="nav-text">下载并启动ubuntu镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装环境"><span class="nav-number">1.2.</span> <span class="nav-text">安装环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改源"><span class="nav-number">1.2.1.</span> <span class="nav-text">修改源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装pwntools"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装pwntools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装pwndbg"><span class="nav-number">1.2.3.</span> <span class="nav-text">安装pwndbg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装ROPgadget、libc-database、one-gadget"><span class="nav-number">1.2.4.</span> <span class="nav-text">安装ROPgadget、libc-database、one_gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装tmux"><span class="nav-number">1.2.5.</span> <span class="nav-text">安装tmux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将容器打包成自己的镜像"><span class="nav-number">1.3.</span> <span class="nav-text">将容器打包成自己的镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用构建的镜像"><span class="nav-number">1.4.</span> <span class="nav-text">使用构建的镜像</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
