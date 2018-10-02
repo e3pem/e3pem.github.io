@@ -366,14 +366,14 @@
 <p><code>nano /usr/bin/apt</code><br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/28212388.jpg" alt=""><br>保存即可。</p>
 <h3 id="安装pwndbg"><a href="#安装pwndbg" class="headerlink" title="安装pwndbg"></a>安装pwndbg</h3><p>参考链接：<a href="https://github.com/pwndbg/pwndbg" target="_blank" rel="noopener">https://github.com/pwndbg/pwndbg</a></p>
 <p>依次执行下列语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 创建相应目录</span><br><span class="line">root@5cfd7de2e9f7:/# cd /home</span><br><span class="line">root@5cfd7de2e9f7:/home# mkdir em</span><br><span class="line">root@5cfd7de2e9f7:/home# cd em</span><br><span class="line">root@5cfd7de2e9f7:/home/em# mkdir software</span><br><span class="line">root@5cfd7de2e9f7:/home/em# cd software/</span><br><span class="line">root@5cfd7de2e9f7:/home/em/software# </span><br><span class="line"></span><br><span class="line"># 安装</span><br><span class="line">git clone https://github.com/pwndbg/pwndbg</span><br><span class="line">cd pwndbg</span><br><span class="line">apt-get install sudo</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure></p>
-<h3 id="安装ROPgadget、libc-database、one-gadget"><a href="#安装ROPgadget、libc-database、one-gadget" class="headerlink" title="安装ROPgadget、libc-database、one_gadget"></a>安装ROPgadget、libc-database、one_gadget</h3><ol>
+<h3 id="安装ROPgadget、libc-database、one-gadget"><a href="#安装ROPgadget、libc-database、one-gadget" class="headerlink" title="安装ROPgadget、libc-database、one_gadget"></a>安装ROPgadget、libc-database、one_gadget</h3><ul>
 <li>ROPgadget和libc-database按照官方的步骤即可：</li>
-</ol>
+</ul>
 <p>ROPgadget：<br><a href="https://github.com/JonathanSalwan/ROPgadget" target="_blank" rel="noopener">https://github.com/JonathanSalwan/ROPgadget</a></p>
 <p>libc-database:<br><a href="https://github.com/niklasb/libc-database" target="_blank" rel="noopener">https://github.com/niklasb/libc-database</a></p>
-<ol>
+<ul>
 <li>one_gadget:</li>
-</ol>
+</ul>
 <p>依次执行下列语句即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt-get install ruby</span><br><span class="line">apt-get install gem</span><br><span class="line">gem install one_gadget</span><br></pre></td></tr></table></figure></p>
 <h3 id="安装tmux"><a href="#安装tmux" class="headerlink" title="安装tmux"></a>安装tmux</h3><p>使用bash进入到docker中后只有一个命令行终端，这样很不方便，可以在该容器中安装tmux，来同时开启多个终端。<br>使用<br><code>apt-get install tmux</code>来安装</p>
 <p>启动鼠标切换界面：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@5cfd7de2e9f7:~<span class="comment"># touch .tmux.conf</span></span><br><span class="line">root@5cfd7de2e9f7:~<span class="comment"># nano .tmux.conf </span></span><br><span class="line">root@5cfd7de2e9f7:~<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
