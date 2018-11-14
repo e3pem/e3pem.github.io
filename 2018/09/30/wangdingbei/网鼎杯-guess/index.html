@@ -88,12 +88,12 @@
 <meta property="og:site_name" content="e3pem&#39;s Blog">
 <meta property="og:description" content="网鼎杯-guess题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序的主要代码如下： 程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能f">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-9-29/7310216.jpg">
-<meta property="og:updated_time" content="2018-09-30T15:35:46.299Z">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/26759687.jpg">
+<meta property="og:updated_time" content="2018-11-14T06:13:56.064Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网鼎杯-GUESS">
 <meta name="twitter:description" content="网鼎杯-guess题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序的主要代码如下： 程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能f">
-<meta name="twitter:image" content="http://oslgqkd4w.bkt.clouddn.com/18-9-29/7310216.jpg">
+<meta name="twitter:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/26759687.jpg">
 
 
 
@@ -347,7 +347,7 @@
       
         <h1 id="网鼎杯-guess"><a href="#网鼎杯-guess" class="headerlink" title="网鼎杯-guess"></a>网鼎杯-guess</h1><p>题目链接如下：</p>
 <p>链接：<a href="https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ</a> 密码：isek</p>
-<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序的主要代码如下：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-9-29/7310216.jpg" alt=""></p>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序的主要代码如下：<br><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/26759687.jpg" alt=""></p>
 <p>程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能fork三次，也就是只有三次‘猜’flag的机会。</p>
 <h2 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h2><p>程序在读取输入的时候存在溢出，没有对输入的内容长度进行限制，但是这里开启了Cannary，所以不能简单的控制程序的执行流程。</p>
 <h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>这里开启了Cannary，为了绕过它的保护，可以通过爆破或者泄露的方式，但是这里对fork的次数进行了限制，所以爆破的方法不行。</p>

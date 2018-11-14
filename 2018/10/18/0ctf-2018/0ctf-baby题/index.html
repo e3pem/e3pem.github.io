@@ -81,21 +81,21 @@
 
 
 
-<meta name="description" content="0ctf-baby题最近有时间了就会做做之前的题目，这里是今年0ctf前两道baby题，一道是栈的题、一道是堆的题。后面的题还不会做，先从简单一点的开始（太菜了）。 babystack这道题原题是这样的：首先向我们输出了一个chal的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以\0\0\0开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动存">
+<meta name="description" content="0ctf-baby题最近有时间了就会做做之前的题目，这里是今年0ctf前两道baby题，一道是栈的题、一道是堆的题。后面的题还不会做，先从简单一点的开始（太菜了）。 babystack这道题原题是这样的： 首先向我们输出了一个chal的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以\0\0\0开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动">
 <meta property="og:type" content="article">
 <meta property="og:title" content="0ctf2018-baby题">
 <meta property="og:url" content="https://e3pem.github.io/2018/10/18/0ctf-2018/0ctf-baby题/index.html">
 <meta property="og:site_name" content="e3pem&#39;s Blog">
-<meta property="og:description" content="0ctf-baby题最近有时间了就会做做之前的题目，这里是今年0ctf前两道baby题，一道是栈的题、一道是堆的题。后面的题还不会做，先从简单一点的开始（太菜了）。 babystack这道题原题是这样的：首先向我们输出了一个chal的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以\0\0\0开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动存">
+<meta property="og:description" content="0ctf-baby题最近有时间了就会做做之前的题目，这里是今年0ctf前两道baby题，一道是栈的题、一道是堆的题。后面的题还不会做，先从简单一点的开始（太菜了）。 babystack这道题原题是这样的： 首先向我们输出了一个chal的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以\0\0\0开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-18/90277077.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-18/37693506.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-18/23057502.jpg">
-<meta property="og:updated_time" content="2018-10-18T10:22:17.333Z">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/91917330.jpg">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/20404392.jpg">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/77993460.jpg">
+<meta property="og:updated_time" content="2018-11-14T07:17:58.045Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0ctf2018-baby题">
-<meta name="twitter:description" content="0ctf-baby题最近有时间了就会做做之前的题目，这里是今年0ctf前两道baby题，一道是栈的题、一道是堆的题。后面的题还不会做，先从简单一点的开始（太菜了）。 babystack这道题原题是这样的：首先向我们输出了一个chal的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以\0\0\0开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动存">
-<meta name="twitter:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-18/90277077.jpg">
+<meta name="twitter:description" content="0ctf-baby题最近有时间了就会做做之前的题目，这里是今年0ctf前两道baby题，一道是栈的题、一道是堆的题。后面的题还不会做，先从简单一点的开始（太菜了）。 babystack这道题原题是这样的： 首先向我们输出了一个chal的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以\0\0\0开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动">
+<meta name="twitter:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/91917330.jpg">
 
 
 
@@ -348,7 +348,8 @@
 
       
         <h1 id="0ctf-baby题"><a href="#0ctf-baby题" class="headerlink" title="0ctf-baby题"></a>0ctf-baby题</h1><p>最近有时间了就会做做之前的题目，这里是今年0ctf前两道baby题，一道是栈的题、一道是堆的题。后面的题还不会做，先从简单一点的开始（太菜了）。</p>
-<h2 id="babystack"><a href="#babystack" class="headerlink" title="babystack"></a>babystack</h2><p>这道题原题是这样的：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-18/90277077.jpg" alt=""><br>首先向我们输出了一个<code>chal</code>的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以<code>\0\0\0</code>开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动存在问题的程序<code>babystack</code>，并将输入的0x100数据传给该程序。</p>
+<h2 id="babystack"><a href="#babystack" class="headerlink" title="babystack"></a>babystack</h2><p>这道题原题是这样的：<br><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/91917330.jpg" alt=""></p>
+<p>首先向我们输出了一个<code>chal</code>的值，并需要我们输入4个字节内容，输入的内容需要满足经过计算后得到的结果以<code>\0\0\0</code>开始，满足了这个check之后从输入流中读取0x100字节的数据，接着才正式启动存在问题的程序<code>babystack</code>，并将输入的0x100数据传给该程序。</p>
 <h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>由于是在本机做的这道题，就直接启动了babystack开始调试，下面看一下该程序存在什么问题：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ssize_t</span> sub_804843B()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [sp+0h] [bp-28h]@1</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, &amp;buf, <span class="number">0x40</span>u);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>可以看到程序内容简直再简单不过了，直接往buf中读取0x40字节的数据，而实际栈上的空间只有0x28字节，这里存在栈溢出。</p>
 <p>查看一下程序开启了哪些保护：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ checksec babystack </span><br><span class="line">[*] <span class="string">'/home/ym/Desktop/ctf/0ctf/babystack/babystack'</span></span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure></p>
@@ -359,8 +360,9 @@
 </blockquote>
 <p>之前在劫持程序的执行流程的时候，有一种思路就是修改程序的got表，把它改成system\execve等函数的地址，并传递给他们合适的参数来拿到shell（对于got表的介绍可以去网上查一查，最好自己动手调一调）。got表里面存放的是动态获取到的函数的真实地址，程序在第一次执行某个来自外部的函数之前是不知道这个函数的真实地址是多少的，那他是怎么知道这个真实地址的呢？</p>
 <p>答案就是通过<code>dl_runtime_resolve</code>这个函数（以read为例）来获取的，该函数获取真实地址的流程大致如下：</p>
-<p>第一次调用read函数，根据plt表中的指令<code>jmp dword ptr[got@read]</code>来跳转到got表中存储的地址处，这里由于是第一次调用，地址指向的是plt表中<code>jmp dword[got@read]</code>的下一条指令。<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-18/37693506.jpg" alt=""></p>
-<p>push参数，并跳转到<code>dl_runtime_resolve</code>函数的地址，这里一共有两个参数分别为<code>link_map、reloc_arg</code>，其中<code>link_map</code>表示read函数在got表中的索引<code>（link_map=*(GOT+4)）</code>，而<code>reloc_arg</code>参数就是用来重定位时主要用到的参数了。<br>这里<code>dl_runtime_resolve</code>的参数分别为0xf7ffd918、0x0，其中reloc_arg=0:<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-18/23057502.jpg" alt=""></p>
+<p>第一次调用read函数，根据plt表中的指令<code>jmp dword ptr[got@read]</code>来跳转到got表中存储的地址处，这里由于是第一次调用，地址指向的是plt表中<code>jmp dword[got@read]</code>的下一条指令。</p>
+<p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/20404392.jpg" alt=""></p>
+<p>push参数，并跳转到<code>dl_runtime_resolve</code>函数的地址，这里一共有两个参数分别为<code>link_map、reloc_arg</code>，其中<code>link_map</code>表示read函数在got表中的索引<code>（link_map=*(GOT+4)）</code>，而<code>reloc_arg</code>参数就是用来重定位时主要用到的参数了。<br>这里<code>dl_runtime_resolve</code>的参数分别为0xf7ffd918、0x0，其中reloc_arg=0:<br><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/77993460.jpg" alt=""></p>
 <p>根据<code>reloc_arg</code>在<code>.rel.plt</code>节中找到<strong>函数重定位表</strong>的地址，重定位表为一个包含两个变量的结构体。其中包含的<code>r_offset</code>为got表地址，<code>r_info</code>中以 <code>(index_dynsym &lt;&lt; 8) | 0x7</code>这样的方式存储了动态链接符号表的索引：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  Elf32_Addr	r_offset;		<span class="comment">/* Address */</span></span><br><span class="line">  Elf32_Word	r_info;			<span class="comment">/* Relocation type and symbol index */</span></span><br><span class="line">&#125; Elf32_Rel;</span><br></pre></td></tr></table></figure></p>
 <p>使用objdump获取程序的.rel.plt地址如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ objdump -s -j .rel.plt babystack </span><br><span class="line"></span><br><span class="line">babystack:     file format elf32-i386</span><br><span class="line"></span><br><span class="line">Contents of section .rel.plt:</span><br><span class="line"> 80482b0 0ca00408 07010000 10a00408 07020000  ................</span><br><span class="line"> 80482c0 14a00408 07040000                    ........</span><br></pre></td></tr></table></figure></p>
 <p>在pwndbg中看到该函数重定位表的内容如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /5xw 0x80482b0</span><br><span class="line">0x80482b0:	0x0804a00c	0x00000107	0x0804a010	0x00000207</span><br><span class="line">0x80482c0:	0x0804a014</span><br></pre></td></tr></table></figure></p>

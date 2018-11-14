@@ -81,19 +81,17 @@
 
 
 
-<meta name="description" content="网鼎杯pwn-babyheap题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序提供了下面几种功能：  alloc：  程序在分配堆时，对分配的数量进行了限制，分配的数量最多为10个。且分配的堆大小为0x20字节，并将得到的指针保存到了bss段上。1234567891011121314151617181">
+<meta name="description" content="网鼎杯pwn-babyheap题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序提供了下面几种功能：123456789int sub_4008E3()&amp;#123;  puts(&quot;1.alloc&quot;);  puts(&quot;2.edit&quot;);  puts(&quot;3.show&quot;);  puts(&quot;4.free&quot;);">
 <meta property="og:type" content="article">
 <meta property="og:title" content="网鼎杯-babyheap">
 <meta property="og:url" content="https://e3pem.github.io/2018/09/30/wangdingbei/网鼎杯pwn-babyheap/index.html">
 <meta property="og:site_name" content="e3pem&#39;s Blog">
-<meta property="og:description" content="网鼎杯pwn-babyheap题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序提供了下面几种功能：  alloc：  程序在分配堆时，对分配的数量进行了限制，分配的数量最多为10个。且分配的堆大小为0x20字节，并将得到的指针保存到了bss段上。1234567891011121314151617181">
+<meta property="og:description" content="网鼎杯pwn-babyheap题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序提供了下面几种功能：123456789int sub_4008E3()&amp;#123;  puts(&quot;1.alloc&quot;);  puts(&quot;2.edit&quot;);  puts(&quot;3.show&quot;);  puts(&quot;4.free&quot;);">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-8-21/52659635.jpg">
-<meta property="og:updated_time" content="2018-09-30T15:43:47.837Z">
+<meta property="og:updated_time" content="2018-11-14T06:17:15.726Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网鼎杯-babyheap">
-<meta name="twitter:description" content="网鼎杯pwn-babyheap题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序提供了下面几种功能：  alloc：  程序在分配堆时，对分配的数量进行了限制，分配的数量最多为10个。且分配的堆大小为0x20字节，并将得到的指针保存到了bss段上。1234567891011121314151617181">
-<meta name="twitter:image" content="http://oslgqkd4w.bkt.clouddn.com/18-8-21/52659635.jpg">
+<meta name="twitter:description" content="网鼎杯pwn-babyheap题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序提供了下面几种功能：123456789int sub_4008E3()&amp;#123;  puts(&quot;1.alloc&quot;);  puts(&quot;2.edit&quot;);  puts(&quot;3.show&quot;);  puts(&quot;4.free&quot;);">
 
 
 
@@ -347,7 +345,7 @@
       
         <h1 id="网鼎杯pwn-babyheap"><a href="#网鼎杯pwn-babyheap" class="headerlink" title="网鼎杯pwn-babyheap"></a>网鼎杯pwn-babyheap</h1><p>题目链接如下：</p>
 <p>链接：<a href="https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ</a> 密码：isek</p>
-<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序提供了下面几种功能：<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-8-21/52659635.jpg" alt=""></p>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序提供了下面几种功能：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub_4008E3</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"1.alloc"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"2.edit"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"3.show"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"4.free"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"5.exit"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">"Choice:"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <ul>
 <li>alloc：</li>
 </ul>

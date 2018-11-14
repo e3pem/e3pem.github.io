@@ -88,18 +88,16 @@
 <meta property="og:site_name" content="e3pem&#39;s Blog">
 <meta property="og:description" content="在docker中搭建pwn环境听到舍友说他一直都是在docker中做pwn的，一想到docker和虚拟机相比确实没啥差别（除了没有图形化界面），而且搭建好之后在各个地方都可以使用。网上也有别人搭建好的环境：https://github.com/skysider/pwndocker 这里自己搭建了一遍，把整个过程记录了下来。 下载并启动ubuntu镜像这里基于ubuntu16.04的镜像来搭建环境，">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/85298670.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/82380505.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/1944161.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/28212388.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/38504450.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/57138105.jpg">
-<meta property="og:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/81980842.jpg">
-<meta property="og:updated_time" content="2018-10-02T13:37:31.525Z">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/95253965.jpg">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/34261371.jpg">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/78359469.jpg">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/21063533.jpg">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/66806776.jpg">
+<meta property="og:updated_time" content="2018-11-14T06:36:15.047Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在docker中搭建pwn环境">
 <meta name="twitter:description" content="在docker中搭建pwn环境听到舍友说他一直都是在docker中做pwn的，一想到docker和虚拟机相比确实没啥差别（除了没有图形化界面），而且搭建好之后在各个地方都可以使用。网上也有别人搭建好的环境：https://github.com/skysider/pwndocker 这里自己搭建了一遍，把整个过程记录了下来。 下载并启动ubuntu镜像这里基于ubuntu16.04的镜像来搭建环境，">
-<meta name="twitter:image" content="http://oslgqkd4w.bkt.clouddn.com/18-10-1/85298670.jpg">
+<meta name="twitter:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/95253965.jpg">
 
 
 
@@ -360,14 +358,14 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -i -t --name create_env ubuntu:16.04 bash</span><br><span class="line">root@5cfd7de2e9f7:/#</span><br></pre></td></tr></table></figure>
 <p>现在相当于在ubuntu镜像的基础上启动了一个容器，也就是一台新的ubuntu虚拟机，现在可以在里面安装各种工具了。</p>
 <h2 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h2><h3 id="修改源"><a href="#修改源" class="headerlink" title="修改源"></a>修改源</h3><p>和正常的ubuntu一样，首先修改系统的源，这里使用的是清华的源：<br><a href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/" target="_blank" rel="noopener">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
-<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/85298670.jpg" alt=""></p>
+<p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/95253965.jpg" alt=""></p>
 <p>依次执行下面的命令：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/apt</span><br><span class="line"><span class="comment"># 保存原始的sources.list文件</span></span><br><span class="line">cp sources.list sources.list.bak</span><br><span class="line">apt-get update</span><br><span class="line"><span class="comment"># 安装编辑文本的工具，可以用自己顺手的vim</span></span><br><span class="line">apt-get install nano</span><br><span class="line"><span class="comment"># 更换源之后采用https协议，需要安装该软件才行</span></span><br><span class="line">apt-get install apt-transport-https</span><br><span class="line"><span class="comment"># 覆盖原始的内容</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">''</span> &gt; sources.list</span><br><span class="line"><span class="comment"># 将清华的源拷贝进去(Ctrl+Shift+v)保存</span></span><br><span class="line">nano sources.list</span><br><span class="line"></span><br><span class="line">apt-get update</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/82380505.jpg" alt=""></p>
+<p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/34261371.jpg" alt=""></p>
 <h3 id="安装pwntools"><a href="#安装pwntools" class="headerlink" title="安装pwntools"></a>安装pwntools</h3><p>依次执行：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt-get install python2.7 python-pip python-dev git libssl-dev libffi-dev build-essential</span><br><span class="line"></span><br><span class="line">pip install pwntools</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/1944161.jpg" alt=""></p>
 <p>更新pip（这个与安装pwntools无关）：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@5cfd7de2e9f7:/etc/apt<span class="comment"># pip install --upgrade pip</span></span><br><span class="line">Collecting pip</span><br><span class="line">  Downloading https://files.pythonhosted.org/packages/5f/25/e52d3f31441505a5f3af41213346e5b6c221c9e086a166f3703d2ddaf940/pip-18.0-py2.py3-none-any.whl (1.3MB)</span><br><span class="line">    100% |<span class="comment">################################| 1.3MB 886kB/s </span></span><br><span class="line">Installing collected packages: pip</span><br><span class="line">  Found existing installation: pip 8.1.1</span><br><span class="line">    Not uninstalling pip at /usr/lib/python2.7/dist-packages, outside environment /usr</span><br><span class="line">Successfully installed pip-18.0</span><br></pre></td></tr></table></figure></p>
 <p>更新完了之后需要将<code>/usr/bin</code>目录下的pip编辑成如下所示：</p>
-<p><code>nano /usr/bin/apt</code><br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/28212388.jpg" alt=""><br>保存即可。</p>
+<p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/78359469.jpg" alt=""></p>
+<p><code>nano /usr/bin/pip</code>保存即可。</p>
 <h3 id="安装pwndbg"><a href="#安装pwndbg" class="headerlink" title="安装pwndbg"></a>安装pwndbg</h3><p>参考链接：<a href="https://github.com/pwndbg/pwndbg" target="_blank" rel="noopener">https://github.com/pwndbg/pwndbg</a></p>
 <p>依次执行下列语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 创建相应目录</span><br><span class="line">root@5cfd7de2e9f7:/# cd /home</span><br><span class="line">root@5cfd7de2e9f7:/home# mkdir em</span><br><span class="line">root@5cfd7de2e9f7:/home# cd em</span><br><span class="line">root@5cfd7de2e9f7:/home/em# mkdir software</span><br><span class="line">root@5cfd7de2e9f7:/home/em# cd software/</span><br><span class="line">root@5cfd7de2e9f7:/home/em/software# </span><br><span class="line"></span><br><span class="line"># 安装</span><br><span class="line">git clone https://github.com/pwndbg/pwndbg</span><br><span class="line">cd pwndbg</span><br><span class="line">apt-get install sudo</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure></p>
 <h3 id="安装ROPgadget、libc-database、one-gadget"><a href="#安装ROPgadget、libc-database、one-gadget" class="headerlink" title="安装ROPgadget、libc-database、one_gadget"></a>安装ROPgadget、libc-database、one_gadget</h3><ul>
@@ -381,7 +379,7 @@
 <p>依次执行下列语句即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt-get install ruby</span><br><span class="line">apt-get install gem</span><br><span class="line">gem install one_gadget</span><br></pre></td></tr></table></figure></p>
 <h3 id="安装tmux"><a href="#安装tmux" class="headerlink" title="安装tmux"></a>安装tmux</h3><p>使用bash进入到docker中后只有一个命令行终端，这样很不方便，可以在该容器中安装tmux，来同时开启多个终端。<br>使用<br><code>apt-get install tmux</code>来安装</p>
 <p>启动鼠标切换界面：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@5cfd7de2e9f7:~<span class="comment"># touch .tmux.conf</span></span><br><span class="line">root@5cfd7de2e9f7:~<span class="comment"># nano .tmux.conf </span></span><br><span class="line">root@5cfd7de2e9f7:~<span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/38504450.jpg" alt=""></p>
+<p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/21063533.jpg" alt=""></p>
 <p><em>注意：在启用鼠标切换之后如果需要选中终端中的部分内容，需要在按住Shift的情况下才可以</em></p>
 <p><strong>除了上面提到的工具外，可以自行安装需要的工具</strong></p>
 <h2 id="将容器打包成自己的镜像"><a href="#将容器打包成自己的镜像" class="headerlink" title="将容器打包成自己的镜像"></a>将容器打包成自己的镜像</h2><p>经过上面的步骤，我们已经搭建好了需要的环境，下面就将这个容器打包成镜像：</p>
@@ -405,9 +403,9 @@
 <p>先获取到容器的id：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE                COMMAND             CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">6121daf720c0        e3pem/dockerpwn:v2   <span class="string">"bash"</span>              15 seconds ago      Exited (0) 6 seconds ago                        modest_nobel</span><br></pre></td></tr></table></figure></p>
 <p>获取到容器的id为：6121daf720c0</p>
 <p>建立一个脚本，内容如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker container start 6121daf720c0</span><br><span class="line">docker <span class="built_in">exec</span> -i -t 6121daf720c0 bash</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/57138105.jpg" alt=""></p>
 <p>以后就可以通过运行脚本来启动docker-pwn的环境了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chmod +x dockerpwn2.sh</span><br><span class="line"></span><br><span class="line">$ ./dockerpwn2.sh </span><br><span class="line">6121daf720c0</span><br><span class="line">root@6121daf720c0:/#</span><br></pre></td></tr></table></figure></p>
-<p>可以愉快的调试了:<br><img src="http://oslgqkd4w.bkt.clouddn.com/18-10-1/81980842.jpg" alt=""></p>
+<p>可以愉快的调试了:</p>
+<p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/66806776.jpg" alt=""></p>
 
       
     </div>
