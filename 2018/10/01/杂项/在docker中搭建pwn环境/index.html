@@ -93,7 +93,7 @@
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/78359469.jpg">
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/21063533.jpg">
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/66806776.jpg">
-<meta property="og:updated_time" content="2018-11-14T06:36:15.047Z">
+<meta property="og:updated_time" content="2018-11-14T13:51:58.485Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在docker中搭建pwn环境">
 <meta name="twitter:description" content="在docker中搭建pwn环境听到舍友说他一直都是在docker中做pwn的，一想到docker和虚拟机相比确实没啥差别（除了没有图形化界面），而且搭建好之后在各个地方都可以使用。网上也有别人搭建好的环境：https://github.com/skysider/pwndocker 这里自己搭建了一遍，把整个过程记录了下来。 下载并启动ubuntu镜像这里基于ubuntu16.04的镜像来搭建环境，">
@@ -394,7 +394,15 @@
 </li>
 <li><p>可以选择将镜像push到dockerhub：<br><code>docker push e3pem/dockerpwn:v2</code></p>
 </li>
+<li><p>因为网速的问题，可以将得到的镜像上传到阿里云：参考链接：<a href="https://help.aliyun.com/document_detail/51810.html" target="_blank" rel="noopener">https://help.aliyun.com/document_detail/51810.html</a></p>
+</li>
 </ol>
+<p>常用的操作命令：</p>
+<blockquote>
+<p>docker login registry.cn-hangzhou.aliyuncs.com</p>
+<p>docker pull registry.cn-hangzhou.aliyuncs.com/acs/agent:0.8</p>
+<p>docker push registry.cn-hangzhou.aliyuncs.com/acs/agent:0.8</p>
+</blockquote>
 <h2 id="使用构建的镜像"><a href="#使用构建的镜像" class="headerlink" title="使用构建的镜像"></a>使用构建的镜像</h2><p>在分析题目的时候经常需要进行调试，在docker中调试是需要权限的，因此在第一次启动镜像的时候需要添加<code>--privileged</code>选项</p>
 <p>同时可以将容器中的某一个目录和主机的目录建立映射，这样就能很方便的在宿主机和容器间共享文件了，使用<code>-v</code>选项来设置共享目录</p>
 <p>例如这样的命令：</p>
@@ -406,6 +414,16 @@
 <p>以后就可以通过运行脚本来启动docker-pwn的环境了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chmod +x dockerpwn2.sh</span><br><span class="line"></span><br><span class="line">$ ./dockerpwn2.sh </span><br><span class="line">6121daf720c0</span><br><span class="line">root@6121daf720c0:/#</span><br></pre></td></tr></table></figure></p>
 <p>可以愉快的调试了:</p>
 <p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/66806776.jpg" alt=""></p>
+<p>附上阿里云中镜像的下载地址：</p>
+<blockquote>
+<p>docker pull registry.cn-hangzhou.aliyuncs.com/e3pem/pwn-env-18.04</p>
+<p>docker pull registry.cn-hangzhou.aliyuncs.com/e3pem/pwn-env-16.04</p>
+</blockquote>
+<p>附上dockerhub中镜像的下载地址：</p>
+<blockquote>
+<p>docker pull e3pem/pwn-env-18.04</p>
+<p>docker pull e3pem/dockerpwn:v1</p>
+</blockquote>
 
       
     </div>
