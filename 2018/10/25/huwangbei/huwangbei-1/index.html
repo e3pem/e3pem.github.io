@@ -81,12 +81,12 @@
 
 
 
-<meta name="description" content="huwangbei赛后把护网杯的题目都调了一遍，这里记录了一下，本来打算放在同一篇，但是感觉篇幅太长了，就把剩下的两道题放在了下一篇。 six题目分析题目main函数大概如下：1234567891011121314151617181920__int64 __fastcall main(__int64 a1, char **a2, char **a3)&amp;#123;  void (__fastcall">
+<meta name="description" content="huwangbei赛后把护网杯的题目都调了一遍，这里记录了一下其中的两道题。 six题目分析题目main函数大概如下：1234567891011121314151617181920__int64 __fastcall main(__int64 a1, char **a2, char **a3)&amp;#123;  void (__fastcall *v3)(__int64, char *); // ST">
 <meta property="og:type" content="article">
-<meta property="og:title" content="护网杯-第一部分">
+<meta property="og:title" content="护网杯-部分writeup">
 <meta property="og:url" content="https://e3pem.github.io/2018/10/25/huwangbei/huwangbei-1/index.html">
 <meta property="og:site_name" content="e3pem&#39;s Blog">
-<meta property="og:description" content="huwangbei赛后把护网杯的题目都调了一遍，这里记录了一下，本来打算放在同一篇，但是感觉篇幅太长了，就把剩下的两道题放在了下一篇。 six题目分析题目main函数大概如下：1234567891011121314151617181920__int64 __fastcall main(__int64 a1, char **a2, char **a3)&amp;#123;  void (__fastcall">
+<meta property="og:description" content="huwangbei赛后把护网杯的题目都调了一遍，这里记录了一下其中的两道题。 six题目分析题目main函数大概如下：1234567891011121314151617181920__int64 __fastcall main(__int64 a1, char **a2, char **a3)&amp;#123;  void (__fastcall *v3)(__int64, char *); // ST">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/95543827.jpg">
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/9992879.jpg">
@@ -97,10 +97,10 @@
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/17973308.jpg">
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/36781444.jpg">
 <meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/2895925.jpg">
-<meta property="og:updated_time" content="2018-11-14T07:53:50.196Z">
+<meta property="og:updated_time" content="2018-12-04T12:53:37.323Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="护网杯-第一部分">
-<meta name="twitter:description" content="huwangbei赛后把护网杯的题目都调了一遍，这里记录了一下，本来打算放在同一篇，但是感觉篇幅太长了，就把剩下的两道题放在了下一篇。 six题目分析题目main函数大概如下：1234567891011121314151617181920__int64 __fastcall main(__int64 a1, char **a2, char **a3)&amp;#123;  void (__fastcall">
+<meta name="twitter:title" content="护网杯-部分writeup">
+<meta name="twitter:description" content="huwangbei赛后把护网杯的题目都调了一遍，这里记录了一下其中的两道题。 six题目分析题目main函数大概如下：1234567891011121314151617181920__int64 __fastcall main(__int64 a1, char **a2, char **a3)&amp;#123;  void (__fastcall *v3)(__int64, char *); // ST">
 <meta name="twitter:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/95543827.jpg">
 
 
@@ -137,7 +137,7 @@
 
 
 
-  <title>护网杯-第一部分 | e3pem's Blog</title>
+  <title>护网杯-部分writeup | e3pem's Blog</title>
   
 
 
@@ -281,7 +281,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">护网杯-第一部分</h1>
+          <h1 class="post-title" itemprop="name headline">护网杯-部分writeup</h1>
         
 
         <div class="post-meta">
@@ -353,7 +353,7 @@
       
 
       
-        <h1 id="huwangbei"><a href="#huwangbei" class="headerlink" title="huwangbei"></a>huwangbei</h1><p>赛后把护网杯的题目都调了一遍，这里记录了一下，本来打算放在同一篇，但是感觉篇幅太长了，就把剩下的两道题放在了下一篇。</p>
+        <h1 id="huwangbei"><a href="#huwangbei" class="headerlink" title="huwangbei"></a>huwangbei</h1><p>赛后把护网杯的题目都调了一遍，这里记录了一下其中的两道题。</p>
 <h2 id="six"><a href="#six" class="headerlink" title="six"></a>six</h2><h3 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h3><p>题目main函数大概如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">main</span><span class="params">(__int64 a1, <span class="keyword">char</span> **a2, <span class="keyword">char</span> **a3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">void</span> (__fastcall *v3)(__int64, <span class="keyword">char</span> *); <span class="comment">// ST08_8@1</span></span><br><span class="line">  v10 = *MK_FP(__FS__, <span class="number">40L</span>L);</span><br><span class="line">  fun_init();</span><br><span class="line">  v3 = (<span class="keyword">void</span> (__fastcall *)(__int64, <span class="keyword">char</span> *))mmap_text;</span><br><span class="line">  <span class="built_in">memset</span>(&amp;s, <span class="number">0</span>, <span class="number">8u</span>LL);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Show Ne0 your shellcode:"</span>);</span><br><span class="line">  read(<span class="number">0</span>, &amp;s, <span class="number">6u</span>LL);</span><br><span class="line">  check((__int64)&amp;s);</span><br><span class="line">  v4 = <span class="built_in">strlen</span>(loc_202020);</span><br><span class="line">  <span class="built_in">memcpy</span>(mmap_text, loc_202020, v4);</span><br><span class="line">  v5 = (<span class="keyword">char</span> *)mmap_text;</span><br><span class="line">  v6 = <span class="built_in">strlen</span>(loc_202020);</span><br><span class="line">  <span class="built_in">memcpy</span>(&amp;v5[v6], &amp;s, <span class="number">7u</span>LL);                    <span class="comment">// 拼接shellcode</span></span><br><span class="line">  v3(mmap_stack, &amp;s);</span><br><span class="line">  result = <span class="number">0L</span>L;</span><br><span class="line">  v8 = *MK_FP(__FS__, <span class="number">40L</span>L) ^ v10;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>程序在最开始的地方调用了<code>fun_init</code>函数，该函数主要做了设置程序的缓冲区以及分配两块内存，分别作为shellcode执行的<strong>代码段</strong>和<strong>堆栈段</strong>：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">__<span class="function">int64 <span class="title">sub_9CA</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  v4 = *MK_FP(__FS__, <span class="number">40L</span>L);</span><br><span class="line">  setvbuf(<span class="built_in">stdin</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);</span><br><span class="line">  setvbuf(<span class="built_in">stdout</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);</span><br><span class="line">  setvbuf(<span class="built_in">stderr</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);</span><br><span class="line">  fd = open(<span class="string">"/dev/urandom"</span>, <span class="number">0</span>);</span><br><span class="line">  read(fd, &amp;buf, <span class="number">6u</span>LL);</span><br><span class="line">  read(fd, &amp;v3, <span class="number">6u</span>LL);</span><br><span class="line">  mmap_text = mmap((<span class="keyword">void</span> *)(v3 &amp; <span class="number">0xFFFFFFFFFFFFF000</span>LL), <span class="number">0x1000</span>uLL, <span class="number">7</span>, <span class="number">0x22</span>, <span class="number">-1</span>, <span class="number">0L</span>L);<span class="comment">// r w e MAP_SHARED MAP_PRIVATE MAP_TYPE MAP_FIXED</span></span><br><span class="line">  mmap_stack = (__int64)mmap((<span class="keyword">void</span> *)(buf &amp; <span class="number">0xFFFFFFFFFFFFF000</span>LL), <span class="number">0x1000</span>uLL, <span class="number">3</span>, <span class="number">0x22</span>, <span class="number">-1</span>, <span class="number">0L</span>L) + <span class="number">0x500</span>;<span class="comment">// r w</span></span><br><span class="line">  <span class="keyword">return</span> *MK_FP(__FS__, <span class="number">40L</span>L) ^ v4;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>其中mmap函数的第一个参数是从<code>/dev/urandom</code>中读取的随机数据，第一个分配的内存具有<code>rwx</code>权限，第二个分配的内存具有<code>rw-</code>权限。</p>
@@ -447,6 +447,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/12/04/hitcon/baby_tcache/" rel="prev" title="hitconctf-baby_tcache">
+                hitconctf-baby_tcache <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -522,7 +526,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
