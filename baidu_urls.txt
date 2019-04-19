@@ -1,5 +1,5 @@
+https://e3pem.github.io/2019/04/19/patch/patch实战/
+https://e3pem.github.io/2019/04/19/patch/线下赛patch工具介绍/
 https://e3pem.github.io/2019/03/27/0ctf-2019/0ctf2019-zerotask/
 https://e3pem.github.io/2018/12/04/hitcon/baby_tcache/
 https://e3pem.github.io/2018/10/25/huwangbei/huwangbei-1/
-https://e3pem.github.io/2018/10/18/0ctf-2018/0ctf-baby题/
-https://e3pem.github.io/2018/10/09/wangdingbei/网鼎杯-EasyCoin/
