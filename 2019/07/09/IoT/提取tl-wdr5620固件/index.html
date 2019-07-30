@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="路由器,tp-link," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="tl-wdr5620固件提取最近分析了一下tl-wdr5620的路由器，该路由器使用的是VxWorks系统，目前很多设备上都使用的是这种系统。然而针对该系统上可能出现什么类型的漏洞，以及怎么利用发现的漏洞，目前都很少有深入分析的文章。而且凡是使用了该系统的设备，基本上都没有爆出来过漏洞，包括我了解的某些tplink路由器、水星路由器等。所以在整个过程中感觉收获最大的也就是固件的提取了，记录一下。">
+<meta name="keywords" content="路由器,tp-link">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tl-wdr5620固件提取">
+<meta property="og:url" content="https://e3pem.github.io/2019/07/09/IoT/提取tl-wdr5620固件/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="tl-wdr5620固件提取最近分析了一下tl-wdr5620的路由器，该路由器使用的是VxWorks系统，目前很多设备上都使用的是这种系统。然而针对该系统上可能出现什么类型的漏洞，以及怎么利用发现的漏洞，目前都很少有深入分析的文章。而且凡是使用了该系统的设备，基本上都没有爆出来过漏洞，包括我了解的某些tplink路由器、水星路由器等。所以在整个过程中感觉收获最大的也就是固件的提取了，记录一下。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190610155140.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190703104448.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190703110835.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190703112734.png">
+<meta property="og:updated_time" content="2019-07-03T12:13:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tl-wdr5620固件提取">
+<meta name="twitter:description" content="tl-wdr5620固件提取最近分析了一下tl-wdr5620的路由器，该路由器使用的是VxWorks系统，目前很多设备上都使用的是这种系统。然而针对该系统上可能出现什么类型的漏洞，以及怎么利用发现的漏洞，目前都很少有深入分析的文章。而且凡是使用了该系统的设备，基本上都没有爆出来过漏洞，包括我了解的某些tplink路由器、水星路由器等。所以在整个过程中感觉收获最大的也就是固件的提取了，记录一下。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190610155140.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2019/07/09/IoT/提取tl-wdr5620固件/"/>
+
+
+
+
+
+  <title>tl-wdr5620固件提取 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2019/07/09/IoT/提取tl-wdr5620固件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">tl-wdr5620固件提取</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-09T10:24:49+08:00">
+                2019-07-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index">
+                    <span itemprop="name">IoT</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="tl-wdr5620固件提取"><a href="#tl-wdr5620固件提取" class="headerlink" title="tl-wdr5620固件提取"></a>tl-wdr5620固件提取</h1><p>最近分析了一下tl-wdr5620的路由器，该路由器使用的是VxWorks系统，目前很多设备上都使用的是这种系统。然而针对该系统上可能出现什么类型的漏洞，以及怎么利用发现的漏洞，目前都很少有深入分析的文章。而且凡是使用了该系统的设备，基本上都没有爆出来过漏洞，包括我了解的某些tplink路由器、水星路由器等。所以在整个过程中感觉收获最大的也就是固件的提取了，记录一下。</p>
+<h2 id="路由器信息"><a href="#路由器信息" class="headerlink" title="路由器信息"></a>路由器信息</h2><p>固件版本：2.5.76</p>
+<p>硬件版本：v4.0</p>
+<p>在官网上没有找到该版本对应的固件，目前官网上只有v3版本及以前的固件。先下载3.0的看一下固件长什么样！</p>
+<p>binwalk一下发现是一堆压缩的数据：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190610155140.png" alt=""></p>
+<p>这是典型的VxWorks固件，整个固件是一个可执行的程序，包含了程序运行所需要个各种图标、html文件等各种资源。</p>
+<p>一般提取固件主要有三种方式：</p>
+<ul>
+<li>从官网下载升级包</li>
+<li>通过串口调试获取shell，通过dump内存或是ftp等方式获取固件</li>
+<li>直接从flash里面读固件</li>
+</ul>
+<p>一般在官网无法下载固件的情况下，会先尝试从串口中获取固件，因为这种方式不会对电路板造成什么损害，最多只需要通过焊接把针脚固定在调试口处。而如果通过串口也无法获取固件的情况下，就比如之前分析的小米路由器，串口只能读数据不能发数据，就只能通过flash来直接提取固件了（然而小米路由器把flash等器件也给保护了起来）。</p>
+<h2 id="尝试从uart获取shell"><a href="#尝试从uart获取shell" class="headerlink" title="尝试从uart获取shell"></a>尝试从uart获取shell</h2><p>拆开路由器看是否存在uart调试口</p>
+<p>存在四个并排的小孔，猜测就是uart口，首先确定这四个口对应对应的是<code>vcc/nx/rx/gnd</code>中的哪一个。</p>
+<p>通过通断性测试，发现从上往下数第二个口为GND口。具体怎么做的呢？（这在上一篇<a href="https://e3pem.github.io/2019/07/03/IoT/%E5%B0%8F%E7%B1%B3%E8%B7%AF%E7%94%B1%E5%99%A8%E4%BB%8E%E5%BC%80%E5%A7%8B%E5%88%B0%E6%94%BE%E5%BC%83/">小米路由器从开始到放弃</a>中也有提到过）<br><code>将黑色表笔接到IoT设备板子上的电路接口上固定不动，红色表笔依次在四个接口上进行通断测试，如果万用表有蜂鸣声，我们就可以判断此接口是GND接口。</code>使用万用表，将黑色的线插入<code>COM</code>口，红色的线插入<code>V/Ω</code>口，调整旋钮到<code>测量二极管通断</code>处。接着把黑色指针放到供电口，也就是供电线与路由器相接的地方，把红色指针放到从上往下的第二个口。这时发现万用表发出了蜂鸣声，放到其他的口却没有，说明第二个口就是<code>GND</code>。</p>
+<p>已经知道gnd口后，接下来还需要确定tx、rx以及vcc的位置</p>
+<p>在通电的情况下短接任意两个口，如果机器重启，那么可以确定这两个口一个是vcc一个是gnd，这里已知了gnd，所以只需要尝试三次即可确定那个口是vcc。通过实验发现从上往下数第一个口为vcc。</p>
+<p>第三和第四个口就为tx、rx了，具体对应的是哪个现在还无法知道！如何确定呢？连上<code>USB2TTL</code>试一下即可，如果没有输出，调换一下<code>RX/TX</code>的顺序后有了输出，那么就可以确定RX和TX的位置了！</p>
+<p>最终得到的顺序从上至下为：<br>VCC-&gt;GND-&gt;RX-&gt;TX</p>
+<p>最后弄好的样子是这样：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190703104448.jpg" alt=""></p>
+<h2 id="获取固件"><a href="#获取固件" class="headerlink" title="获取固件"></a>获取固件</h2><p>获取到shell之后，发现这不是平常遇见的linux下的shell，<code>help</code>一下发现够执行下面的一些命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># help</span></span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Version = 2.0.</span><br><span class="line">Task name = tCmdTask, pri = 8, stack size = 10240, max <span class="built_in">command</span> entry num = 64.</span><br><span class="line"></span><br><span class="line"><span class="built_in">command</span>     description</span><br><span class="line">--------------------------------------------------------------------</span><br><span class="line">?           <span class="built_in">print</span> all commands.</span><br><span class="line"><span class="built_in">help</span>        <span class="built_in">print</span> all commands.</span><br><span class="line">mem         show memory part, pools, and dump memory.</span><br><span class="line">task        show task info and manage system task.</span><br><span class="line">tftp        download or upload files by tftp protocol.</span><br><span class="line">ifconfig    Interface config, please reference to -<span class="built_in">help</span> <span class="built_in">command</span>.</span><br><span class="line">route       Show route table, delete/add special route entry.</span><br><span class="line">arp         Show all arp entries, delete/add special arp entry.</span><br><span class="line">net         Show net runtimes.</span><br><span class="line">track       Show conntrack runtimes, modify conntrack environments.</span><br><span class="line">register    register show.</span><br><span class="line">flash       Print flash layout, <span class="built_in">read</span>/write/erase specify flash.</span><br><span class="line">fs          display file system status.</span><br><span class="line">port        manage all udp/tcp packet ports.</span><br><span class="line">packet      Show cblk or mblk chain.</span><br><span class="line">mcb         Show mcb pools or blocks.</span><br><span class="line">bridge      Show all bridge stations.</span><br><span class="line">nat         Show nat runtimes.</span><br><span class="line">cloudClient cloudClient request.</span><br><span class="line">system      reboot, reset or firmware.</span><br><span class="line">devinfo     show device info.</span><br><span class="line">wioctl      Wlan <span class="built_in">command</span> line utility.</span><br><span class="line">iwpriv      MTK Wlan <span class="built_in">command</span> line utility.</span><br><span class="line">cloudBrd    proxy to connect cloud server.</span><br><span class="line">--------------------------------------------------------------------</span><br></pre></td></tr></table></figure></p>
+<p>flash的布局如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># flash -layout</span></span><br><span class="line"></span><br><span class="line">Version: 2.0</span><br><span class="line">Name: FlashIo</span><br><span class="line">Total Size(K): 2048</span><br><span class="line">Erase Sector Size(K): 4</span><br><span class="line">Block Num: 2.</span><br><span class="line">==================================================</span><br><span class="line">Flash Layout:</span><br><span class="line">|------------------------| 0x00000000(0.0K)</span><br><span class="line">|                        |</span><br><span class="line">|                        |</span><br><span class="line">|FACUBOOT(60.0K)         |</span><br><span class="line">|                        |</span><br><span class="line">|                        |</span><br><span class="line">|------------------------| 0x0000f000(60.0K)</span><br><span class="line">|PROFILE(2.0K)           |</span><br><span class="line">|------------------------| 0x0000f800(62.0K)</span><br><span class="line">|RADIO(2.0K)             |</span><br><span class="line">|------------------------| 0x00010000(64.0K)</span><br><span class="line">|                        |</span><br><span class="line">|                        |</span><br><span class="line">|CONFIG(20.0K)           |</span><br><span class="line">|                        |</span><br><span class="line">|                        |</span><br><span class="line">|------------------------| 0x00015000(84.0K)</span><br><span class="line">|TPHEAD(0.5K)            |</span><br><span class="line">|------------------------| 0x00015200(84.5K)</span><br><span class="line">|                        |</span><br><span class="line">|                        |</span><br><span class="line">|FIRMWARE(1963.5K)       |</span><br><span class="line">|                        |</span><br><span class="line">|                        |</span><br><span class="line">|------------------------| 0x00200000(2048.0K)</span><br></pre></td></tr></table></figure></p>
+<p>除了flash，我们还能执行mem命令，该命令可以dump内存信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"># mem -show [sys | dada | object]</span><br><span class="line"># mem -dump start size</span><br><span class="line"># mem -md start value</span><br><span class="line"># </span><br><span class="line"># -show      Displays alloced/free mempry blocks and size.</span><br><span class="line"># -dump      dump specify memory block.</span><br><span class="line"># -md        copy specify memory block to specify address.</span><br><span class="line"># </span><br><span class="line"># start      Start address of specify memory block, in hex.</span><br><span class="line"># size       Size of specify memory block, in hex.</span><br><span class="line"># value      value in UINT32 format.</span><br><span class="line"># object     end object, e.g:eth 0.</span><br><span class="line"># </span><br><span class="line"># Example:</span><br><span class="line"># mem -dump 80010000 1000   .... Show memory block start at 0x80010000 which size of 4k.</span><br><span class="line"># mem -show eth 1           .... Show netpool of end object eth1.</span><br><span class="line"></span><br><span class="line"># mem -dump 80001000 1000</span><br><span class="line">80001000:  00 B0 0D 3C 64 00 AD 35 - 00 00 AE 8D 00 00 00 00 	  ...&lt;d..5 ........</span><br><span class="line">80001010:  FC FF 01 3C FC FF 21 34 - 24 70 C1 01 01 00 01 3C 	  ...&lt;..!4 $p.....&lt;</span><br><span class="line">80001020:  25 70 C1 01 00 00 AE AD - 00 00 00 00 00 B0 0D 3C 	  %p...... .......&lt;</span><br><span class="line">80001030:  00 06 AD 35 00 00 AE 8D - 00 00 00 00 00 C0 01 3C 	  ...5.... .......&lt;</span><br><span class="line">80001040:  25 70 C1 01 00 00 AE AD - 00 00 00 00 00 B0 0D 3C 	  %p...... .......&lt;</span><br><span class="line">80001050:  04 06 AD 35 00 00 AE 8D - 00 00 00 00 0F 00 CE 35 	  ...5.... .......5</span><br><span class="line">80001060:  00 00 AE AD 00 00 00 00 - 00 B0 0D 3C 40 06 AD 35 	  ........ ...&lt;@..5</span><br><span class="line">80001070:  00 C0 0E 3C 00 00 AE AD - 00 00 00 00 00 B0 0D 3C 	  ...&lt;.... .......&lt;</span><br><span class="line">80001080:  44 06 AD 35 0F 00 0E 24 - 00 00 AE AD 00 00 00 00 	  D..5...$ ........</span><br></pre></td></tr></table></figure></p>
+<p>先利用脚本提取前0xf000大小的内存块试一试，因为在路由器启动的时候是从bc015200处开始执行的（这个在路由器启动时输出的信息里面可以看到），说明固件被加载到了0xbc015200处的位置，0x15200刚好对应到flash中的固件的起始地址，所以猜测整个flash应该是被加载到了0xbc000000处。</p>
+<p>在dump的时候依次最多能dump的内存大小为0x4000，而固件的大小远比这个大得多，我们不可能手动的一次一次来输入dump命令吧。所以这里还有三个问题需要解决：</p>
+<ul>
+<li>如何保存dump指令输出的内容</li>
+<li>如何自动的输入dump命令</li>
+<li>如何将保存的内容转换为二进制固件</li>
+</ul>
+<h3 id="保存dump指令输出"><a href="#保存dump指令输出" class="headerlink" title="保存dump指令输出"></a>保存dump指令输出</h3><p>我采用的是xshell连接的串口，在xshell中可以通过log的方式来记录终端输出的内容，只需要在<code>文件--&gt;属性</code>中配置一下即可：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190703110835.png" alt=""></p>
+<p>配置好了之后，每次连上串口的时候都会提示日志保存的文件名，所有终端上输出的内容都会记录到日志文件里面，这样就能保存dump指令的输出了！</p>
+<h3 id="自动输入dump指令"><a href="#自动输入dump指令" class="headerlink" title="自动输入dump指令"></a>自动输入dump指令</h3><p>要dump的数据很多，我们不可能手动的输入所有的dump指令，有什么办法能自动输入呢？要是xshell能帮我们输入命令就好了！查了一下发现还真有，xshell支持运行我们写的脚本（包括python、VBScript等），对于python脚本中的<code>xsh.Screen.Send</code>和<code>xsh.Screen.WaitForString</code>分别可以用来向终端发送命令和等待终端特定的输出，perfect！</p>
+<p>最后写好的自动dump内存的脚本如下(从xshell中运行)：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Main</span><span class="params">()</span>:</span></span><br><span class="line">	start=<span class="number">0x0</span></span><br><span class="line">	length=<span class="number">0x200000</span><span class="number">-0x15200</span></span><br><span class="line">	base=<span class="number">0xbc000000</span>+<span class="number">0x15200</span></span><br><span class="line">	flag=<span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> flag:</span><br><span class="line">		<span class="keyword">if</span> length &gt; <span class="number">0x4000</span>:</span><br><span class="line">			shell = <span class="string">"mem -dump "</span>+hex(base+start)+<span class="string">" "</span>+hex(<span class="number">0x4000</span>)</span><br><span class="line">		<span class="keyword">elif</span> length &gt; <span class="number">0</span>:</span><br><span class="line">			shell = <span class="string">"mem -dump "</span>+hex(base+start)+<span class="string">" "</span>+hex(length)</span><br><span class="line">			flag=<span class="number">0</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		xsh.Screen.Send(shell+<span class="string">'\n'</span>)</span><br><span class="line">		start = start+<span class="number">0x4000</span></span><br><span class="line">		length=length<span class="number">-0x4000</span></span><br><span class="line">		xsh.Screen.WaitForString(<span class="string">"\n# "</span>)</span><br><span class="line">		time.sleep(<span class="number">0.5</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="转换为二进制固件"><a href="#转换为二进制固件" class="headerlink" title="转换为二进制固件"></a>转换为二进制固件</h3><p>固件信息现在是以字符的形式保存在日志文件中的，需要把它抓换成二进制文件，转换起来也很容易，因为输出的内存信息有固定的格式，直接写脚本转就行了。</p>
+<p>转换的脚本如下所示：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">file = open(<span class="string">"tl-wdr5620-0x15200-0x20000.log"</span>,<span class="string">'r'</span>)</span><br><span class="line">file_o = open(<span class="string">'tl-wdr5620-0x15200-0x20000.bin'</span>,<span class="string">'wb'</span>)</span><br><span class="line">line_start = len(<span class="string">'BC000000:  '</span>)</span><br><span class="line">line_end = line_start+len(<span class="string">'FF 00 00 10 00 00 00 00 - FD 00 00 10 00 00 00 00'</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">	lines = file.readlines(<span class="number">10000</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> lines:</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> lines:</span><br><span class="line">		<span class="keyword">if</span> line.startswith(<span class="string">'BC'</span>):</span><br><span class="line">			line = line[line_start:line_end]</span><br><span class="line">			line = line.replace(<span class="string">' - '</span>,<span class="string">' '</span>).split(<span class="string">' '</span>)</span><br><span class="line">			tmp = <span class="string">''</span></span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> line:</span><br><span class="line">				tmp += chr(int(i,<span class="number">16</span>))</span><br><span class="line">			<span class="comment"># print line</span></span><br><span class="line">			file_o.write(tmp)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">pass</span></span><br><span class="line">file.close()</span><br><span class="line">file_o.close()</span><br></pre></td></tr></table></figure></p>
+<p>转换后得到的bin文件经过binwalk识别后发现和v3版本的固件是一样的，全是压缩包。</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190703112734.png" alt=""></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://bbs.pediy.com/thread-230095.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-230095.htm</a></p>
+<p><a href="https://www.secpulse.com/archives/75636.html" target="_blank" rel="noopener">https://www.secpulse.com/archives/75636.html</a></p>
+<p><a href="https://www.anquanke.com/vul/id/1454474" target="_blank" rel="noopener">https://www.anquanke.com/vul/id/1454474</a></p>
+<p><a href="https://www.secpulse.com/archives/75635.html" target="_blank" rel="noopener">https://www.secpulse.com/archives/75635.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/路由器/" rel="tag"># 路由器</a>
+          
+            <a href="/tags/tp-link/" rel="tag"># tp-link</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/09/CISCN/线下半决赛/" rel="next" title="CISCN华北赛区半决赛部分pwn题解">
+                <i class="fa fa-chevron-left"></i> CISCN华北赛区半决赛部分pwn题解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/09/IoT/小米路由器从开始到放弃/" rel="prev" title="小米路由器4-从开始到放弃">
+                小米路由器4-从开始到放弃 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#tl-wdr5620固件提取"><span class="nav-number">1.</span> <span class="nav-text">tl-wdr5620固件提取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#路由器信息"><span class="nav-number">1.1.</span> <span class="nav-text">路由器信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尝试从uart获取shell"><span class="nav-number">1.2.</span> <span class="nav-text">尝试从uart获取shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取固件"><span class="nav-number">1.3.</span> <span class="nav-text">获取固件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#保存dump指令输出"><span class="nav-number">1.3.1.</span> <span class="nav-text">保存dump指令输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动输入dump指令"><span class="nav-number">1.3.2.</span> <span class="nav-text">自动输入dump指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#转换为二进制固件"><span class="nav-number">1.3.3.</span> <span class="nav-text">转换为二进制固件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.4.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

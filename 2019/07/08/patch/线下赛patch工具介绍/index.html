@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,patch,线下," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="因为要去参加某比赛的线下赛，所以准备了一下线下patch相关的东西（然而参加了才发现根本没pwn选手什么事，全程在帮web大佬运维，各种删马、各种杀进程）。本文主要参考的是P4nda师傅写的patch相关的文章，在此基础上自己patch了一番。 使用IDA直接patch这种方式适合于较简单的修改，不能修改文件结构，直接在Edit–&amp;gt;Patch program–&amp;gt;Assemble中进行修">
+<meta name="keywords" content="pwn,patch,线下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线下赛patch工具介绍">
+<meta property="og:url" content="https://e3pem.github.io/2019/07/08/patch/线下赛patch工具介绍/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="因为要去参加某比赛的线下赛，所以准备了一下线下patch相关的东西（然而参加了才发现根本没pwn选手什么事，全程在帮web大佬运维，各种删马、各种杀进程）。本文主要参考的是P4nda师傅写的patch相关的文章，在此基础上自己patch了一番。 使用IDA直接patch这种方式适合于较简单的修改，不能修改文件结构，直接在Edit–&amp;gt;Patch program–&amp;gt;Assemble中进行修">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411094250.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411094555.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411094831.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411190529.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411220505.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411223153.png">
+<meta property="og:updated_time" content="2019-04-19T13:54:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="线下赛patch工具介绍">
+<meta name="twitter:description" content="因为要去参加某比赛的线下赛，所以准备了一下线下patch相关的东西（然而参加了才发现根本没pwn选手什么事，全程在帮web大佬运维，各种删马、各种杀进程）。本文主要参考的是P4nda师傅写的patch相关的文章，在此基础上自己patch了一番。 使用IDA直接patch这种方式适合于较简单的修改，不能修改文件结构，直接在Edit–&amp;gt;Patch program–&amp;gt;Assemble中进行修">
+<meta name="twitter:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411094250.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2019/07/08/patch/线下赛patch工具介绍/"/>
+
+
+
+
+
+  <title>线下赛patch工具介绍 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2019/07/08/patch/线下赛patch工具介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">线下赛patch工具介绍</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-08T23:28:13+08:00">
+                2019-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为要去参加某比赛的线下赛，所以准备了一下线下patch相关的东西（然而参加了才发现根本没pwn选手什么事，全程在帮web大佬运维，各种删马、各种杀进程）。本文主要参考的是<a href="http://p4nda.top/2018/07/02/patch-in-pwn/" target="_blank" rel="noopener">P4nda师傅</a>写的patch相关的文章，在此基础上自己patch了一番。</p>
+<h2 id="使用IDA直接patch"><a href="#使用IDA直接patch" class="headerlink" title="使用IDA直接patch"></a>使用IDA直接patch</h2><p>这种方式适合于较简单的修改，不能修改文件结构，直接在Edit–&gt;Patch program–&gt;Assemble中进行修改即可：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411094250.png" alt=""></p>
+<p>例如这里存在<code>off-by-null</code>，直接将该指令nop掉即可：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411094555.png" alt=""></p>
+<p>如下图所示：<br><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411094831.png" alt=""></p>
+<p>此时查看反编译的结果可以发现已经没有<code>off-by-null</code>漏洞了，最终还需要将修改的结果保存至文件中：<br>Edit–&gt;Patch program–&gt;Apply patches to input file</p>
+<h2 id="使用LIEF"><a href="#使用LIEF" class="headerlink" title="使用LIEF"></a>使用LIEF</h2><p>项目的地址：<br><a href="https://github.com/lief-project/LIEF" target="_blank" rel="noopener">https://github.com/lief-project/LIEF</a></p>
+<p>安装如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install setuptools --upgrade</span><br><span class="line"></span><br><span class="line">sudo pip install lief</span><br></pre></td></tr></table></figure>
+<p>工具的使用参考官方文档：<br><a href="https://lief.quarkslab.com/doc/latest/index.html" target="_blank" rel="noopener">https://lief.quarkslab.com/doc/latest/index.html</a></p>
+<h2 id="使用LIEF增加段来patch"><a href="#使用LIEF增加段来patch" class="headerlink" title="使用LIEF增加段来patch"></a>使用LIEF增加段来patch</h2><p>程序的源代码如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"/bin/sh%d"</span>,<span class="number">102</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"let's go\n"</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"/bin/sh%d"</span>,<span class="number">102</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"let's gogo\n"</span>);</span><br><span class="line">  <span class="keyword">return</span> EXIT_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>目标是修改其中的printf函数为我们自己的函数</strong></p>
+<h3 id="hook程序中的导入函数"><a href="#hook程序中的导入函数" class="headerlink" title="hook程序中的导入函数"></a>hook程序中的导入函数</h3><h4 id="编写hook函数"><a href="#编写hook函数" class="headerlink" title="编写hook函数"></a>编写hook函数</h4><p>首先要先编写我们的hook函数，编写hook函数有几个要求：</p>
+<ul>
+<li>汇编代码必须是位置独立的（也就是要使用-fPIC或-pie / -fPIE标志编译）</li>
+<li>不要使用libc.so等外部库（使用：-nostdlib -nodefaultlibs flags）</li>
+</ul>
+<p>根据上面的限制条件，我们编译hook程序时使用的编译指令如下所示：</p>
+<blockquote>
+<p>gcc -nostdlib -nodefaultlibs -fPIC -Wl,-shared hook.c -o hook</p>
+</blockquote>
+<p>我们编写的hook函数<code>my_printf</code>如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">myprintf</span><span class="params">(<span class="keyword">char</span> *a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">asm</span>(</span><br><span class="line">		<span class="string">"mov %rdi,%rsi\n"</span></span><br><span class="line">		<span class="string">"mov $0,%rdi\n"</span></span><br><span class="line">		<span class="string">"mov $0x20,%rdx\n"</span></span><br><span class="line">		<span class="string">"mov $0x1,%rax\n"</span></span><br><span class="line">		<span class="string">"syscall\n"</span></span><br><span class="line">		);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="将hook函数注入到程序并修改got表"><a href="#将hook函数注入到程序并修改got表" class="headerlink" title="将hook函数注入到程序并修改got表"></a>将hook函数注入到程序并修改got表</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lief</span><br><span class="line"></span><br><span class="line">binary = lief.parse(<span class="string">"./vulner"</span>)</span><br><span class="line">hook = lief.parse(<span class="string">'./hook'</span>)</span><br><span class="line"><span class="comment"># inject hook program to binary</span></span><br><span class="line">segment_added  = binary.add(hook.segments[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># hook got</span></span><br><span class="line">my_printf      = hook.get_symbol(<span class="string">"myprintf"</span>)</span><br><span class="line">my_printf_addr = segment_added.virtual_address + my_printf.value</span><br><span class="line"></span><br><span class="line">binary.patch_pltgot(<span class="string">'printf'</span>, my_printf_addr)</span><br><span class="line">binary.write(<span class="string">'vulner.patched'</span>)</span><br></pre></td></tr></table></figure>
+<p>运行patch后的程序可以发现patch成功：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411190529.png" alt=""></p>
+<h3 id="hook指定地址的函数调用"><a href="#hook指定地址的函数调用" class="headerlink" title="hook指定地址的函数调用"></a>hook指定地址的函数调用</h3><p>使用下面的代码可以完成hook程序中指定地址的call函数调用：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lief</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">patch_call</span><span class="params">(file,srcaddr,dstaddr,arch = <span class="string">"amd64"</span>)</span>:</span></span><br><span class="line">	<span class="keyword">print</span> hex(dstaddr)</span><br><span class="line">	length = p32((dstaddr - (srcaddr + <span class="number">5</span> )) &amp; <span class="number">0xffffffff</span>)</span><br><span class="line">	order = <span class="string">'\xe8'</span>+length</span><br><span class="line">	<span class="keyword">print</span> disasm(order,arch=arch)</span><br><span class="line">	file.patch_address(srcaddr,[ord(i) <span class="keyword">for</span> i <span class="keyword">in</span> order])</span><br><span class="line"></span><br><span class="line">binary = lief.parse(<span class="string">"./vulner"</span>)</span><br><span class="line">hook = lief.parse(<span class="string">'./hook'</span>)</span><br><span class="line"><span class="comment"># inject hook program to binary</span></span><br><span class="line">segment_added  = binary.add(hook.segments[<span class="number">0</span>])</span><br><span class="line">hook_fun      = hook.get_symbol(<span class="string">"myprintf"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dstaddr = segment_added.virtual_address + hook_fun.value</span><br><span class="line">srcaddr = <span class="number">0x400584</span></span><br><span class="line"></span><br><span class="line">patch_call(binary,srcaddr,dstaddr)</span><br><span class="line"></span><br><span class="line">binary.write(<span class="string">'vulner.patched'</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="修改-eh-frame段实现patch"><a href="#修改-eh-frame段实现patch" class="headerlink" title="修改.eh_frame段实现patch"></a>修改.eh_frame段实现patch</h2><p><code>eh_frame</code>段在执行的时候对程序的影响不大，所以可以把hook代码添加到该段中，通过修改函数跳转的方式来执行hook代码</p>
+<p>对section的操作参考<a href="https://lief.quarkslab.com/doc/latest/api/python/elf.html#section" target="_blank" rel="noopener">官方文档-section部分</a></p>
+<p>section对象中的content属性就是该section中的内容，所以要对待patch程序的<code>.eh_frame</code>段进行修改，直接将<code>hook</code>程序中的<code>.text</code>段的内容赋值到<code>.eh_frame</code>段的内容就行。赋值完成之后，在通过与前面一致的方法修改函数跳转地址，使其跳转到<code>.eh_frame</code>段来执行我们的hook代码</p>
+<p>具体的代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lief</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">patch_call</span><span class="params">(file,srcaddr,dstaddr,arch = <span class="string">"amd64"</span>)</span>:</span></span><br><span class="line">	<span class="keyword">print</span> hex(dstaddr)</span><br><span class="line">	length = p32((dstaddr - (srcaddr + <span class="number">5</span> )) &amp; <span class="number">0xffffffff</span>)</span><br><span class="line">	order = <span class="string">'\xe8'</span>+length</span><br><span class="line">	<span class="keyword">print</span> disasm(order,arch=arch)</span><br><span class="line">	file.patch_address(srcaddr,[ord(i) <span class="keyword">for</span> i <span class="keyword">in</span> order])</span><br><span class="line"></span><br><span class="line">binary = lief.parse(<span class="string">"./vulner"</span>)</span><br><span class="line">hook = lief.parse(<span class="string">'./hook'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># write hook's .text content to binary's .eh_frame content </span></span><br><span class="line">sec_ehrame = binary.get_section(<span class="string">'.eh_frame'</span>)</span><br><span class="line"><span class="keyword">print</span> sec_ehrame.content</span><br><span class="line">sec_text = hook.get_section(<span class="string">'.text'</span>)</span><br><span class="line"><span class="keyword">print</span> sec_text.content</span><br><span class="line">sec_ehrame.content = sec_text.content</span><br><span class="line"><span class="keyword">print</span> binary.get_section(<span class="string">'.eh_frame'</span>).content</span><br><span class="line"></span><br><span class="line"><span class="comment"># hook target call</span></span><br><span class="line">dstaddr = sec_ehrame.virtual_address</span><br><span class="line">srcaddr = <span class="number">0x400584</span></span><br><span class="line"></span><br><span class="line">patch_call(binary,srcaddr,dstaddr)</span><br><span class="line"></span><br><span class="line">binary.write(<span class="string">'vulner.patched'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>直接将hook程序中的<code>.text</code>段的<code>content</code>赋值到binary程序中的<code>.eh_frame</code>段的<code>content</code>段得到的效果如下图所示，内容确实是我们的hook函数：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411220505.png" alt=""></p>
+<p>修改指定的函数调用，使其跳转到我们修改后的<code>.eh_frame</code>段来执行，效果如下图所示：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190411223153.png" alt=""></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://p4nda.top/2018/07/02/patch-in-pwn/" target="_blank" rel="noopener">http://p4nda.top/2018/07/02/patch-in-pwn/</a></p>
+<p><a href="https://lief.quarkslab.com/doc/latest/index.html" target="_blank" rel="noopener">https://lief.quarkslab.com/doc/latest/index.html</a></p>
+<p><a href="https://blog.csdn.net/gwzz1228/article/details/16862911" target="_blank" rel="noopener">https://blog.csdn.net/gwzz1228/article/details/16862911</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/patch/" rel="tag"># patch</a>
+          
+            <a href="/tags/线下/" rel="tag"># 线下</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/08/patch/patch实战/" rel="next" title="线下赛patch实战">
+                <i class="fa fa-chevron-left"></i> 线下赛patch实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/08/bctf2018/bctf/" rel="prev" title="bctf-两道tcache题解">
+                bctf-两道tcache题解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用IDA直接patch"><span class="nav-number">1.</span> <span class="nav-text">使用IDA直接patch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用LIEF"><span class="nav-number">2.</span> <span class="nav-text">使用LIEF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用LIEF增加段来patch"><span class="nav-number">3.</span> <span class="nav-text">使用LIEF增加段来patch</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hook程序中的导入函数"><span class="nav-number">3.1.</span> <span class="nav-text">hook程序中的导入函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编写hook函数"><span class="nav-number">3.1.1.</span> <span class="nav-text">编写hook函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将hook函数注入到程序并修改got表"><span class="nav-number">3.1.2.</span> <span class="nav-text">将hook函数注入到程序并修改got表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook指定地址的函数调用"><span class="nav-number">3.2.</span> <span class="nav-text">hook指定地址的函数调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改-eh-frame段实现patch"><span class="nav-number">4.</span> <span class="nav-text">修改.eh_frame段实现patch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
