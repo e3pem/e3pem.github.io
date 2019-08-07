@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="路由器,xiaomi," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="小米路由器4-从开始到放弃之前入手了一台小米路由器4，想着来分析一下这款路由器，结果发现每一步都不好做，里面做了很多防护措施，最后由于水平有限，选择了放弃。不过这里还是把整个过程记录一下，由于文章是边做边记录的，所以结构上会有点杂乱。 路由器信息路由器型号：小米路由器4 后台界面：miwifi.com，192.168.31.1 固件版本：2.26.145 固件的在官网上就可以下载到 初步分析在下载">
+<meta name="keywords" content="路由器,xiaomi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小米路由器4-从开始到放弃">
+<meta property="og:url" content="https://e3pem.github.io/2019/07/03/IoT/小米路由器从开始到放弃/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="小米路由器4-从开始到放弃之前入手了一台小米路由器4，想着来分析一下这款路由器，结果发现每一步都不好做，里面做了很多防护措施，最后由于水平有限，选择了放弃。不过这里还是把整个过程记录一下，由于文章是边做边记录的，所以结构上会有点杂乱。 路由器信息路由器型号：小米路由器4 后台界面：miwifi.com，192.168.31.1 固件版本：2.26.145 固件的在官网上就可以下载到 初步分析在下载">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409130604.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409130716.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409131451.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409131820.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409132052.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409120412.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409134251.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409134854.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409135618.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409135501.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170031.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170410.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170623.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170904.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409171058.png">
+<meta property="og:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190412200335.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415101606.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415102627.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415104033.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415104417.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415143417.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415143625.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415144258.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415145354.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415155410.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190703191628.png">
+<meta property="og:updated_time" content="2019-08-07T08:24:31.540Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="小米路由器4-从开始到放弃">
+<meta name="twitter:description" content="小米路由器4-从开始到放弃之前入手了一台小米路由器4，想着来分析一下这款路由器，结果发现每一步都不好做，里面做了很多防护措施，最后由于水平有限，选择了放弃。不过这里还是把整个过程记录一下，由于文章是边做边记录的，所以结构上会有点杂乱。 路由器信息路由器型号：小米路由器4 后台界面：miwifi.com，192.168.31.1 固件版本：2.26.145 固件的在官网上就可以下载到 初步分析在下载">
+<meta name="twitter:image" content="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409130604.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2019/07/03/IoT/小米路由器从开始到放弃/"/>
+
+
+
+
+
+  <title>小米路由器4-从开始到放弃 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2019/07/03/IoT/小米路由器从开始到放弃/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">小米路由器4-从开始到放弃</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-03T12:00:00+08:00">
+                2019-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index">
+                    <span itemprop="name">IoT</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="小米路由器4-从开始到放弃"><a href="#小米路由器4-从开始到放弃" class="headerlink" title="小米路由器4-从开始到放弃"></a>小米路由器4-从开始到放弃</h1><p>之前入手了一台小米路由器4，想着来分析一下这款路由器，结果发现每一步都不好做，里面做了很多防护措施，最后由于水平有限，选择了放弃。不过这里还是把整个过程记录一下，由于文章是边做边记录的，所以结构上会有点杂乱。</p>
+<h2 id="路由器信息"><a href="#路由器信息" class="headerlink" title="路由器信息"></a>路由器信息</h2><p>路由器型号：小米路由器4</p>
+<p>后台界面：miwifi.com，192.168.31.1</p>
+<p>固件版本：2.26.145</p>
+<p>固件的在官网上就可以下载到</p>
+<h2 id="初步分析"><a href="#初步分析" class="headerlink" title="初步分析"></a>初步分析</h2><p>在下载的固件的基础上对小米路由器进行了一些分析，但是binwalk解压出来的内容不全面，且没有找到cgi的具体实现。同时路由器是通过OPENWRT架构实现的，httpd服务集成在了busybox中，在网上也有其源码，分析了其权限校验等实现，没有发现问题。</p>
+<p>利用Burp抓与路由器交互的数据包，在其请求的url中确实发现了cgi的字样，说明路由器运行时确实有cgi，只不过固件中没有发现：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/cgi-bin/luci/api/xqsystem/login</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: miwifi.com</span><br><span class="line"><span class="attribute">Proxy-Connection</span>: keep-alive</span><br><span class="line"><span class="attribute">Content-Length</span>: 125</span><br><span class="line"><span class="attribute">Accept</span>: */*</span><br><span class="line"><span class="attribute">Origin</span>: http://miwifi.com</span><br><span class="line"><span class="attribute">X-Requested-With</span>: XMLHttpRequest</span><br><span class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36</span><br><span class="line"><span class="attribute">Content-Type</span>: application/x-www-form-urlencoded; charset=UTF-8</span><br><span class="line"><span class="attribute">Referer</span>: http://miwifi.com/cgi-bin/luci/web/home</span><br><span class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</span><br><span class="line"><span class="attribute">Accept-Language</span>: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line"><span class="attribute">Cookie</span>: Hm_lvt_fe14c89e4d8b8c2e3038dd2b388a108f=1552889726; Hm_lpvt_fe14c89e4d8b8c2e3038dd2b388a108f=1552889728; __guid=236905885.1063846128660310800.1552890281870.1318; psp=admin|||2|||0; monitor_count=19</span><br><span class="line"></span><br><span class="line">username=admin&amp;password=61723585ffcf5700ff42a4cf1b68b74ea1f320cb&amp;logtype=2&amp;nonce=0_34%3Af3%3A9a%3A67%3A9a%3A94_1552891294_315</span><br></pre></td></tr></table></figure></p>
+<p>同时在返回的数据包里面发现了如下的一些信息：<br><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Server</span>: nginx</span><br><span class="line"><span class="attribute">Date</span>: Tue, 31 Jul 2018 04:58:43 GMT</span><br><span class="line"><span class="attribute">Content-Type</span>: text/html; charset=utf-8</span><br><span class="line"><span class="attribute">Connection</span>: close</span><br><span class="line"><span class="attribute">Cache-Control</span>: no-cache</span><br><span class="line"><span class="attribute">Expires</span>: Thu, 01 Jan 1970 00:00:01 GMT</span><br><span class="line"><span class="attribute">MiCGI-Switch</span>: 1 1</span><br><span class="line">//看这个字段</span><br><span class="line"><span class="attribute">MiCGI-Client-Ip</span>: 192.168.31.21</span><br><span class="line"><span class="attribute">MiCGI-Host</span>: 192.168.31.1</span><br><span class="line"><span class="attribute">MiCGI-Http-Host</span>: 192.168.31.1</span><br><span class="line"><span class="attribute">MiCGI-Server-Ip</span>: 192.168.31.1</span><br><span class="line"><span class="attribute">MiCGI-Server-Port</span>: 80</span><br><span class="line"><span class="attribute">MiCGI-Status</span>: CGI</span><br><span class="line"><span class="attribute">MiCGI-Preload</span>: no</span><br><span class="line"><span class="attribute">Content-Length</span>: 111842</span><br></pre></td></tr></table></figure></p>
+<p><strong>其中192.168.31.21地址是提供cgi服务的客户端？</strong></p>
+<p>接着通过NMap扫描了路由器开放的端口信息</p>
+<p><code>192.168.31.1</code>开放的端口如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap 7.01 ( https://nmap.org ) at 2019-04-08 10:03 CST</span><br><span class="line">Nmap scan report for bogon (192.168.31.1)</span><br><span class="line">Host is up (1.0s latency).</span><br><span class="line">Not shown: 989 closed ports</span><br><span class="line">PORT     STATE    SERVICE</span><br><span class="line">53/tcp   open     domain</span><br><span class="line">80/tcp   open     http</span><br><span class="line">82/tcp   filtered xfer</span><br><span class="line">514/tcp  filtered shell</span><br><span class="line">4003/tcp filtered pxc-splr-ft</span><br><span class="line">5003/tcp filtered filemaker</span><br><span class="line">8080/tcp open     http-proxy</span><br><span class="line">8192/tcp open     sophos</span><br><span class="line">8193/tcp open     sophos</span><br><span class="line">8383/tcp open     m2mservices</span><br><span class="line">8899/tcp open     ospf-lite</span><br><span class="line"></span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 107.41 seconds</span><br></pre></td></tr></table></figure></p>
+<p><code>192.168.31.21</code>开放的端口如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">➜  _miwifi_r4_firmware_f1bbb_2.26.145.bin.extracted nmap 192.168.31.21</span><br><span class="line"></span><br><span class="line">Starting Nmap 7.01 ( https://nmap.org ) at 2019-04-08 10:29 CST</span><br><span class="line">Nmap scan report for 192.168.31.21</span><br><span class="line">Host is up (1.0s latency).</span><br><span class="line">Not shown: 988 closed ports</span><br><span class="line">PORT     STATE    SERVICE</span><br><span class="line">135/tcp  open     msrpc</span><br><span class="line">139/tcp  open     netbios-ssn</span><br><span class="line">514/tcp  filtered shell</span><br><span class="line">902/tcp  open     iss-realsecure</span><br><span class="line">912/tcp  open     apex-mesh</span><br><span class="line">1025/tcp open     NFS-or-IIS</span><br><span class="line">1026/tcp open     LSA-or-nterm</span><br><span class="line">1027/tcp open     IIS</span><br><span class="line">1031/tcp open     iad2</span><br><span class="line">1034/tcp open     zincite-a</span><br><span class="line">1914/tcp filtered elm-momentum</span><br><span class="line">2869/tcp open     icslap</span><br><span class="line"></span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 56.69 seconds</span><br></pre></td></tr></table></figure></p>
+<p>对于哪些端口可能存在问题，需要先知道是那些程序提供这些服务的，需要在获取到shell之后专门进行研究。</p>
+<h2 id="通过UART获取路由器shell"><a href="#通过UART获取路由器shell" class="headerlink" title="通过UART获取路由器shell"></a>通过UART获取路由器shell</h2><p>为了知道cgi接口的具体实现，需要获取到路由器的shell，在进一步进行分析，所以这里直接通过<code>uart</code>来获取路由器的shell。</p>
+<h3 id="找到uart调试口"><a href="#找到uart调试口" class="headerlink" title="找到uart调试口"></a>找到uart调试口</h3><p>拆开路由器后发现了4个并排的小孔，感觉这就是板子上的<code>uart</code>口，但是没有发现每个口对应的到底是<code>TX/RX/GND/VCC</code>中的哪一个：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409130604.png" alt=""></p>
+<p>仔细观察四个孔的下面有四个序号，分别是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">4: White/TX</span><br><span class="line">3: Black/GND</span><br><span class="line">2: Gree/RX</span><br><span class="line">1:</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409130716.png" alt=""></p>
+<p>猜想这就是上面的四个孔对应的编号，用什么方法确定呢？</p>
+<p>根据参考文章中的描述，<code>将黑色表笔接到IoT设备板子上的电路接口上固定不动，红色表笔依次在四个接口上进行通断测试，如果万用表有蜂鸣声，我们就可以判断此接口是GND接口。</code>使用万用表，将黑色的线插入<code>COM</code>口，红色的线插入<code>V/Ω</code>口，调整旋钮到<code>测量二极管通断</code>处。接着把黑色指针放到供电口，也就是供电线与路由器相接的地方，把红色指针放到从上往下的第二个口。这时发现万用表发出了蜂鸣声，放到其他的口却没有，说明第二个口就是<code>GND</code>，即四个编号刚好对应了四个口。</p>
+<p><strong>注意:还有其他的几种方法来判定uart口，可以参考给出的参考链接里面的文章</strong></p>
+<p>接线如下图所示：<br><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409131451.png" alt=""></p>
+<p>将黑色表笔放在供电处，红色表笔依次在四个口处试探：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409131820.png" alt=""></p>
+<p>发现放在第二个孔处时，万用表发出了轰鸣声：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409132052.png" alt=""></p>
+<h3 id="ttl转usb"><a href="#ttl转usb" class="headerlink" title="ttl转usb"></a>ttl转usb</h3><p>按照：<br>TX–&gt;RX,Rx–&gt;TX,GND–&gt;GND<br>的方式连接uart口和ttl转usb口的线路</p>
+<p>连接好之后插入电脑上的usb口，在电脑上查看串口设备，总是发现不了我们插入的设备！！！</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409120412.png" alt=""></p>
+<p>是因为没有安装驱动，所以才识别不了我们的设备？<br>使用驱动精灵，发现有三个设备异常，其中第一个和第三个应该和我们遇到的问题相关：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409134251.png" alt=""></p>
+<p>安装驱动后重启电脑，发现能够识别出来串口设备了（其他几个usb转ttl设备均能够正确识别）：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409134854.png" alt=""></p>
+<h3 id="利用xshell连接设备"><a href="#利用xshell连接设备" class="headerlink" title="利用xshell连接设备"></a>利用xshell连接设备</h3><p>按照下图所示配置好xshell：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409135618.png" alt=""></p>
+<p>给路由器插上电源，可以看到路由器输出的信息，但是并不能往其中输入数据：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409135501.png" alt=""></p>
+<p>所以从uart获取shell这条路就被堵住了，还是从固件本身的分析入手吧。</p>
+<h2 id="挂载ubi文件系统"><a href="#挂载ubi文件系统" class="headerlink" title="挂载ubi文件系统"></a>挂载ubi文件系统</h2><p>在固件解压出来的结果中，可以发现还有一个后缀名为<code>.ubi</code>的文件没有用到，而且该文件的大小和另一个文件的大小基本一致，再结合参考链接中的一些分析文章中都提到了挂载ubi文件系统，所以这里进行一个尝试，来挂载一下该<code>ubi</code>文件系统。</p>
+<p>github上有现成的工具，直接安装即可使用：<br><a href="https://github.com/jrspruitt/ubi_reader/" target="_blank" rel="noopener">https://github.com/jrspruitt/ubi_reader/</a></p>
+<p>按照github上面给的步骤即可正常安装，直接使用命令进行提取发现出现错误：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170031.png" alt=""></p>
+<p>结合<a href="http://www.gandalf.site/2019/01/iotubi.html" target="_blank" rel="noopener">链接</a>中提到的，ubireader对文件的校验比较严格，必须补齐每一个块内容，当最后一个块内容没填充满或是有多余的内容，会提示错误信息。</p>
+<p>这里发现最后一个块里面的内容确实超出了应有的部分，最后一个块正常情况下在0xC60000处就应该结束了：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170410.png" alt=""></p>
+<p>所以这里采取的做法是删除掉前面和多出来的数据一样大小的数据：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170623.png" alt=""></p>
+<p>然后使用命令进行提取：<br><code>ubireader_extract_images 338A20-2.ubi</code></p>
+<p>进入到<code>./ubifs-root/338A20-2.ubi</code>目录下面，可以看到生成了一个后缀为<code>ubifs</code>的文件，直接双击发现能够打开该文件：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409170904.png" alt=""></p>
+<p>里面存在着大量的后缀为<code>.lua</code>的文件：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190409171058.png" alt=""></p>
+<p>这个文件系统是可以直接解压出来的，可以进一步分析了！！！</p>
+<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>解压出来新得到的文件系统，在文件系统中执行：</p>
+<blockquote>
+<p>find ./ -name “*httpd*“</p>
+</blockquote>
+<p>可以看到找到了许多包含该名称的文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">./etc/init.d/uhttpd</span><br><span class="line">./etc/init.d/sysapihttpd</span><br><span class="line">./etc/rc.d/S50uhttpd</span><br><span class="line">./etc/rc.d/S21sysapihttpd</span><br><span class="line">./etc/rc.d/K60sysapihttpd</span><br><span class="line">./etc/sysapihttpd</span><br><span class="line">./etc/sysapihttpd/sysapihttpd.conf</span><br><span class="line">./etc/config/uhttpd</span><br><span class="line">./userdisk/sysapihttpd</span><br><span class="line">./lib/upgrade/keep.d/uhttpd</span><br><span class="line">./lib/upgrade/keep.d/sysapihttpd</span><br><span class="line">./usr/sbin/uhttpd</span><br><span class="line">./usr/sbin/sysapihttpd</span><br><span class="line">./usr/lib/lua/luci/sgi/uhttpd.lua</span><br><span class="line">./usr/lib/uhttpd_lua.so</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>uhttpd</code>文件比较引人注意，把<code>/usr/sbin/uhttpd</code>放入IDA中进行分析，分析后发现该程序就是<code>cgi</code>处理程序，在<code>busybox</code>中的<code>httpd</code>里把调用cgi的各个参数设置好，然后在该程序中进行处理</p>
+<p>该程序中最关键的就是函数<code>uh_cgi_request</code>，该函数先分配了一大块内存，然后<code>fork</code>出了一个子进程，在子进程的一个循环中中获取了传进来的各个参数，最后调用了<code>execl</code>来执行脚本：</p>
+<p><img src="https://espem.oss-cn-beijing.aliyuncs.com/img/20190412200335.png" alt=""></p>
+<p>搜索了一下相关资料，<code>uhttpd</code>也是一个开源的web服务器，可以参考网上的源码分析。</p>
+<p>通过<a href="https://openwrt.org/zh-cn/doc/howto/http.uhttpd" target="_blank" rel="noopener">本篇资料</a>，知道uhttpd的配置文件为<code>/etc/config/uhttpd</code>，脚本<code>/etc/init.d/uhttpd</code>用来控制服务的运行状态，会在OpenWrt启动的时候启动。</p>
+<p>查看uhttpd的配置文件，可以发现有我们关注的信息，包括<code>lua_prefix</code>、<code>lua_handler</code>以及<code>cgi_prefix</code><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment"># CGI url prefix, will be searched in docroot.</span></span><br><span class="line">	<span class="comment"># Default is /cgi-bin</span></span><br><span class="line">	option cgi_prefix	/cgi-bin</span><br><span class="line"></span><br><span class="line">	<span class="comment"># List of extension-&gt;interpreter mappings.</span></span><br><span class="line">	<span class="comment"># Files with an associated interpreter can</span></span><br><span class="line">	<span class="comment"># be called outside of the CGI prefix and do</span></span><br><span class="line">	<span class="comment"># not need to be executable.</span></span><br><span class="line"><span class="comment">#	list interpreter	".php=/usr/bin/php-cgi"</span></span><br><span class="line"><span class="comment">#	list interpreter	".cgi=/usr/bin/perl"</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># Lua url prefix and handler script.</span></span><br><span class="line">	<span class="comment"># Lua support is disabled if no prefix given.</span></span><br><span class="line">	option lua_prefix	/luci</span><br><span class="line">	option lua_handler	/usr/lib/lua/luci/sgi/uhttpd.lua</span><br></pre></td></tr></table></figure></p>
+<p>结合uhttpd的<a href="https://github.com/gvzhang/uhttpd/blob/master/uhttpd.c" target="_blank" rel="noopener">源码</a>，可以知道lua将请求分为了三类，分别是<code>CGI请求</code>、<code>文件请求</code>、<code>lua请求</code>。其中cgi请求会进入到<code>uh_cgi_request</code>函数进行处理，文件请求会进入<code>uh_file_request</code>进行处理，而lua请求则会进入到<code>lua_request</code>中处理。同时通过源码会发现，程序在分发请求时，会最先判断是否是lua请求，如果是的话就会进入对应的处理函数进行处理。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">bool</span> <span class="title">uh_dispatch_request</span><span class="params">(struct client *cl, struct http_request *req)</span> </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">path_info</span> *<span class="title">pin</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_CGI</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">interpreter</span> *<span class="title">ipr</span> = <span class="title">NULL</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">config</span> *<span class="title">conf</span> = <span class="title">cl</span>-&gt;<span class="title">server</span>-&gt;<span class="title">conf</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_LUA</span></span><br><span class="line"><span class="comment">// 可以看到这里最先判断的是lua请求</span></span><br><span class="line">  <span class="comment">/* Lua request? */</span></span><br><span class="line">  <span class="keyword">if</span> (conf-&gt;lua_state &amp;&amp; uh_path_match(conf-&gt;lua_prefix, req-&gt;url)) &#123;</span><br><span class="line">    <span class="keyword">return</span> conf-&gt;lua_request(cl, conf-&gt;lua_state);</span><br><span class="line">  &#125; <span class="keyword">else</span></span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#ifdef HAVE_UBUS</span><br><span class="line">      <span class="comment">/* ubus request? */</span></span><br><span class="line">      <span class="keyword">if</span> (conf-&gt;ubus_state &amp;&amp; uh_path_match(conf-&gt;ubus_prefix, req-&gt;url)) &#123;</span><br><span class="line">    <span class="keyword">return</span> conf-&gt;ubus_request(cl, conf-&gt;ubus_state);</span><br><span class="line">  &#125; <span class="keyword">else</span></span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* dispatch request */</span></span><br><span class="line">      <span class="keyword">if</span> ((pin = uh_path_lookup(cl, req-&gt;url)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="comment">/* 检查请求路径权限 */</span></span><br><span class="line">    <span class="keyword">if</span> (!pin-&gt;redirected &amp;&amp; uh_auth_check(cl, req, pin)) &#123;</span><br><span class="line">#ifdef HAVE_CGI</span><br><span class="line">      <span class="comment">/* 是否在CGI前缀目录下的文件或者文件后缀是否有关联的解析器 */</span></span><br><span class="line">      <span class="keyword">if</span> (uh_path_match(conf-&gt;cgi_prefix, pin-&gt;name) ||</span><br><span class="line">          (ipr = uh_interpreter_lookup(pin-&gt;phys)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> uh_cgi_request(cl, pin, ipr);</span><br><span class="line">      &#125;</span><br><span class="line">    ...</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure></p>
+<p>从uhttpd的二进制程序中也能找到判断lua请求的部分：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415101606.png" alt=""></p>
+<p>固件中自己实现的部分主要有<code>cgi</code>和<code>lua</code>这两部分，其他部分都是框架中提供的，所以接下来主要从这两部分进行分析。</p>
+<h2 id="分析lua脚本部分"><a href="#分析lua脚本部分" class="headerlink" title="分析lua脚本部分"></a>分析lua脚本部分</h2><p>打开<code>/usr/lib/lua/luci/sgi/uhttpd.lua</code>，发现该文件是一个二进制文件，而不是直接可见的lua脚本</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415102627.png" alt=""></p>
+<p>这应该是lua脚本编译后得到的二进制程序，尝试反编译该二进制程序，得到脚本对应的源码</p>
+<p>github上有一个<a href="https://github.com/viruscamp/luadec" target="_blank" rel="noopener">luadec</a>的项目，专门用来反编译lua程序的，按照官方的流程编译出错</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">gcc -O2 -Wall -DLUA_USE_LINUX   -c -o lua.o lua.c</span><br><span class="line">In file included from lua.h:16:0,</span><br><span class="line">                 from lua.c:15:</span><br><span class="line">luaconf.h:275:31: fatal error: readline/readline.h: No such file or directory</span><br><span class="line">compilation terminated.</span><br><span class="line">&lt;<span class="built_in">builtin</span>&gt;: recipe <span class="keyword">for</span> target <span class="string">'lua.o'</span> failed</span><br><span class="line">make[2]: *** [lua.o] Error 1</span><br><span class="line">make[2]: Leaving directory <span class="string">'/home/em/Desktop/software/luadec/lua-5.1/src'</span></span><br><span class="line">Makefile:99: recipe <span class="keyword">for</span> target <span class="string">'linux'</span> failed</span><br><span class="line">make[1]: *** [linux] Error 2</span><br><span class="line">make[1]: Leaving directory <span class="string">'/home/em/Desktop/software/luadec/lua-5.1/src'</span></span><br><span class="line">Makefile:56: recipe <span class="keyword">for</span> target <span class="string">'linux'</span> failed</span><br><span class="line">make: *** [linux] Error 2</span><br></pre></td></tr></table></figure>
+<p>安装一下下列的程序即可</p>
+<blockquote>
+<p>sudo apt-get install libreadline-dev</p>
+</blockquote>
+<p>又报如下错误：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415104033.png" alt=""></p>
+<p>解决方法是：<code>sudo apt-get install libncurses-dev</code></p>
+<p>随后便可成功编译</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415104417.png" alt=""></p>
+<p>如何对编译后的lua程序进行分析？</p>
+<p><a href="https://blog.csdn.net/liujiayu2/article/details/81942010" target="_blank" rel="noopener">https://blog.csdn.net/liujiayu2/article/details/81942010</a></p>
+<p><a href="https://blog.csdn.net/liutianshx2012/article/details/44786207" target="_blank" rel="noopener">https://blog.csdn.net/liutianshx2012/article/details/44786207</a></p>
+<p><a href="https://www.52pojie.cn/thread-697540-1-1.html" target="_blank" rel="noopener">https://www.52pojie.cn/thread-697540-1-1.html</a></p>
+<p>向逆向大佬请教了一下，大佬说luadec只能反汇编，反编译会失败，而且这应该是加密之后的文件。在路由器里面应该有解密操作，不然这个脚本跑不起来</p>
+<p>每一个<code>.lua</code>脚本里面都有<code>Fate/Z</code>这样的标志位：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415143417.png" alt=""></p>
+<p>这种标志位的匹配，解密比较一般有两种：比较<code>Fate</code>字符串和<code>Fate</code>的十六进制。所以这里全局搜索一下这个字符串，还真的发现了一个可疑的文件</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415143625.png" alt=""></p>
+<p>看该文件的名字可以知道这属于lua脚本执行过程中用到的一个so库，会不会是在这个so库文件中进行的解密操作？逆向分析一下</p>
+<h3 id="分析liblua-so-5-1-5库"><a href="#分析liblua-so-5-1-5库" class="headerlink" title="分析liblua.so.5.1.5库"></a>分析liblua.so.5.1.5库</h3><p>在IDA中的字符串窗口中搜索字符串，发现了lua文件中的标志字段，<code>Fate/Z</code>前后的<code>\x1B</code>字节也都和lua文件中保持一致</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415144258.png" alt=""></p>
+<p>搜索该字符串的交叉引用，函数<code>sub_15a00</code>引用了该字符串。该函数主要进行的操作为，先把8个字节的标志字段拷贝到第一个参数指向的内存处，接着往8字节标志字段后面写入8个字节的数据</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415145354.png" alt=""></p>
+<p>lua解释器是有源码的，可以结合<a href="https://www.lua.org/ftp/lua-5.1.5.tar.gz" target="_blank" rel="noopener">源码</a>进行分析。<a href="https://astone.space/2016/11/16/Lua%20%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/Lua%20%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90--%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" target="_blank" rel="noopener">这篇博客</a>中提到lua的执行流程是从<code>luaL_loadfile</code>开始的，该函数用来加载lua文件，加载完之后再开始执行</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  &#125;</span><br><span class="line">  c = getc(lf.f);</span><br><span class="line">  <span class="keyword">if</span> (c == <span class="string">'#'</span>) &#123;  <span class="comment">/* Unix exec. file? */</span></span><br><span class="line">    lf.extraline = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((c = getc(lf.f)) != EOF &amp;&amp; c != <span class="string">'\n'</span>) ;  <span class="comment">/* skip first line */</span></span><br><span class="line">    <span class="keyword">if</span> (c == <span class="string">'\n'</span>) c = getc(lf.f);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 如果读取的第一个字符和LUA_SIGNATURE的第一个字节相同，表示是一个可执行的文件</span></span><br><span class="line">  <span class="keyword">if</span> (c == LUA_SIGNATURE[<span class="number">0</span>] &amp;&amp; filename) &#123;  <span class="comment">/* binary file? */</span></span><br><span class="line">    lf.f = freopen(filename, <span class="string">"rb"</span>, lf.f);  <span class="comment">/* reopen in binary mode */</span></span><br><span class="line">    <span class="keyword">if</span> (lf.f == <span class="literal">NULL</span>) <span class="keyword">return</span> errfile(L, <span class="string">"reopen"</span>, fnameindex);</span><br><span class="line">    <span class="comment">/* skip eventual `#!...' */</span></span><br><span class="line">   <span class="keyword">while</span> ((c = getc(lf.f)) != EOF &amp;&amp; c != LUA_SIGNATURE[<span class="number">0</span>]) ;</span><br><span class="line">    lf.extraline = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  ungetc(c, lf.f);</span><br><span class="line">  status = lua_load(L, getF, &amp;lf, lua_tostring(L, <span class="number">-1</span>));</span><br><span class="line">  readstatus = ferror(lf.f);</span><br><span class="line">  <span class="keyword">if</span> (filename) fclose(lf.f);  <span class="comment">/* close file (even in case of errors) */</span></span><br><span class="line">  <span class="keyword">if</span> (readstatus) &#123;</span><br><span class="line">    lua_settop(L, fnameindex);  <span class="comment">/* ignore results from `lua_load' */</span></span><br><span class="line">    <span class="keyword">return</span> errfile(L, <span class="string">"read"</span>, fnameindex);</span><br><span class="line">  &#125;</span><br><span class="line">  lua_remove(L, fnameindex);</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+<p>将源码和二进制程序进行对应，即可发现源码中的<code>LUA_SIGNATURE</code>就是我们之前发现的标志字段<code>1B 46 61 74 65 2F 5A 1B</code>，<code>LUA_SIGNATURE[0]</code>对应的就是<code>\x1B</code></p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190415155410.png" alt=""></p>
+<p>通过对<code>uhttpd</code>的逆向分析，发现在加载lua脚本的时候并没有进行解密操作，而是开发人员直接对lua解释器的源码进行了魔改，导致编译得到的结果和正常情况下得到的结果不一样。要弄清楚它修改了哪些地方，需要做的分析工作量太大了，而且即使分析出来（后来逆向师傅分析了一下，它是对lua的解释器进行了修改，他把原有的指令交换了一下顺序，而且自己还增加了一条指令，不知道是干啥用的），得到的反编译后的结果可读性比直接看正常程序汇编代码的可读性更差，在这种情况下很难分析其lua脚本是怎么实现的，也就很难找出来漏洞。所以分析lua脚本这条路基本上行不通！</p>
+<h2 id="分析cgi程序"><a href="#分析cgi程序" class="headerlink" title="分析cgi程序"></a>分析cgi程序</h2><p>uhttpd将请求分为了三类，其中lua脚本这一类请求行不通，于是尝试继续分析cgi程序这一类请求的处理过程。</p>
+<p>为了知道有哪些cgi请求，这里直接访问路由器后台管理界面，通过抓包的方式来获取有哪些cgi请求。把管理员后台的所有接口都抓了一遍后，发现全部都是使用的luci来实现的，没有找到使用cgi实现的地方。</p>
+<p>全局搜索包含<code>cgi-bin</code>字符串内容的html等文件，发现这些访问的都是lua接口(包含有<code>/luci</code>)：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190703191628.png" alt=""></p>
+<p>所以这条路也行不通！</p>
+<h2 id="难点"><a href="#难点" class="headerlink" title="难点"></a>难点</h2><ul>
+<li>固件采用OpenWRT，http服务集成在busybox中，较难发现问题</li>
+<li>固件解包未找到小米自己实现的功能部分在哪里</li>
+<li>uart调试无法发送数据，获取不了shell</li>
+<li>拆开路由器发现其flash等都受到了保护</li>
+<li>提取出来固件，发现lua脚本经过了编译，而且和正常编译的文件还不相同</li>
+<li>对lua脚本的解释器从源码上进行了修改，逆向分析起来困难</li>
+<li>没有找到通过cgi实现的功能部分</li>
+</ul>
+<p>其实从cve上面搜索小米路由器得到的漏洞数量来看，就可以知道他们的安全性还是做得很好的。自己体验了一下，能更加体会到这一点。还是要先从安全性做的不那么好的产品开始分析，循序渐进的来。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://future-sec.com/iot-security-hardware-debuging.html" target="_blank" rel="noopener">https://future-sec.com/iot-security-hardware-debuging.html</a></p>
+<p><a href="https://paper.seebug.org/506/" target="_blank" rel="noopener">https://paper.seebug.org/506/</a></p>
+<p><a href="https://paper.seebug.org/649/" target="_blank" rel="noopener">https://paper.seebug.org/649/</a></p>
+<p><a href="https://www.lotlabs.com/archives/919" target="_blank" rel="noopener">https://www.lotlabs.com/archives/919</a></p>
+<p><a href="http://www.log4cpp.com/smarthome/9.html" target="_blank" rel="noopener">http://www.log4cpp.com/smarthome/9.html</a></p>
+<p><a href="https://blog.csdn.net/junyeer/article/details/46761853" target="_blank" rel="noopener">https://blog.csdn.net/junyeer/article/details/46761853</a></p>
+<p><a href="https://www.92aq.com/2016/01/20/openwrt-xiaomi-loudong.html" target="_blank" rel="noopener">https://www.92aq.com/2016/01/20/openwrt-xiaomi-loudong.html</a></p>
+<p><a href="https://bbs.ichunqiu.com/thread-33974-1-1.html" target="_blank" rel="noopener">https://bbs.ichunqiu.com/thread-33974-1-1.html</a></p>
+<p><a href="https://blog.securityevaluators.com/show-mi-the-vulns-exploiting-command-injection-in-mi-router-3-55c6bcb48f09" target="_blank" rel="noopener">https://blog.securityevaluators.com/show-mi-the-vulns-exploiting-command-injection-in-mi-router-3-55c6bcb48f09</a></p>
+<p>挂载ubi文件系统：<br><a href="http://www.gandalf.site/2019/01/iotubi.html" target="_blank" rel="noopener">http://www.gandalf.site/2019/01/iotubi.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/路由器/" rel="tag"># 路由器</a>
+          
+            <a href="/tags/xiaomi/" rel="tag"># xiaomi</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/11/CISCN/线下半决赛/" rel="next" title="CISCN华北赛区半决赛部分pwn题解">
+                <i class="fa fa-chevron-left"></i> CISCN华北赛区半决赛部分pwn题解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/03/IoT/提取tl-wdr5620固件/" rel="prev" title="tl-wdr5620固件提取">
+                tl-wdr5620固件提取 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/e3pem" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ymyushouxi@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ble55ing.github.io/" title="Ble55ing" target="_blank">Ble55ing</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="Ama2in9" target="_blank">Ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://xiaoxiaorenwu.top/" title="xiaoxiaorenwu" target="_blank">xiaoxiaorenwu</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#小米路由器4-从开始到放弃"><span class="nav-number">1.</span> <span class="nav-text">小米路由器4-从开始到放弃</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#路由器信息"><span class="nav-number">1.1.</span> <span class="nav-text">路由器信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初步分析"><span class="nav-number">1.2.</span> <span class="nav-text">初步分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过UART获取路由器shell"><span class="nav-number">1.3.</span> <span class="nav-text">通过UART获取路由器shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#找到uart调试口"><span class="nav-number">1.3.1.</span> <span class="nav-text">找到uart调试口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ttl转usb"><span class="nav-number">1.3.2.</span> <span class="nav-text">ttl转usb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用xshell连接设备"><span class="nav-number">1.3.3.</span> <span class="nav-text">利用xshell连接设备</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载ubi文件系统"><span class="nav-number">1.4.</span> <span class="nav-text">挂载ubi文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进一步分析"><span class="nav-number">1.5.</span> <span class="nav-text">进一步分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析lua脚本部分"><span class="nav-number">1.6.</span> <span class="nav-text">分析lua脚本部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分析liblua-so-5-1-5库"><span class="nav-number">1.6.1.</span> <span class="nav-text">分析liblua.so.5.1.5库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析cgi程序"><span class="nav-number">1.7.</span> <span class="nav-text">分析cgi程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#难点"><span class="nav-number">1.8.</span> <span class="nav-text">难点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.9.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
