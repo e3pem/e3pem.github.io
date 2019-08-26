@@ -1,5 +1,5 @@
+https://e3pem.github.io/2019/08/26/0ctf-2019/embedded_heap/
 https://e3pem.github.io/2019/08/23/mips-pwn/mips-pwn环境搭建/
 https://e3pem.github.io/2019/08/07/IoT/NETGEAR NetUSB未授权信息泄露漏洞/
 https://e3pem.github.io/2019/07/31/browser/浏览器入门之starctf-OOB/
 https://e3pem.github.io/2019/07/03/IoT/提取tl-wdr5620固件/
-https://e3pem.github.io/2019/07/03/IoT/小米路由器从开始到放弃/
